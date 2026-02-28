@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreGuestTestimonialRequest;
 use App\Models\Portfolio;
 use App\Models\Testimonial;
+use Illuminate\Support\Facades\DB;
 
 class FrontController extends Controller
 {
     // Fungsi untuk menampilkan halaman testimonial ke publik
     public function testimonial()
     {
-        // Pindahkan logika database ke sini
-        $testimonials = Testimonial::latest()->get();
+        $testimonials = Testimonial::where('is_approved', 1)->latest()->get();
 
         return view('public.testimonial', compact('testimonials'));
     }
@@ -30,5 +31,35 @@ class FrontController extends Controller
         $otherProjects = Portfolio::where('id', '!=', $portfolio->id)->latest()->take(3)->get();
 
         return view('public.portfolio-detail', compact('portfolio', 'otherProjects'));
+    }
+
+    public function storeTestimonial(StoreGuestTestimonialRequest $request)
+    {
+        $data = $request->validated();
+
+        // Cek pengaturan Auto/Manual Approve
+        $autoApproveSetting = DB::table('settings')->where('key', 'auto_approve_testimonial')->value('value');
+        $isApproved = ($autoApproveSetting == '1') ? 1 : 0;
+
+        // Tangkap IP Address
+        $data['ip_address'] = $request->ip();
+        $data['is_approved'] = $isApproved;
+
+        // Hapus field honeypot sebelum insert ke DB
+        unset($data['company_website']);
+
+        if ($request->hasFile('profile_image')) {
+            $fileName = time().'_'.$request->file('profile_image')->getClientOriginalName();
+            $request->file('profile_image')->move(public_path('uploads/testimonials'), $fileName);
+            $data['profile_image'] = $fileName;
+        }
+
+        Testimonial::create($data);
+
+        $message = $isApproved
+            ? 'Terima kasih! Ulasan Anda telah berhasil dipublikasikan.'
+            : 'Terima kasih! Ulasan Anda telah kami terima dan sedang menunggu tinjauan admin.';
+
+        return redirect()->route('testimonial')->with('success', $message);
     }
 }

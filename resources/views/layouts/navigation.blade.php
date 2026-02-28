@@ -26,10 +26,25 @@
             <span>Kelola Admin</span>
         </a>
 
+        @php
+            // Hitung jumlah testimonial yang masih pending (is_approved = 0)
+            $pendingTestimonials = \App\Models\Testimonial::where('is_approved', 0)->count();
+        @endphp
+
         <a href="{{ route('admin.testimonials.index') }}"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.testimonials.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
-            <i class="fa-solid fa-comments w-5 text-center text-lg"></i>
-            <span>Testimonial</span>
+            class="flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.testimonials.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
+
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-comments w-5 text-center text-lg"></i>
+                <span>Testimonial</span>
+            </div>
+
+            @if ($pendingTestimonials > 0)
+                <span
+                    class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full shadow-sm animate-pulse">
+                    {{ $pendingTestimonials > 99 ? '99+' : $pendingTestimonials }}
+                </span>
+            @endif
         </a>
 
         <div class="pt-4 mt-4 border-t border-gray-700/50">

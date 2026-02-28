@@ -72,6 +72,93 @@
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('bulkManager', (bulkUrl, actionAllUrl) => ({
+                selectedIds: [],
+                selectAll: false,
+
+                // Centang/hapus centang semua di halaman ini
+                toggleAll() {
+                    if (this.selectAll) {
+                        this.selectedIds = Array.from(document.querySelectorAll('.row-checkbox')).map(
+                            cb => cb.value);
+                    } else {
+                        this.selectedIds = [];
+                    }
+                },
+
+                // Watcher kalau user manual uncheck salah satu, matikan 'Select All'
+                checkItem() {
+                    const totalCheckboxes = document.querySelectorAll('.row-checkbox').length;
+                    this.selectAll = this.selectedIds.length === totalCheckboxes && totalCheckboxes > 0;
+                },
+
+                // Aksi untuk data yang dicentang
+                submitBulk(action) {
+                    if (this.selectedIds.length === 0) {
+                        return alert('Pilih minimal satu data terlebih dahulu!');
+                    }
+
+                    const actionName = action === 'approve' ? 'meng-ACC' : (action === 'hide' ?
+                        'menyembunyikan' : 'MENGHAPUS');
+                    if (!confirm(
+                            `Yakin ingin ${actionName} ${this.selectedIds.length} data yang dipilih?`))
+                        return;
+
+                    this.sendPost(bulkUrl, {
+                        ids: this.selectedIds,
+                        action: action
+                    });
+                },
+
+                // Aksi global (Semua Data di DB)
+                submitAll(action) {
+                    const actionName = action === 'approve' ? 'meng-ACC' : 'menyembunyikan';
+                    if (!confirm(`PERINGATAN! Yakin ingin ${actionName} SEMUA data di database?`))
+                        return;
+
+                    this.sendPost(actionAllUrl, {
+                        action: action
+                    });
+                },
+
+                // JS Form Generator (Biar gak repot bikin <form> berulang kali di HTML)
+                sendPost(url, data) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = url;
+
+                    const csrf = document.createElement('input');
+                    csrf.type = 'hidden';
+                    csrf.name = '_token';
+                    csrf.value = document.querySelector('meta[name="csrf-token"]').content;
+                    form.appendChild(csrf);
+
+                    for (const key in data) {
+                        if (Array.isArray(data[key])) {
+                            data[key].forEach(val => {
+                                const input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = `${key}[]`;
+                                input.value = val;
+                                form.appendChild(input);
+                            });
+                        } else {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = key;
+                            input.value = data[key];
+                            form.appendChild(input);
+                        }
+                    }
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }));
+        });
+    </script>
 </body>
 
 </html>
