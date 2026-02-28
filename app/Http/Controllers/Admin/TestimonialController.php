@@ -12,11 +12,34 @@ use Illuminate\Support\Facades\File;
 
 class TestimonialController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $testimonials = Testimonial::latest()->paginate(10);
+        $query = Testimonial::query();
 
-        // Ambil nilai setting auto approve (default '0' jika belum ada)
+        // 1. Logika Pencarian (Search)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            // Gunakan closure agar "OR" tidak merusak kondisi filter status
+            $query->where(function ($q) use ($search) {
+                $q->where('client_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('testimonial', 'like', "%{$search}%");
+            });
+        }
+
+        // 2. Logika Filter Status
+        if ($request->filled('status')) {
+            if ($request->status === 'published') {
+                $query->where('is_approved', 1);
+            } elseif ($request->status === 'pending') {
+                $query->where('is_approved', 0);
+            }
+        }
+
+        // 3. Eksekusi Query + appends() agar parameter URL tetap menempel saat pindah page 2, 3, dst.
+        $testimonials = $query->latest()->paginate(10)->appends($request->query());
+
+        // Ambil nilai setting auto approve
         $autoApproveSetting = DB::table('settings')->where('key', 'auto_approve_testimonial')->value('value') ?? '0';
 
         return view('admin.testimonials.index', compact('testimonials', 'autoApproveSetting'));
