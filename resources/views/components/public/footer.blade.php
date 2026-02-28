@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
-            &copy; {{ date('Y') }} Karyantara Solution. All rights reserved.
+            &copy; 2026-{{ date('Y') }} Karyantara Solution. All rights reserved.
         </div>
     </div>
 </footer>
