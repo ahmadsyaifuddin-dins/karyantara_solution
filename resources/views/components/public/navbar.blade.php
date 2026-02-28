@@ -21,6 +21,9 @@
                 <x-public.nav-link :href="route('about')" :active="request()->routeIs('about')">
                     Tentang Kami
                 </x-public.nav-link>
+                <x-public.nav-link :href="route('terms')" :active="request()->routeIs('terms')">
+                    Syarat & Ketentuan
+                </x-public.nav-link>
             </div>
 
             <div class="hidden md:flex items-center">
@@ -66,6 +69,9 @@
             </x-public.mobile-nav-link>
             <x-public.mobile-nav-link :href="route('about')" :active="request()->routeIs('about')">
                 Tentang Kami
+            </x-public.mobile-nav-link>
+            <x-public.mobile-nav-link :href="route('terms')" :active="request()->routeIs('terms')">
+                Syarat & Ketentuan
             </x-public.mobile-nav-link>
         </div>
 
