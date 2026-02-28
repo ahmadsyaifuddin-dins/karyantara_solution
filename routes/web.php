@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\DashboardController; // Alias agar tidak bentrok
+use App\Http\Controllers\Admin\PageViewController;
 use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\FrontController;
@@ -47,6 +48,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('testimonials/toggle-setting', [AdminTestimonialController::class, 'toggleSetting'])->name('testimonials.toggle-setting');
     Route::resource('testimonials', AdminTestimonialController::class);
 
+    Route::get('/visitors', [PageViewController::class, 'index'])->name('visitors.index');
 });
 
 // PROFILE BAWAAN BREEZE
