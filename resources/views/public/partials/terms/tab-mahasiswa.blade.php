@@ -39,7 +39,8 @@
         <ul class="space-y-3 text-gray-600 text-sm leading-relaxed relative z-10">
             <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i>
                 <span><strong class="text-[#1E293B]">Fix di Awal:</strong> Pastikan konsep atau judul skripsi sudah FIX
-                    yang di-ACC dosen sebelum kami koding.</span>
+                    yang di-ACC dosen sebelum kami koding. Pastikan agar tidak kerja dua
+                    kali dan hasilnya 100% sesuai ekspektasimu</span>
             </li>
             <li class="flex items-start"><i class="fa-solid fa-xmark text-red-500 mt-1 mr-3 text-lg"></i>
                 <span><strong class="text-red-500">Ganti Judul Total:</strong> Jika di tengah jalan dosen meminta ganti
