@@ -6,13 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePortfolioRequest;
 use App\Http\Requests\UpdatePortfolioRequest;
 use App\Models\Portfolio;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 class PortfolioController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $portfolios = Portfolio::latest()->paginate(10);
+        $query = Portfolio::query();
+
+        // LOGIKA PENCARIAN (SEARCH)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('client_name', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%");
+            });
+        }
+
+        // Ambil data dengan paginasi dan pertahankan parameter pencarian di URL
+        $portfolios = $query->latest()->paginate(10)->appends($request->query());
 
         return view('admin.portfolios.index', compact('portfolios'));
     }
