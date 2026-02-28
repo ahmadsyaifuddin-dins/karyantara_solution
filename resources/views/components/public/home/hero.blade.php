@@ -21,8 +21,8 @@
 
         <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#1E293B] tracking-tight mb-8 leading-[1.1]">
             Wujudkan Ide Digital Anda <br class="hidden md:block">
-            Bersama <span
-                class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-600">Karyantara</span>
+            Bersama <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-600">Karyantara
+                Solution</span>
         </h1>
 
         <p class="mt-4 text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto mb-12 leading-relaxed">
