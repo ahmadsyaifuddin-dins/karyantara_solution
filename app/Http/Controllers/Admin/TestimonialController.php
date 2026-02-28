@@ -156,6 +156,11 @@ class TestimonialController extends Controller
         return back()->with('success', $message);
     }
 
+    public function show(Testimonial $testimonial)
+    {
+        return view('admin.testimonials.show', compact('testimonial'));
+    }
+
     // Private method untuk handle upload "Old School"
     private function uploadImage($file)
     {
