@@ -11,13 +11,13 @@
 
             @include('public.partials.terms.header')
 
-            <div x-data="{ activeTab: 'bisnis' }" class="max-w-6xl mx-auto">
+            <div x-data="{ activeTab: 'mahasiswa' }" class="max-w-6xl mx-auto">
 
                 @include('public.partials.terms.tab-navigation')
 
-                @include('public.partials.terms.tab-bisnis')
-
                 @include('public.partials.terms.tab-mahasiswa')
+
+                @include('public.partials.terms.tab-bisnis')
 
             </div>
 

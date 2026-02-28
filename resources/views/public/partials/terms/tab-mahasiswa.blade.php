@@ -15,12 +15,16 @@
                     25% atau 50% di awal.</span>
             </li>
             <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i>
-                <span><strong class="text-[#1E293B]">Pelunasan:</strong> Sisa 50% WAJIB dilunasi saat program didemokan
+                <span><strong class="text-[#1E293B]">Pelunasan:</strong> Sisa 50% atau Sisa 75% WAJIB dilunasi saat
+                    program
+                    didemokan
                     (video/share screen) dan SEBELUM source code dikirimkan kepada mahasiswa.</span>
             </li>
             <li class="flex items-start"><i class="fa-solid fa-triangle-exclamation text-amber-500 mt-1 mr-3"></i>
-                <span><strong class="text-[#1E293B]">DP Hangus:</strong> Jika klien membatalkan sepihak, DP tidak dapat
-                    dikembalikan.</span>
+                <span><strong class="text-[#1E293B]">DP Hangus (Non-Refundable):</strong> Jika klien membatalkan
+                    sepihak, DP tidak dapat
+                    dikembalikan, <span class="text-red-600 font-bold"><code>sebagai kompensasi waktu
+                            pengerjaan</code></span>.</span>
             </li>
         </ul>
     </div>
@@ -38,7 +42,9 @@
         <h3 class="text-xl font-bold text-[#1E293B] mb-4 relative z-10">2. Revisi & Ganti Judul</h3>
         <ul class="space-y-3 text-gray-600 text-sm leading-relaxed relative z-10">
             <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i>
-                <span><strong class="text-[#1E293B]">Fix di Awal:</strong> Pastikan konsep atau judul skripsi sudah FIX
+                <span><strong class="text-[#1E293B]">Fix Alur di Awal:</strong> Pastikan konsep Aplikasi atau judul
+                    skripsi sudah
+                    FIX
                     yang di-ACC dosen sebelum kami koding. Pastikan agar tidak kerja dua
                     kali dan hasilnya 100% sesuai ekspektasimu</span>
             </li>
@@ -48,7 +54,10 @@
                         class="text-[#1E293B]">Proyek Baru / Biaya Baru</strong>.</span>
             </li>
             <li class="flex items-start"><i class="fa-solid fa-file-invoice-dollar text-blue-500 mt-1 mr-3"></i>
-                <span>Revisi minor (tampilan) <b> gratis 5x </b>. Penambahan fitur baru kena *charge* tambahan.</span>
+                <span>Revisi minor (tampilan) <span class="font-bold text-[#1E293B]"> gratis 5x </span>. Penambahan
+                    fitur ringan baru kena
+                    *charge/kopi*
+                    tambahan.</span>
             </li>
         </ul>
     </div>
@@ -79,7 +88,7 @@
             class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-100 transition-colors">
             <i class="fa-solid fa-person-chalkboard text-2xl text-purple-500"></i>
         </div>
-        <h3 class="text-xl font-bold text-[#1E293B] mb-4">4. Serah Terima & Dosen</h3>
+        <h3 class="text-xl font-bold text-[#1E293B] mb-4">4. Serah Terima & Batasan</h3>
         <ul class="space-y-3 text-gray-600 text-sm leading-relaxed">
             <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i>
                 <span><strong class="text-[#1E293B]">Serah Terima:</strong> Mahasiswa akan mendapatkan Source Code Full,
@@ -87,8 +96,9 @@
             </li>
             <li class="flex items-start"><i class="fa-solid fa-scale-balanced text-amber-500 mt-1 mr-3"></i>
                 <span><strong class="text-[#1E293B]">Batas Tanggung Jawab:</strong> Kami membuat aplikasi sesuai dengan
-                    MoU/alur di awal. Kami tidak bertanggung jawab atas revisi dari dosen yang sifatnya memaksakan
-                    logika/fitur baru yang sangat kompleks di luar kesepakatan awal kita.</span>
+                    MoU/alur di awal. <span class="text-red-600 font-bold">Kami tidak bertanggung jawab atas revisi dari
+                        dosen yang sifatnya memaksakan logika/fitur baru yang sangat kompleks </span> di luar
+                    kesepakatan awal kita.</span>
             </li>
         </ul>
     </div>
