@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreGuestTestimonialRequest;
+use App\Models\PageView;
 use App\Models\Portfolio;
 use App\Models\Testimonial;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class FrontController extends Controller
@@ -69,5 +71,25 @@ class FrontController extends Controller
             : 'Terima kasih! Ulasan Anda telah kami terima dan sedang menunggu tinjauan admin.';
 
         return redirect()->route('testimonial')->with('success', $message);
+    }
+
+    // Fungsi untuk halaman Terms & Conditions
+    public function terms(Request $request)
+    {
+        $ip = $request->ip();
+        $pageName = 'terms';
+
+        // Logika Pintar: Cek apakah IP ini sudah tercatat untuk halaman 'terms'.
+        // Jika belum, buat record baru. Jika sudah, biarkan saja (tidak menambah data).
+        PageView::firstOrCreate([
+            'page_name' => $pageName,
+            'ip_address' => $ip,
+        ]);
+
+        // Hitung total pengunjung unik halaman ini
+        $viewCount = PageView::where('page_name', $pageName)->count();
+
+        // Lempar variabel $viewCount ke view
+        return view('public.terms', compact('viewCount'));
     }
 }

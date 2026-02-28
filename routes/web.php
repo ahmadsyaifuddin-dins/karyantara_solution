@@ -19,9 +19,7 @@ Route::get('/kontak', function () {
 Route::get('/tentang-kami', function () {
     return view('public.about');
 })->name('about');
-Route::get('/terms', function () {
-    return view('public.terms');
-})->name('terms');
+Route::get('/terms', [FrontController::class, 'terms'])->name('terms');
 
 // Arahkan route testimonial publik ke FrontController
 Route::get('/testimonial', [FrontController::class, 'testimonial'])->name('testimonial');
