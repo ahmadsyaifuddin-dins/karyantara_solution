@@ -65,10 +65,13 @@
                                     Waktu Kunjungan</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Halaman (Page)</th>
+                                    Halaman</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    IP Address</th>
+                                    IP & Network</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Device & Browser</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100">
@@ -86,17 +89,51 @@
                                             /{{ $log->page_name }}
                                         </span>
                                     </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div
-                                            class="text-sm font-mono text-gray-700 bg-gray-100 inline-block px-2 py-1 rounded border border-gray-200">
+                                        <div class="text-sm font-mono text-[#1E293B] font-bold">
+                                            <i class="fa-solid fa-network-wired text-amber-500 mr-1 text-xs"></i>
+                                            {{ $log->ip_address }}
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-1 truncate max-w-[200px]"
+                                            title="{{ $log->isp }}">
+                                            <i class="fa-solid fa-tower-cell mr-1"></i> {{ $log->isp ?? '-' }}
+                                        </div>
+                                        <div class="text-xs text-gray-400 mt-0.5 truncate max-w-[200px]">
+                                            <i class="fa-solid fa-location-dot mr-1 text-red-400"></i>
+                                            {{ $log->location ?? '-' }}
+                                        </div>
+                                    </td>
+
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center text-sm text-[#1E293B] font-medium">
+                                            @if ($log->device_type == 'Mobile')
+                                                <i class="fa-solid fa-mobile-screen-button text-gray-500 mr-2"></i>
+                                            @else
+                                                <i class="fa-solid fa-desktop text-gray-500 mr-2"></i>
+                                            @endif
+                                            {{ $log->os ?? 'Unknown' }}
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-1">
                                             <i
-                                                class="fa-solid fa-network-wired text-gray-400 mr-2 text-xs"></i>{{ $log->ip_address }}
+                                                class="fa-brands 
+                                {{ strtolower($log->browser) == 'chrome'
+                                    ? 'fa-chrome text-green-500'
+                                    : (strtolower($log->browser) == 'safari'
+                                        ? 'fa-safari text-blue-500'
+                                        : (strtolower($log->browser) == 'firefox'
+                                            ? 'fa-firefox text-orange-500'
+                                            : (strtolower($log->browser) == 'edge'
+                                                ? 'fa-edge text-blue-600'
+                                                : 'fa-internet-explorer text-gray-400'))) }} mr-1">
+                                            </i>
+                                            {{ $log->browser ?? '-' }}
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="px-6 py-8 text-center text-sm text-gray-500">
+                                    <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">
                                         Tidak ada data log aktivitas.
                                     </td>
                                 </tr>

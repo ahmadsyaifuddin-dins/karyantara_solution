@@ -12,5 +12,10 @@ class PageView extends Model
     protected $fillable = [
         'page_name',
         'ip_address',
+        'browser',
+        'os',
+        'device_type',
+        'location',
+        'isp',
     ];
 }
