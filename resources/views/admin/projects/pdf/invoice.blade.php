@@ -39,7 +39,7 @@
             padding: 5px 10px;
             font-size: 12px;
             font-weight: bold;
-            margin-top: 20px;
+            margin-top: 15px;
             margin-bottom: 10px;
         }
 
@@ -88,7 +88,7 @@
 
         .terms {
             font-size: 11px;
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 10px;
             border: 1px dashed #999;
             background-color: #fafafa;
@@ -142,9 +142,9 @@
                 <td>{{ $project->npm ?? '-' }} / {{ $project->class_name ?? '-' }}</td>
             </tr>
             <tr>
-                <td class="label">Dosen Pembimbing</td>
+                <td class="label">Dosen Pembimbing 1 | 2</td>
                 <td class="colon">:</td>
-                <td>1. {{ $project->dospem_1 ?? '-' }} <br> 2. {{ $project->dospem_2 ?? '-' }}</td>
+                <td>1. {{ $project->dospem_1 ?? '-' }} &nbsp;|&nbsp; 2. {{ $project->dospem_2 ?? '-' }}</td>
             </tr>
             <tr>
                 <td class="label">Judul Skripsi</td>
