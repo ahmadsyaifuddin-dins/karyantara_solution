@@ -9,7 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class FrontController extends Controller
 {
-    // Fungsi untuk menampilkan halaman testimonial ke publik
+    // Fungsi untuk menampilkan halaman
+    public function home()
+    {
+        // Ambil maksimal 10 ulasan terbaru yang sudah di-ACC agar slider tidak terlalu berat dimuat
+        $testimonials = Testimonial::where('is_approved', 1)->latest()->take(10)->get();
+
+        return view('public.home', compact('testimonials'));
+    }
+
     public function testimonial()
     {
         $testimonials = Testimonial::where('is_approved', 1)->latest()->get();

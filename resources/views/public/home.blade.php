@@ -2,6 +2,8 @@
 
     <x-public.home.hero />
 
+    <x-public.home.testimonial-slider :testimonials="$testimonials" />
+
     <x-public.home.services />
 
     <x-public.home.why-us />

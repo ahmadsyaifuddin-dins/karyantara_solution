@@ -9,9 +9,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // HALAMAN PUBLIK (Guest)
-Route::get('/', function () {
-    return view('public.home');
-})->name('home');
+Route::get('/', [FrontController::class, 'home'])->name('home');
 Route::get('/portofolio', function () {
     return view('public.portfolio');
 })->name('portfolio');
