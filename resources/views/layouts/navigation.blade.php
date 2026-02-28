@@ -26,7 +26,14 @@
             <span>Kelola Admin</span>
         </a>
 
-        @php
+        <div class="pt-4 mt-4 border-t border-gray-700/50">
+            <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Manajemen Konten</p>
+            <a href="{{ route('admin.portfolios.index') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.portfolios.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
+                <i class="fa-solid fa-briefcase w-5 text-center text-lg"></i>
+                <span>Portofolio</span>
+            </a>
+             @php
             // Hitung jumlah testimonial yang masih pending (is_approved = 0)
             $pendingTestimonials = \App\Models\Testimonial::where('is_approved', 0)->count();
         @endphp
@@ -46,14 +53,6 @@
                 </span>
             @endif
         </a>
-
-        <div class="pt-4 mt-4 border-t border-gray-700/50">
-            <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Manajemen Konten</p>
-            <a href="{{ route('admin.portfolios.index') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.portfolios.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
-                <i class="fa-solid fa-briefcase w-5 text-center text-lg"></i>
-                <span>Portofolio</span>
-            </a>
         </div>
 
         <div class="pt-4 mt-4 border-t border-gray-700/50">
