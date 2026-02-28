@@ -12,7 +12,7 @@
         <ul class="space-y-3 text-gray-600 text-sm leading-relaxed">
             <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i>
                 <span><strong class="text-[#1E293B]">DP Wajib:</strong> Pengerjaan dimulai setelah pembayaran DP sebesar
-                    50% di awal.</span>
+                    25% atau 50% di awal.</span>
             </li>
             <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i>
                 <span><strong class="text-[#1E293B]">Pelunasan:</strong> Sisa 50% WAJIB dilunasi saat program didemokan
