@@ -19,6 +19,8 @@
                 <h4 class="text-lg font-semibold mb-4 text-amber-400">Kontak</h4>
                 <ul class="space-y-2 text-sm text-gray-300">
                     <li><i class="fa-solid fa-envelope mr-2"></i> karyantarasolution@gmail.com</li>
+                    <li><i class="fa-brands fa-instagram mr-2"></i> <a href="https://instagram.com/karyantarasolution"
+                            target="_blank" class="hover:text-white transition">@karyantarasolution</a></li>
                     <li><i class="fa-solid fa-phone mr-2"></i> +62 812 3456 7890</li>
                     <li><i class="fa-solid fa-location-dot mr-2"></i> Banjarmasin, Indonesia</li>
                 </ul>
