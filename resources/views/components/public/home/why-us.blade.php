@@ -2,7 +2,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-                <h2 class="text-sm font-bold text-amber-500 tracking-wider uppercase mb-2">Kenapa Karyantara?</h2>
+                <h2 class="text-sm font-bold text-amber-500 tracking-wider uppercase mb-2">Kenapa Karyantara Solution?
+                </h2>
                 <h3 class="text-3xl md:text-4xl font-extrabold mb-6 leading-tight">Mitra Strategis Untuk Pertumbuhan
                     Bisnis Anda</h3>
                 <p class="text-gray-400 mb-8 text-lg leading-relaxed">Kami tidak sekadar menulis kode, kami membangun
