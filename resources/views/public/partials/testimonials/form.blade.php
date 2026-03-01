@@ -108,7 +108,7 @@
     </div>
 
     <div x-show="showReferenceModal" style="display: none;"
-        class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center pt-16 sm:pt-0"
+        class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center pt-16 mt-12 sm:pt-0"
         aria-labelledby="modal-title" role="dialog" aria-modal="true">
 
         <div x-show="showReferenceModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
@@ -154,7 +154,8 @@
                         <h4 class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2"><i
                                 class="fa-solid fa-graduation-cap mr-1"></i> Pendidikan / Akademik</h4>
                         <ul class="text-sm text-gray-700 space-y-1.5 list-disc list-inside ml-1 font-medium">
-                            <li>Mahasiswa Universitas Indonesia</li>
+                            <li>Mahasiswa Uniska FTI Banjarmasin</li>
+                            <li>Mahasiswa Teknik Informatika Semester 8</li>
                             <li>Dosen Teknik Informatika</li>
                             <li>Guru SMAN 1 Jakarta</li>
                         </ul>
