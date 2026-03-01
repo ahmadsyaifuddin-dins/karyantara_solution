@@ -12,6 +12,8 @@
                     <li><a href="{{ route('portfolio') }}" class="hover:text-white transition">Portofolio</a></li>
                     <li><a href="{{ route('testimonial') }}" class="hover:text-white transition">Testimonial Klien</a>
                     </li>
+                    <li><a href="{{ route('contact') }}" class="hover:text-white transition">Kontak Kami</a>
+                    </li>
                     <li><a href="{{ route('terms') }}" class="hover:text-white transition">Syarat & Ketentuan</a></li>
                 </ul>
             </div>
