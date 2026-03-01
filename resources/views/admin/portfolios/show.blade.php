@@ -64,26 +64,40 @@
                             <h3 class="text-3xl font-black text-[#1E293B]">{{ $portfolio->title }}</h3>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                            <div>
-                                <span
-                                    class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2"><i
-                                        class="fa-solid fa-user-tie mr-1 text-amber-500"></i> Nama Klien</span>
-                                <p class="text-[#1E293B] font-bold text-lg">
-                                    {{ $portfolio->client_name ?? 'Pribadi / Internal' }}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <span class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                    <i class="fa-solid fa-code mr-1 text-amber-500"></i> Developer
+                                </span>
+                                @if ($portfolio->developer)
+                                    <p class="text-[#1E293B] font-bold text-sm">{{ $portfolio->developer->name }}</p>
+                                @else
+                                    <p class="text-gray-400 font-medium italic text-sm">Tidak ada data</p>
+                                @endif
                             </div>
-                            <div>
-                                <span
-                                    class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2"><i
-                                        class="fa-solid fa-link mr-1 text-amber-500"></i> Link Proyek</span>
+
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <span class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                    <i class="fa-solid fa-user-tie mr-1 text-amber-500"></i> Nama Klien
+                                </span>
+                                <p class="text-[#1E293B] font-bold text-sm">
+                                    {{ $portfolio->client_name ?? 'Pribadi / Internal' }}
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <span class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                    <i class="fa-solid fa-link mr-1 text-amber-500"></i> Link Proyek
+                                </span>
                                 @if ($portfolio->project_url)
                                     <a href="{{ $portfolio->project_url }}" target="_blank"
-                                        class="text-blue-600 font-bold hover:underline flex items-center">
+                                        class="text-blue-600 font-bold text-sm hover:underline inline-flex items-center mt-1">
                                         Kunjungi Tautan <i
-                                            class="fa-solid fa-arrow-up-right-from-square ml-2 text-xs"></i>
+                                            class="fa-solid fa-arrow-up-right-from-square ml-1.5 text-[10px]"></i>
                                     </a>
                                 @else
-                                    <p class="text-gray-400 font-medium italic">Tidak ada tautan</p>
+                                    <p class="text-gray-400 font-medium italic text-sm mt-1">Tidak ada tautan</p>
                                 @endif
                             </div>
                         </div>
