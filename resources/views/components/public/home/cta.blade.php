@@ -1,4 +1,4 @@
-<section class="py-20 bg-white">
+<section class="py-12 bg-white">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
             class="bg-gradient-to-br from-amber-400 to-amber-600 rounded-3xl p-10 md:p-16 text-center shadow-2xl relative overflow-hidden">

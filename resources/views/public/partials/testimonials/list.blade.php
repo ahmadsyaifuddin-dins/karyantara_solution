@@ -16,7 +16,7 @@
                     @endfor
                 </div>
 
-                <p class="text-gray-700 mb-8 italic flex-grow leading-relaxed font-medium">
+                <p class="text-gray-700 mb-8 italic flex-grow leading-relaxed font-medium break-words">
                     "{{ $item->testimonial }}"
                 </p>
 

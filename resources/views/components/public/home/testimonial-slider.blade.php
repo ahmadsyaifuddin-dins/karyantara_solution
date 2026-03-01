@@ -29,7 +29,7 @@
             <h3 class="text-2xl font-black text-[#1E293B] mb-2">Suara Klien Kami</h3>
             <p class="text-sm font-bold text-gray-400 uppercase tracking-widest flex justify-center items-center gap-2">
                 <span class="w-8 h-px bg-gray-300"></span>
-                <i class="fa-solid fa-heart text-amber-500"></i> Dipercaya Oleh Klien Hebat
+                <i class="fa-solid fa-heart text-amber-500"></i> Dipercaya Oleh Klien
                 <span class="w-8 h-px bg-gray-300"></span>
             </p>
         </div>

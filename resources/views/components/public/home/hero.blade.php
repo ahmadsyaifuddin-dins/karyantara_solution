@@ -1,4 +1,4 @@
-<section class="relative bg-white pt-24 pb-32 lg:pt-36 lg:pb-40 overflow-hidden border-b border-gray-100">
+<section class="relative bg-white pt-12 pb-5 lg:pt-12 lg:pb-5 overflow-hidden border-b border-gray-100">
     <div class="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full overflow-hidden -z-10 pointer-events-none">
         <div
             class="absolute -top-24 -right-24 w-96 h-96 bg-amber-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob">

@@ -1,4 +1,4 @@
-<section class="py-24 bg-[#1E293B] text-white">
+<section class="py-12 bg-[#1E293B] text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -9,7 +9,7 @@
                     solusi. Setiap baris program yang kami buat didedikasikan untuk memecahkan masalah bisnis Anda.</p>
 
                 <div class="space-y-6">
-                    <div class="flex gap-4">
+                    <div class="flex gap-2">
                         <div
                             class="flex-shrink-0 w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center text-amber-500 text-xl">
                             <i class="fa-solid fa-rocket"></i>
@@ -20,7 +20,7 @@
                                 sesuai tenggat waktu tanpa mengorbankan kualitas.</p>
                         </div>
                     </div>
-                    <div class="flex gap-4">
+                    <div class="flex gap-2">
                         <div
                             class="flex-shrink-0 w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center text-amber-500 text-xl">
                             <i class="fa-solid fa-headset"></i>
