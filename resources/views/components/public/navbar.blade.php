@@ -3,8 +3,14 @@
         <div class="flex justify-between h-20 items-center">
 
             <div class="flex-shrink-0 flex items-center">
-                <a href="{{ route('home') }}" class="text-2xl font-bold text-[#1E293B]">
-                    Karyantara Solution<span class="text-amber-500">.</span>
+                <a href="{{ route('home') }}" class="flex items-center gap-3 group">
+                    <img src="{{ asset('logo/logo.png') }}" alt="Logo Karyantara Solution"
+                        class="h-10 w-auto object-contain transform group-hover:scale-105 transition-transform duration-300">
+
+                    <span
+                        class="text-2xl font-extrabold text-[#1E293B] tracking-tight sm:block group-hover:text-amber-600 transition-colors">
+                        Karyantara Solution<span class="text-amber-500">.</span>
+                    </span>
                 </a>
             </div>
 

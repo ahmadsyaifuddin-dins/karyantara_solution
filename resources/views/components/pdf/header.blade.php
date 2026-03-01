@@ -1,7 +1,7 @@
 <table style="width: 100%; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
     <tr>
         <td style="width: 15%; text-align: center; vertical-align: middle;">
-            <img src="{{ public_path('images/logo-dummy.png') }}" alt="Logo" style="max-width: 80px;">
+            <img src="{{ public_path('logo/logo.png') }}" alt="Logo" style="max-width: 80px;">
         </td>
         <td style="width: 85%; text-align: center; vertical-align: middle; line-height: 1.3;">
             <h2 style="margin: 0; font-size: 20px; text-transform: uppercase;">KARYANTARA SOLUTION</h2>
