@@ -1,4 +1,5 @@
-<div class="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden" id="form-ulasan">
+<div class="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden" id="form-ulasan"
+    x-data="{ showReferenceModal: false }">
     <div class="bg-[#1E293B] p-8 text-center relative overflow-hidden">
         <div class="absolute -right-10 -top-10 w-32 h-32 bg-amber-500 rounded-full opacity-20 blur-2xl"></div>
         <h2 class="text-3xl font-extrabold text-white mb-2 relative z-10">Bagikan Pengalaman Anda</h2>
@@ -29,8 +30,9 @@
                     <input type="email" name="email" value="{{ old('email') }}" required
                         placeholder="john@example.com"
                         class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors">
-                    <p class="text-xs text-gray-500 mt-1"><i class="fa-solid fa-lock text-gray-400 mr-1"></i>Tidak akan
-                        dipublikasikan.</p>
+                    <p class="text-xs text-gray-500 mt-1">
+                        <i class="fa-solid fa-lock text-gray-400 mr-1"></i>Email tidak akan dipublikasikan.
+                    </p>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-[#1E293B] mb-2">No. WhatsApp <span
@@ -38,10 +40,15 @@
                     <input type="tel" name="phone_number" value="{{ old('phone_number') }}" required
                         placeholder="Contoh: 081234567890" pattern="[0-9]{12,15}"
                         title="Gunakan angka saja, 12-15 digit"
-                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors">
-                    <p class="text-xs text-gray-500 mt-1"><i
-                            class="fa-brands fa-whatsapp text-green-500 mr-1"></i>Gunakan angka saja (Min. 12 digit).
-                    </p>
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
+
+                    <div class="mt-2 bg-green-50 p-2.5 rounded-lg border border-green-100 flex items-start gap-2">
+                        <i class="fa-brands fa-whatsapp text-green-600 mt-0.5"></i>
+                        <p class="text-[11px] text-green-800 leading-tight font-medium">
+                            Kerahasiaan terjamin tingkat tinggi. Nomor tidak akan dipublikasikan dan hanya digunakan
+                            untuk keperluan konfirmasi admin, <b>*Gunakan angka saja, 12-15 digit </b>.
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -50,8 +57,15 @@
                     <label class="block text-sm font-semibold text-[#1E293B] mb-2">Jabatan / Instansi <span
                             class="text-gray-400 font-normal">(Opsional)</span></label>
                     <input type="text" name="client_title" value="{{ old('client_title') }}"
-                        placeholder="CEO PT. Maju Mundur, Mahasiswa Sem 8"
+                        placeholder="Ketik jabatan atau instansi Anda..."
                         class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors">
+
+                    <button type="button" @click="showReferenceModal = true"
+                        class="mt-2 flex items-center text-xs font-bold text-amber-600 hover:text-amber-700 transition-colors group">
+                        <i
+                            class="fa-solid fa-lightbulb text-amber-400 mr-1.5 group-hover:text-amber-500 transition-colors"></i>
+                        Bingung isi apa? Cek referensi disini
+                    </button>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-[#1E293B] mb-2">Foto Profil <span
@@ -91,5 +105,89 @@
                 </button>
             </div>
         </form>
+    </div>
+
+    <div x-show="showReferenceModal" style="display: none;"
+        class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center pt-16 sm:pt-0"
+        aria-labelledby="modal-title" role="dialog" aria-modal="true">
+
+        <div x-show="showReferenceModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity"
+            @click="showReferenceModal = false"></div>
+
+        <div x-show="showReferenceModal" x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+            x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            class="relative transform flex flex-col rounded-2xl bg-white text-left shadow-xl transition-all w-full max-w-4xl mx-4 max-h-[85vh] border border-gray-100 z-50">
+
+            <div class="bg-[#1E293B] px-6 py-4 flex justify-between items-center rounded-t-2xl shrink-0">
+                <h3 class="text-lg font-bold text-white flex items-center" id="modal-title">
+                    <i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i> Referensi Pengisian
+                </h3>
+                <button @click="showReferenceModal = false" class="text-gray-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="px-6 py-6 bg-white overflow-y-auto flex-1">
+                <p class="text-sm text-gray-600 mb-5 text-center md:text-left">
+                    Anda bebas mengisi kolom <span class="font-bold text-[#1E293B]">"Jabatan / Instansi"</span> dengan
+                    identitas yang paling mewakili Anda. Berikut adalah beberapa contohnya:
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <h4 class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2"><i
+                                class="fa-solid fa-building mr-1"></i> Perusahaan / Bisnis</h4>
+                        <ul class="text-sm text-gray-700 space-y-1.5 list-disc list-inside ml-1 font-medium">
+                            <li>CEO PT. Maju Jaya Bersama</li>
+                            <li>Owner "Kopi Senja"</li>
+                            <li>Manager Marketing Toko Makmur</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <h4 class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2"><i
+                                class="fa-solid fa-graduation-cap mr-1"></i> Pendidikan / Akademik</h4>
+                        <ul class="text-sm text-gray-700 space-y-1.5 list-disc list-inside ml-1 font-medium">
+                            <li>Mahasiswa Universitas Indonesia</li>
+                            <li>Dosen Teknik Informatika</li>
+                            <li>Guru SMAN 1 Jakarta</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <h4 class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2"><i
+                                class="fa-solid fa-landmark mr-1"></i> Pemerintahan / Organisasi</h4>
+                        <ul class="text-sm text-gray-700 space-y-1.5 list-disc list-inside ml-1 font-medium">
+                            <li>Kepala Desa Suka Makmur</li>
+                            <li>Ketua Karang Taruna RW 05</li>
+                            <li>Staf Dinas Kesehatan Daerah</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <h4 class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2"><i
+                                class="fa-solid fa-laptop-code mr-1"></i> Pekerja Bebas / Personal</h4>
+                        <ul class="text-sm text-gray-700 space-y-1.5 list-disc list-inside ml-1 font-medium">
+                            <li>Freelance Graphic Designer</li>
+                            <li>Content Creator</li>
+                            <li>Wirausaha / Personal</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 text-right rounded-b-2xl shrink-0">
+                <button type="button" @click="showReferenceModal = false"
+                    class="inline-flex w-full justify-center rounded-xl bg-[#1E293B] px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-gray-800 transition sm:w-auto">
+                    Tutup & Lanjut Mengisi
+                </button>
+            </div>
+        </div>
     </div>
 </div>

@@ -15,9 +15,9 @@
                 <option value="">Pilih Kategori</option>
                 <option value="Website"
                     {{ old('category', $portfolio->category ?? '') == 'Website' ? 'selected' : '' }}>Website</option>
-                <option value="Web Development"
-                    {{ old('category', $portfolio->category ?? '') == 'Web Development' ? 'selected' : '' }}>Web
-                    Development</option>
+                <option value="Web Application"
+                    {{ old('category', $portfolio->category ?? '') == 'Web Application' ? 'selected' : '' }}>Web
+                    Application</option>
                 <option value="Mobile App (Android)"
                     {{ old('category', $portfolio->category ?? '') == 'Mobile App (Android)' ? 'selected' : '' }}>Mobile
                     App (Android)
