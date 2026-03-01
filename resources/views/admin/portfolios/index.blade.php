@@ -52,7 +52,7 @@
                                         <div
                                             class="w-24 h-16 rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-gray-100 flex items-center justify-center">
                                             @if ($item->image)
-                                                <img src="{{ asset('uploads/portfolios/' . $item->image) }}"
+                                                <img src="{{ asset('uploads/portfolios/' . $item->thumbnail) }}"
                                                     class="w-full h-full object-cover transition duration-300 hover:scale-110"
                                                     alt="{{ $item->title }}">
                                             @else
@@ -78,6 +78,13 @@
 
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                         <div class="flex items-center justify-center gap-2">
+
+                                            <a href="{{ route('admin.portfolios.show', $item->id) }}"
+                                                class="text-teal-600 hover:text-teal-900 bg-teal-50 hover:bg-teal-100 p-2.5 rounded-lg transition shadow-sm"
+                                                title="Lihat Detail">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+
                                             <a href="{{ route('admin.portfolios.edit', $item->id) }}"
                                                 class="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 p-2.5 rounded-lg transition shadow-sm"
                                                 title="Edit Data">

@@ -8,13 +8,12 @@
         </div>
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-
             @forelse ($portfolios as $item)
                 <a href="{{ route('portfolio.show', $item->id) }}"
                     class="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition flex flex-col group cursor-pointer block">
 
                     <div class="h-48 bg-gray-200 flex items-center justify-center overflow-hidden relative">
-                        <img src="{{ asset('uploads/portfolios/' . $item->image) }}" alt="{{ $item->title }}"
+                        <img src="{{ asset('uploads/portfolios/' . $item->thumbnail) }}" alt="{{ $item->title }}"
                             class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
 
                         <div
@@ -23,36 +22,38 @@
                                 class="bg-amber-500 text-[#1E293B] px-4 py-2 rounded-md font-bold text-sm transform translate-y-4 group-hover:translate-y-0 transition duration-300">Lihat
                                 Detail</span>
                         </div>
+
+                        @if ($item->images->count() > 1)
+                            <div
+                                class="absolute top-3 right-3 bg-black/50 text-white text-xs font-bold px-2 py-1 rounded backdrop-blur-sm">
+                                <i class="fa-regular fa-images mr-1"></i> {{ $item->images->count() }}
+                            </div>
+                        @endif
                     </div>
 
                     <div class="p-6 flex flex-col flex-grow">
                         <span class="text-xs font-semibold text-amber-600 tracking-wider uppercase mb-2 block">
                             {{ $item->category }}
                         </span>
-
                         <h3 class="text-xl font-bold text-[#1E293B] group-hover:text-amber-600 transition mb-2">
-                            {{ $item->title }}</h3>
-
+                            {{ $item->title }}
+                        </h3>
                         <p class="text-gray-600 text-sm mb-4 line-clamp-3">
                             {{ $item->description }}
                         </p>
-
                         <div class="mt-auto pt-4 border-t border-gray-100">
                             @if ($item->client_name)
                                 <p class="text-xs text-gray-500 mb-1"><i class="fa-solid fa-user-tie mr-1"></i>
                                     {{ $item->client_name }}</p>
+                            @else
+                                <p class="text-xs text-gray-500 mb-1"><i class="fa-solid fa-building mr-1"></i> Internal
+                                    / Pribadi</p>
                             @endif
-
                         </div>
                     </div>
                 </a>
             @empty
-                <div class="col-span-full text-center py-12">
-                    <i class="fa-solid fa-folder-open text-4xl text-gray-300 mb-3"></i>
-                    <p class="text-gray-500">Belum ada data portofolio yang ditambahkan.</p>
-                </div>
             @endforelse
-
         </div>
     </div>
 </x-public-layout>

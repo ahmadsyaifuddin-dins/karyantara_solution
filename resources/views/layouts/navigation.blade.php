@@ -8,7 +8,7 @@
     <div class="flex items-center justify-center h-20 border-b border-gray-700/50">
         <a href="{{ route('admin.dashboard') }}"
             class="text-2xl font-bold text-white tracking-wider hover:scale-105 transition transform">
-            Karyantara<span class="text-amber-500">.</span>
+            Karyantara Solution<span class="text-amber-500">.</span>
         </a>
     </div>
 

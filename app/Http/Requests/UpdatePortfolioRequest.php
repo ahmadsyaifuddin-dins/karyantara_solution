@@ -17,9 +17,18 @@ class UpdatePortfolioRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'category' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'], // Opsional saat edit
             'client_name' => ['nullable', 'string', 'max:255'],
             'project_url' => ['nullable', 'url', 'max:255'],
+
+            // Opsional saat edit (karena mungkin cuman mau ganti judul aja)
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+
+            // Menangani penghapusan gambar lama & set thumbnail baru (Nanti di-handle Alpine.js)
+            'deleted_images' => ['nullable', 'array'],
+            'deleted_images.*' => ['integer'],
+            'existing_thumbnail_id' => ['nullable', 'integer'],
+            'thumbnail_index' => ['nullable', 'integer'],
         ];
     }
 }
