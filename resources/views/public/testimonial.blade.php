@@ -131,6 +131,17 @@
                                         class="fa-solid fa-lock text-gray-400 mr-1"></i>Email tidak akan dipublikasikan.
                                 </p>
                             </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-[#1E293B] mb-2">No. WhatsApp <span
+                                        class="text-red-500">*</span></label>
+                                <input type="tel" name="phone_number" value="{{ old('phone_number') }}" required
+                                    placeholder="Contoh: 081234567890" pattern="[0-9]{12,15}"
+                                    title="Gunakan angka saja, 12-15 digit"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors">
+                                <p class="text-xs text-gray-500 mt-1"><i
+                                        class="fa-brands fa-whatsapp text-green-500 mr-1"></i>Gunakan angka saja (Min.
+                                    12 digit).</p>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">

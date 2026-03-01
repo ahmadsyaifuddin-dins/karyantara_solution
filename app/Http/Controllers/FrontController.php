@@ -54,6 +54,7 @@ class FrontController extends Controller
 
         // Tangkap IP Address
         $data['ip_address'] = $request->ip();
+        $data['user_agent'] = $request->userAgent();
         $data['is_approved'] = $isApproved;
 
         // Hapus field honeypot sebelum insert ke DB

@@ -12,11 +12,30 @@ class StoreGuestTestimonialRequest extends FormRequest
         return true; // Guest boleh akses
     }
 
+    protected function prepareForValidation()
+    {
+        if ($this->has('phone_number')) {
+            // Bersihkan semua karakter selain angka (misal user input pakai spasi atau strip)
+            $phone = preg_replace('/[^0-9]/', '', $this->phone_number);
+
+            // Konversi awalan 0 menjadi 62
+            if (str_starts_with($phone, '0')) {
+                $phone = '62'.substr($phone, 1);
+            }
+
+            // Timpa data request dengan yang sudah diformat
+            $this->merge([
+                'phone_number' => $phone,
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'client_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
+            'phone_number' => ['required', 'string', 'min:12', 'max:15', 'unique:testimonials,phone_number', 'regex:/^[0-9]+$/'],
             'client_title' => ['nullable', 'string', 'max:255'],
             'testimonial' => ['required', 'string', 'min:10'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
@@ -43,6 +62,11 @@ class StoreGuestTestimonialRequest extends FormRequest
             'rating.required' => 'Mohon berikan rating bintang Anda.',
             'rating.min' => 'Rating minimal 1 bintang.',
             'rating.max' => 'Rating maksimal 5 bintang.',
+
+            'phone_number.unique' => 'Nomor WhatsApp ini sudah pernah memberikan ulasan. Terima kasih!',
+            'phone_number.min' => 'Nomor WhatsApp minimal 12 digit.',
+            'phone_number.max' => 'Nomor WhatsApp maksimal 15 digit.',
+            'phone_number.regex' => 'Nomor WhatsApp hanya boleh berisi angka.',
 
             'profile_image.image' => 'File foto profil harus berupa gambar.',
             'profile_image.mimes' => 'Format foto profil harus jpeg, png, jpg, atau webp.',
