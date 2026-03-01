@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePortfolioRequest;
 use App\Http\Requests\UpdatePortfolioRequest;
 use App\Models\Portfolio;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -31,7 +32,9 @@ class PortfolioController extends Controller
 
     public function create()
     {
-        return view('admin.portfolios.create');
+        $admins = User::all();
+
+        return view('admin.portfolios.create', compact('admins'));
     }
 
     public function store(StorePortfolioRequest $request)
@@ -40,6 +43,7 @@ class PortfolioController extends Controller
 
         // 1. Simpan Data Teks Portofolio
         $portfolio = Portfolio::create([
+            'admin_id' => $data['admin_id'],
             'title' => $data['title'],
             'category' => $data['category'],
             'description' => $data['description'],
@@ -80,8 +84,9 @@ class PortfolioController extends Controller
     public function edit(Portfolio $portfolio)
     {
         $portfolio->load('images');
+        $admins = User::all();
 
-        return view('admin.portfolios.edit', compact('portfolio'));
+        return view('admin.portfolios.edit', compact('portfolio', 'admins'));
     }
 
     public function update(UpdatePortfolioRequest $request, Portfolio $portfolio)
@@ -90,6 +95,7 @@ class PortfolioController extends Controller
 
         // 1. Update Data Teks
         $portfolio->update([
+            'admin_id' => $data['admin_id'],
             'title' => $data['title'],
             'category' => $data['category'],
             'description' => $data['description'],

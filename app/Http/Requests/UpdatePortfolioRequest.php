@@ -14,6 +14,7 @@ class UpdatePortfolioRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'admin_id' => ['required', 'exists:users,id'],
             'title' => ['required', 'string', 'max:255'],
             'category' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],

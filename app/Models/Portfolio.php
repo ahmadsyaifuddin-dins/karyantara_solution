@@ -11,6 +11,7 @@ class Portfolio extends Model
 
     // Hapus 'image' dari sini
     protected $fillable = [
+        'admin_id',
         'title',
         'category',
         'description',
@@ -22,6 +23,11 @@ class Portfolio extends Model
     public function images()
     {
         return $this->hasMany(PortfolioImage::class);
+    }
+
+    public function developer()
+    {
+        return $this->belongsTo(User::class, 'admin_id');
     }
 
     // Helper untuk mengambil Thumbnail (Gambar Utama)

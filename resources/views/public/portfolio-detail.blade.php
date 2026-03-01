@@ -8,17 +8,28 @@
             </span>
             <h1 class="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">{{ $portfolio->title }}</h1>
 
-            <div class="flex items-center justify-center gap-6 text-gray-300 text-sm mt-8">
+            <div class="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-gray-300 text-sm mt-8">
+                @if ($portfolio->developer)
+                    <div
+                        class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full border border-white/10 shadow-sm">
+                        <i class="fa-solid fa-code text-amber-500"></i>
+                        <span>Developer: <strong class="text-white">{{ $portfolio->developer->name }}</strong></span>
+                    </div>
+                @endif
+
                 @if ($portfolio->client_name)
-                    <div class="flex items-center gap-2">
+                    <div
+                        class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full border border-white/10 shadow-sm">
                         <i class="fa-solid fa-user-tie text-amber-500"></i>
                         <span>Klien: <strong class="text-white">{{ $portfolio->client_name }}</strong></span>
                     </div>
                 @endif
-                <div class="flex items-center gap-2">
-                    <i class="fa-regular fa-calendar text-amber-500"></i>
-                    <span>Ditambahkan: <strong
-                            class="text-white">{{ $portfolio->created_at->format('M Y') }}</strong></span>
+
+                <div
+                    class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full border border-white/10 shadow-sm">
+                    <i class="fa-regular fa-calendar-check text-amber-500"></i>
+                    <span>Selesai: <strong
+                            class="text-white">{{ $portfolio->created_at->locale('id')->translatedFormat('F Y') }}</strong></span>
                 </div>
             </div>
         </div>

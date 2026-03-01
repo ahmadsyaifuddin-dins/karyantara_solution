@@ -42,6 +42,21 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
+            <x-forms.label for="admin_id" value="Developer / Penanggung Jawab" :required="true" />
+            <x-forms.dropdown id="admin_id" name="admin_id" required>
+                <option value="">Pilih Developer</option>
+                @foreach ($admins as $admin)
+                    <option value="{{ $admin->id }}"
+                        {{ old('admin_id', $portfolio->admin_id ?? '') == $admin->id ? 'selected' : '' }}>
+                        {{ $admin->name }}
+                    </option>
+                @endforeach
+            </x-forms.dropdown>
+            @error('admin_id')
+                <span class="text-sm text-red-500">{{ $message }}</span>
+            @enderror
+        </div>
+        <div>
             <x-forms.label for="client_name" value="Nama Klien (Opsional)" />
             <x-forms.input id="client_name" name="client_name" type="text"
                 value="{{ old('client_name', $portfolio->client_name ?? '') }}" />
@@ -182,7 +197,7 @@
             setNewThumbnail(index) {
                 this.newThumbnailIndex = index;
                 this.existingThumbnail =
-                null; // Uncheck gambar lama jika user milih gambar baru sbg utama
+                    null; // Uncheck gambar lama jika user milih gambar baru sbg utama
             },
 
             deleteExisting(id) {

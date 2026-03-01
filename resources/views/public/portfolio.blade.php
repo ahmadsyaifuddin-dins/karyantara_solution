@@ -35,20 +35,40 @@
                         <span class="text-xs font-semibold text-amber-600 tracking-wider uppercase mb-2 block">
                             {{ $item->category }}
                         </span>
+
                         <h3 class="text-xl font-bold text-[#1E293B] group-hover:text-amber-600 transition mb-2">
                             {{ $item->title }}
                         </h3>
+
                         <p class="text-gray-600 text-sm mb-4 line-clamp-3">
                             {{ $item->description }}
                         </p>
-                        <div class="mt-auto pt-4 border-t border-gray-100">
-                            @if ($item->client_name)
-                                <p class="text-xs text-gray-500 mb-1"><i class="fa-solid fa-user-tie mr-1"></i>
-                                    {{ $item->client_name }}</p>
-                            @else
-                                <p class="text-xs text-gray-500 mb-1"><i class="fa-solid fa-building mr-1"></i> Internal
-                                    / Pribadi</p>
+
+                        <div class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between gap-2">
+
+                            <div class="flex-1 min-w-0">
+                                @if ($item->client_name)
+                                    <p class="text-[11px] font-bold text-gray-500 truncate"
+                                        title="{{ $item->client_name }}">
+                                        <i class="fa-solid fa-user-tie mr-1 text-gray-400"></i> {{ $item->client_name }}
+                                    </p>
+                                @else
+                                    <p class="text-[11px] font-bold text-gray-500 truncate">
+                                        <i class="fa-solid fa-building mr-1 text-gray-400"></i> Internal / Pribadi
+                                    </p>
+                                @endif
+                            </div>
+
+                            @if ($item->developer)
+                                <div
+                                    class="flex-shrink-0 text-right bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+                                    <p class="text-[10px] font-bold text-[#1E293B] uppercase tracking-wider">
+                                        <i class="fa-solid fa-code text-amber-500 mr-1"></i>
+                                        {{ $item->developer->name }}
+                                    </p>
+                                </div>
                             @endif
+
                         </div>
                     </div>
                 </a>
