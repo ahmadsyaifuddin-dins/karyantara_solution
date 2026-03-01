@@ -50,11 +50,18 @@
 
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div
-                                            class="w-24 h-16 rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-gray-100 flex items-center justify-center">
-                                            @if ($item->image)
+                                            class="w-24 h-16 rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-gray-100 flex items-center justify-center relative">
+                                            @if ($item->thumbnail)
                                                 <img src="{{ asset('uploads/portfolios/' . $item->thumbnail) }}"
                                                     class="w-full h-full object-cover transition duration-300 hover:scale-110"
                                                     alt="{{ $item->title }}">
+
+                                                @if ($item->images->count() > 1)
+                                                    <div
+                                                        class="absolute bottom-1 right-1 bg-[#1E293B]/80 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                                                        +{{ $item->images->count() - 1 }}
+                                                    </div>
+                                                @endif
                                             @else
                                                 <i class="fa-solid fa-image text-gray-300 text-2xl"></i>
                                             @endif
