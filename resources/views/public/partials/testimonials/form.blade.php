@@ -50,7 +50,7 @@
                     <label class="block text-sm font-semibold text-[#1E293B] mb-2">Jabatan / Instansi <span
                             class="text-gray-400 font-normal">(Opsional)</span></label>
                     <input type="text" name="client_title" value="{{ old('client_title') }}"
-                        placeholder="Contoh: CEO PT. Maju Jaya"
+                        placeholder="CEO PT. Maju Mundur, Mahasiswa Sem 8"
                         class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors">
                 </div>
                 <div>
