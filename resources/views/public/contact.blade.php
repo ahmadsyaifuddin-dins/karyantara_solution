@@ -153,7 +153,7 @@
 
                 sendToWhatsApp() {
                     // Merakit template teks pesan WA
-                    let waText = `Halo Tim Karyantara Solution!`;
+                    let waText = `Halo Tim Karyantara Solution! \n\n`;
                     waText += `Saya tertarik untuk berdiskusi lebih lanjut.\n\n`;
                     waText += `*Nama:* ${this.form.name}\n`;
                     if (this.form.email) {
