@@ -6,6 +6,10 @@
                 class="inline-block py-1 px-3 rounded-full bg-amber-500/20 text-amber-400 text-sm font-semibold tracking-wider uppercase mb-4">
                 {{ $portfolio->category }}
             </span>
+            <span
+                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-blue-50 text-blue-600 uppercase tracking-widest border border-blue-100">
+                <i class="fa-solid fa-eye mr-1.5"></i> {{ $viewCount ?? 0 }} Views
+            </span>
             <h1 class="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">{{ $portfolio->title }}</h1>
 
             <div class="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-gray-300 text-sm mt-8">

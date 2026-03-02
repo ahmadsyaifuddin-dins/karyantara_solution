@@ -12,52 +12,58 @@ use Illuminate\Support\Facades\Http;
 
 class FrontController extends Controller
 {
-    // Fungsi untuk menampilkan halaman
     public function home()
     {
-        // Ambil maksimal 10 ulasan terbaru yang sudah di-ACC agar slider tidak terlalu berat dimuat
         $testimonials = Testimonial::where('is_approved', 1)->latest()->take(10)->get();
-
         return view('public.home', compact('testimonials'));
     }
 
     public function testimonial()
     {
         $testimonials = Testimonial::where('is_approved', 1)->latest()->get();
-
         return view('public.testimonial', compact('testimonials'));
     }
 
     public function portfolio()
     {
-        // Mengambil semua data portofolio dari yang terbaru
         $portfolios = Portfolio::latest()->get();
-
         return view('public.portfolio', compact('portfolios'));
     }
 
-    public function showPortfolio(Portfolio $portfolio)
+    // UPDATE: Halaman Detail Portfolio
+    public function showPortfolio(Portfolio $portfolio, Request $request)
     {
-        // Ambil 3 proyek lain untuk rekomendasi (selain proyek yang sedang dibuka)
+        // Catat View dengan format nama 'portfolio_ID' (contoh: portfolio_1)
+        $pageName = 'portfolio_' . $portfolio->id;
+        $this->recordPageView($pageName, $request);
+        
+        // Hitung total tayangan
+        $viewCount = PageView::where('page_name', $pageName)->count();
+
         $otherProjects = Portfolio::where('id', '!=', $portfolio->id)->latest()->take(3)->get();
 
-        return view('public.portfolio-detail', compact('portfolio', 'otherProjects'));
+        // Mengirimkan $viewCount ke blade
+        return view('public.portfolio-detail', compact('portfolio', 'otherProjects', 'viewCount'));
+    }
+
+    // TAMBAHAN: Halaman About
+    public function about(Request $request)
+    {
+        $this->recordPageView('about', $request);
+        $viewCount = PageView::where('page_name', 'about')->count();
+
+        return view('public.about', compact('viewCount'));
     }
 
     public function storeTestimonial(StoreGuestTestimonialRequest $request)
     {
         $data = $request->validated();
-
-        // Cek pengaturan Auto/Manual Approve
         $autoApproveSetting = DB::table('settings')->where('key', 'auto_approve_testimonial')->value('value');
         $isApproved = ($autoApproveSetting == '1') ? 1 : 0;
 
-        // Tangkap IP Address
         $data['ip_address'] = $request->ip();
         $data['user_agent'] = $request->userAgent();
         $data['is_approved'] = $isApproved;
-
-        // Hapus field honeypot sebelum insert ke DB
         unset($data['company_website']);
 
         if ($request->hasFile('profile_image')) {
@@ -75,73 +81,68 @@ class FrontController extends Controller
         return redirect()->route('testimonial')->with('success', $message);
     }
 
-    // Fungsi untuk halaman Terms & Conditions
+    // UPDATE: Halaman Terms
     public function terms(Request $request)
     {
-        $ip = $request->ip();
-        $pageName = 'terms';
+        $this->recordPageView('terms', $request);
+        $viewCount = PageView::where('page_name', 'terms')->count();
 
-        // Cek apakah IP ini sudah berkunjung
+        return view('public.terms', compact('viewCount'));
+    }
+
+
+    /**
+     * ==========================================
+     * FUNGSI HELPER UNTUK MENCATAT VIEWER
+     * ==========================================
+     */
+    private function recordPageView($pageName, Request $request)
+    {
+        $ip = $request->ip();
+
+        // Cek apakah IP ini sudah berkunjung ke halaman ini
         $existingView = PageView::where('page_name', $pageName)->where('ip_address', $ip)->first();
 
         if (! $existingView) {
-            // 1. Parsing User-Agent (Browser, OS, Device)
             $agent = $request->userAgent();
 
-            // Deteksi OS Sederhana
+            // Deteksi OS
             $os = 'Unknown OS';
-            if (preg_match('/windows/i', $agent)) {
-                $os = 'Windows';
-            } elseif (preg_match('/macintosh|mac os x/i', $agent)) {
-                $os = 'Mac OS';
-            } elseif (preg_match('/linux/i', $agent)) {
-                $os = 'Linux';
-            } elseif (preg_match('/android/i', $agent)) {
-                $os = 'Android';
-            } elseif (preg_match('/iphone|ipad|ipod/i', $agent)) {
-                $os = 'iOS';
-            }
+            if (preg_match('/windows/i', $agent)) $os = 'Windows';
+            elseif (preg_match('/macintosh|mac os x/i', $agent)) $os = 'Mac OS';
+            elseif (preg_match('/linux/i', $agent)) $os = 'Linux';
+            elseif (preg_match('/android/i', $agent)) $os = 'Android';
+            elseif (preg_match('/iphone|ipad|ipod/i', $agent)) $os = 'iOS';
 
-            // Deteksi Browser Sederhana
+            // Deteksi Browser
             $browser = 'Unknown Browser';
-            if (preg_match('/Edg/i', $agent)) {
-                $browser = 'Edge';
-            } elseif (preg_match('/Chrome/i', $agent)) {
-                $browser = 'Chrome';
-            } elseif (preg_match('/Firefox/i', $agent)) {
-                $browser = 'Firefox';
-            } elseif (preg_match('/Safari/i', $agent)) {
-                $browser = 'Safari';
-            } elseif (preg_match('/Opera|OPR/i', $agent)) {
-                $browser = 'Opera';
-            }
+            if (preg_match('/Edg/i', $agent)) $browser = 'Edge';
+            elseif (preg_match('/Chrome/i', $agent)) $browser = 'Chrome';
+            elseif (preg_match('/Firefox/i', $agent)) $browser = 'Firefox';
+            elseif (preg_match('/Safari/i', $agent)) $browser = 'Safari';
+            elseif (preg_match('/Opera|OPR/i', $agent)) $browser = 'Opera';
 
-            // Deteksi Device
             $deviceType = preg_match('/mobile|android|iphone|ipad|ipod/i', $agent) ? 'Mobile' : 'Desktop';
 
-            // 2. Fetch ISP dan Lokasi dari API Pihak Ketiga (ipapi.co)
-            // Khusus IP Localhost (127.0.0.1) API tidak bisa melacak, jadi kita beri default
             $location = 'Unknown';
             $isp = 'Unknown';
 
             if ($ip !== '127.0.0.1' && $ip !== '::1') {
                 try {
-                    // Gunakan timeout(2) agar website tidak lambat jika API error
                     $response = Http::timeout(2)->get("https://ipapi.co/{$ip}/json/");
                     if ($response->successful()) {
                         $data = $response->json();
                         $location = ($data['city'] ?? '').', '.($data['country_name'] ?? '');
-                        $isp = $data['org'] ?? 'Unknown ISP'; // "org" biasanya berisi nama provider seperti Telkomsel / Indihome
+                        $isp = $data['org'] ?? 'Unknown ISP';
                     }
                 } catch (\Exception $e) {
-                    // Abaikan jika error/timeout agar user tetap bisa masuk
+                    // Abaikan jika timeout
                 }
             } else {
                 $location = 'Localhost';
                 $isp = 'Local Network';
             }
 
-            // Simpan Data Super Lengkap
             PageView::create([
                 'page_name' => $pageName,
                 'ip_address' => $ip,
@@ -152,10 +153,5 @@ class FrontController extends Controller
                 'isp' => $isp,
             ]);
         }
-
-        // Hitung total pengunjung
-        $viewCount = PageView::where('page_name', $pageName)->count();
-
-        return view('public.terms', compact('viewCount'));
     }
 }

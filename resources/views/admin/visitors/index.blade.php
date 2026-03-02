@@ -20,32 +20,57 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @forelse ($pageStats as $stat)
                     <div
-                        class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col relative overflow-hidden group hover:shadow-md transition-shadow">
+                        class="bg-white rounded-2xl p-6 shadow-sm border {{ $stat->is_portfolio ? 'border-amber-200 bg-amber-50/10' : 'border-gray-100' }} flex flex-col relative overflow-hidden group hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+
                         <div
-                            class="absolute -right-6 -top-6 text-gray-50 text-7xl pointer-events-none group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-file-lines"></i>
+                            class="absolute -right-6 -top-6 text-7xl pointer-events-none group-hover:scale-110 transition-transform {{ $stat->is_portfolio ? 'text-amber-500/5' : 'text-gray-100' }}">
+                            <i class="fa-solid {{ $stat->is_portfolio ? 'fa-briefcase' : 'fa-file-lines' }}"></i>
                         </div>
 
                         <div class="relative z-10">
-                            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Halaman</h3>
-                            <p class="text-xl font-extrabold text-[#1E293B] mb-4 capitalize">/{{ $stat->page_name }}</p>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3
+                                    class="text-xs font-bold uppercase tracking-wider {{ $stat->is_portfolio ? 'text-amber-500' : 'text-gray-400' }}">
+                                    {{ $stat->is_portfolio ? 'Karya Portofolio' : 'Halaman Umum' }}
+                                </h3>
+                            </div>
+
+                            <p class="text-lg font-extrabold text-[#1E293B] mb-1 truncate"
+                                title="{{ $stat->display_name }}">
+                                {{ $stat->display_name }}
+                            </p>
+
+                            @if ($stat->owner_name)
+                                <p
+                                    class="text-[11px] font-bold text-gray-500 mb-4 bg-white px-2 py-1 rounded-md inline-block border border-gray-100 shadow-sm">
+                                    <i class="fa-solid fa-code text-amber-500 mr-1"></i> Dev: {{ $stat->owner_name }}
+                                </p>
+                            @else
+                                <div class="mb-4 h-6"></div>
+                            @endif
 
                             <div class="flex items-end justify-between mt-auto">
                                 <div>
                                     <span
-                                        class="text-3xl font-black text-amber-500">{{ number_format($stat->total_views, 0, ',', '.') }}</span>
-                                    <span class="text-sm font-medium text-gray-500 ml-1">Views</span>
+                                        class="text-3xl font-black {{ $stat->is_portfolio ? 'text-amber-600' : 'text-[#1E293B]' }}">{{ number_format($stat->total_views, 0, ',', '.') }}</span>
+                                    <span class="text-xs font-bold text-gray-400 ml-1 uppercase">Views</span>
                                 </div>
-                                <div class="text-xs text-gray-400 text-right" title="Kunjungan Terakhir">
-                                    <i class="fa-solid fa-clock mr-1"></i><br>
-                                    {{ \Carbon\Carbon::parse($stat->last_viewed)->locale('id')->diffForHumans() }}
+                                <div class="text-[10px] text-gray-400 text-right leading-tight"
+                                    title="Kunjungan Terakhir">
+                                    <i class="fa-solid fa-clock mr-0.5"></i> Terakhir<br>
+                                    <span
+                                        class="font-medium text-gray-500">{{ \Carbon\Carbon::parse($stat->last_viewed)->locale('id')->diffForHumans() }}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-full bg-white p-8 rounded-xl text-center text-gray-500 border border-gray-100">
-                        Belum ada data pengunjung yang terekam.
+                    <div class="col-span-full bg-white p-10 rounded-2xl text-center border border-gray-100 shadow-sm">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-eye-slash text-4xl text-gray-300"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-[#1E293B] mb-2">Belum Ada Data</h3>
+                        <p class="text-gray-500">Belum ada pengunjung yang terekam di sistem.</p>
                     </div>
                 @endforelse
             </div>
@@ -85,8 +110,10 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
-                                            class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                            /{{ $log->page_name }}
+                                            class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full {{ str_starts_with($log->page_name, 'portfolio_') ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800' }}">
+                                            <i
+                                                class="fa-solid {{ str_starts_with($log->page_name, 'portfolio_') ? 'fa-briefcase' : 'fa-file' }} mr-1.5 mt-0.5"></i>
+                                            {{ $log->display_name }}
                                         </span>
                                     </td>
 

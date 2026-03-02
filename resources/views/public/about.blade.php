@@ -3,6 +3,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
         <div class="grid md:grid-cols-2 gap-12 items-center">
             <div>
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-600 rounded-full text-sm font-bold mb-4 border border-amber-100 shadow-sm">
+                    <i class="fa-solid fa-eye animate-pulse"></i> {{ $viewCount ?? 0 }}x Dilihat
+                </div>
                 <h1 class="text-4xl font-bold text-[#1E293B] mb-4">Membangun Solusi Digital untuk Masa Depan</h1>
                 <div class="w-20 h-1.5 bg-gradient-to-r from-amber-400 to-amber-600 rounded-full mb-6"></div>
                 <p class="text-gray-600 mb-4 leading-relaxed text-lg">
