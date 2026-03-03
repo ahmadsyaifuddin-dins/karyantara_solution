@@ -130,18 +130,20 @@ class ProjectController extends Controller
 
     public function exportPdf()
     {
-        // Ambil data (sama seperti logic export Excel)
-         $projects = Project::where('is_shared', 1)
+        $projects = Project::where('is_shared', 1)
                            ->orWhere('admin_id', auth()->id())
                            ->orderByRaw("CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END ASC")
                            ->orderBy('sort_order', 'asc')
                            ->latest()
                            ->get();
 
-        // Load View PDF
-        $pdf = Pdf::loadView('admin.projects.pdf.export', compact('projects'));
+        // KUNCINYA DI SINI: Kita atur chroot dan tempDir secara bersamaan
+        $pdf = Pdf::loadView('admin.projects.pdf.export', compact('projects'))
+                  ->setOptions([
+                      'chroot'  => base_path(),              // Izinkan baca folder laravel
+                      'tempDir' => storage_path('app')       // Hindari folder /tmp server yang diblokir
+                  ]);
 
-        // Atur ukuran kertas ke A4 (Landscape atau Portrait terserah, kita pakai Portrait)
         $pdf->setPaper('A4', 'portrait');
 
         $fileName = 'Laporan_Proyek_Karyantara_'.now()->format('d-m-Y_H-i-s').'.pdf';
@@ -151,18 +153,18 @@ class ProjectController extends Controller
 
     public function exportInvoice(Project $project)
     {
-        // Fitur Keamanan Ekstra
         if (! $project->is_shared && $project->admin_id !== auth()->id()) {
             abort(403, 'Akses Ditolak: Anda tidak memiliki akses ke data proyek ini.');
         }
 
-        // Load View PDF khusus untuk 1 Invoice
-        $pdf = Pdf::loadView('admin.projects.pdf.invoice', compact('project'));
+        // Terapkan senjata yang sama di Invoice
+        $pdf = Pdf::loadView('admin.projects.pdf.invoice', compact('project'))
+                  ->setOptions([
+                      'chroot'  => base_path(),
+                      'tempDir' => storage_path('app')
+                  ]);
 
-        // Atur ukuran kertas ke A4 Portrait
         $pdf->setPaper('A4', 'portrait');
-
-        // STREAM (Preview di browser) dengan nama file dinamis sesuai nama klien
         $fileName = 'Invoice_MoU_'.str_replace(' ', '_', $project->client_name).'.pdf';
 
         return $pdf->stream($fileName);
