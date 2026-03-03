@@ -116,7 +116,8 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($projects as $index => $item)
-                                <tr class="hover:bg-gray-50 transition">
+                                <tr
+                                    class="transition-colors duration-200 {{ $item->is_paid_off ? 'bg-emerald-100 hover:bg-emerald-100/80' : 'bg-white hover:bg-gray-50' }}">
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $projects->firstItem() + $index }}
                                     </td>
@@ -203,16 +204,19 @@
                                             <span class="text-gray-500 font-bold">Sisa:</span>
                                             @if ($item->is_paid_off)
                                                 <span
-                                                    class="font-bold text-green-500 text-xs px-2 py-0.5 bg-green-50 rounded">LUNAS</span>
+                                                    class="font-bold text-emerald-600 text-xs px-2 py-0.5 bg-emerald-100 rounded shadow-sm"><i
+                                                        class="fa-solid fa-check-double mr-1"></i>LUNAS</span>
                                             @else
                                                 <span class="font-bold text-red-500">Rp
                                                     {{ number_format($item->remaining_amount, 0, ',', '.') }}</span>
                                             @endif
                                         </div>
                                         <div class="text-right mt-1">
-                                            <span class="text-[10px] text-gray-400 uppercase tracking-wider"><i
+                                            <span class="text-[10px] text-gray-400 uppercase tracking-wider">
+                                                <i
                                                     class="fa-solid {{ $item->payment_method == 'cash' ? 'fa-money-bill' : 'fa-building-columns' }} mr-1"></i>
-                                                Via {{ $item->payment_method }}</span>
+                                                Via {{ $item->payment_method }}
+                                            </span>
                                         </div>
                                     </td>
 

@@ -35,7 +35,7 @@ class StoreGuestTestimonialRequest extends FormRequest
         return [
             'client_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
-            'phone_number' => ['required', 'string', 'min:12', 'max:15', 'unique:testimonials,phone_number', 'regex:/^[0-9]+$/'],
+            'phone_number' => ['required', 'string', 'min:10', 'max:15', 'unique:testimonials,phone_number', 'regex:/^[0-9]+$/'],
             'client_title' => ['nullable', 'string', 'max:255'],
             'testimonial' => ['required', 'string', 'min:10'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
@@ -64,7 +64,7 @@ class StoreGuestTestimonialRequest extends FormRequest
             'rating.max' => 'Rating maksimal 5 bintang.',
 
             'phone_number.unique' => 'Nomor WhatsApp ini sudah pernah memberikan ulasan. Terima kasih!',
-            'phone_number.min' => 'Nomor WhatsApp minimal 12 digit.',
+            'phone_number.min' => 'Nomor WhatsApp minimal 10 digit.',
             'phone_number.max' => 'Nomor WhatsApp maksimal 15 digit.',
             'phone_number.regex' => 'Nomor WhatsApp hanya boleh berisi angka.',
 

@@ -38,15 +38,15 @@
                     <label class="block text-sm font-semibold text-[#1E293B] mb-2">No. WhatsApp <span
                             class="text-red-500">*</span></label>
                     <input type="tel" name="phone_number" value="{{ old('phone_number') }}" required
-                        placeholder="Contoh: 081234567890" pattern="[0-9]{12,15}"
-                        title="Gunakan angka saja, 12-15 digit"
+                        placeholder="Contoh: 081234567890" pattern="[0-9]{10,15}"
+                        title="Gunakan angka saja, 10-15 digit"
                         class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
 
                     <div class="mt-2 bg-green-50 p-2.5 rounded-lg border border-green-100 flex items-start gap-2">
                         <i class="fa-brands fa-whatsapp text-green-600 mt-0.5"></i>
                         <p class="text-[11px] text-green-800 leading-tight font-medium">
                             Kerahasiaan terjamin tingkat tinggi. Nomor tidak akan dipublikasikan dan hanya digunakan
-                            untuk keperluan konfirmasi admin, <b>*Gunakan angka saja, 12-15 digit </b>.
+                            untuk keperluan konfirmasi admin, <b>*Gunakan angka saja, 10-15 digit </b>.
                         </p>
                     </div>
                 </div>
