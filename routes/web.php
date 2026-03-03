@@ -50,6 +50,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/projects/export/excel', [ProjectController::class, 'exportExcel'])->name('projects.export.excel');
     Route::get('/projects/export/pdf', [ProjectController::class, 'exportPdf'])->name('projects.export.pdf');
     Route::get('/projects/{project}/invoice', [ProjectController::class, 'exportInvoice'])->name('projects.invoice');
+    Route::get('projects/priority-board', [ProjectController::class, 'priorityBoard'])->name('projects.priority');
+    Route::post('projects/update-priority', [ProjectController::class, 'updatePriority'])->name('projects.update-priority');
     Route::resource('projects', ProjectController::class);
 
     Route::get('/visitors', [PageViewController::class, 'index'])->name('visitors.index');

@@ -21,6 +21,7 @@ class Project extends Model
         'skripsi_title',
         'project_description',
         'status',
+        'sort_order',
         'revision_notes',
         'net_income',
         'paid_amount',

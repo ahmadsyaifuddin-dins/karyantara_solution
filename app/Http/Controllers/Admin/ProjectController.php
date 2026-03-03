@@ -44,7 +44,11 @@ class ProjectController extends Controller
         $totalRemaining = $totalNetIncome - $totalPaid;
 
         // PAGINATION
-        $projects = $query->latest()->paginate(10)->appends($request->query());
+        $projects = $query->orderByRaw("CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END ASC")
+                          ->orderBy('sort_order', 'asc')
+                          ->latest()
+                          ->paginate(10)
+                          ->appends($request->query());
 
         return view('admin.projects.index', compact(
             'projects', 'totalNetIncome', 'totalPaid', 'totalRemaining'
@@ -156,5 +160,36 @@ class ProjectController extends Controller
         $fileName = 'Invoice_MoU_'.str_replace(' ', '_', $project->client_name).'.pdf';
 
         return $pdf->stream($fileName);
+    }
+
+    public function priorityBoard()
+    {
+        // Hanya ambil proyek yang belum selesai (Pending, Progress, Revisi)
+        // Urutkan berdasarkan sort_order (0, 1, 2, dst), lalu by created_at jika urutannya sama
+        $projects = Project::where('status', '!=', 'Selesai')
+            ->where(function ($q) {
+                $q->where('is_shared', 1)->orWhere('admin_id', auth()->id());
+            })
+            ->orderBy('sort_order', 'asc')
+            ->latest()
+            ->get();
+
+        return view('admin.projects.priority', compact('projects'));
+    }
+
+    // Menerima request AJAX dari Drag & Drop
+    public function updatePriority(Request $request)
+    {
+        $orders = $request->input('orders'); // Berisi array ID proyek yang sudah diurutkan
+
+        if ($orders) {
+            foreach ($orders as $index => $id) {
+                // Update kolom sort_order sesuai urutan index (0, 1, 2, dst)
+                Project::where('id', $id)->update(['sort_order' => $index]);
+            }
+            return response()->json(['success' => true, 'message' => 'Prioritas berhasil diperbarui!']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gagal memperbarui urutan.']);
     }
 }

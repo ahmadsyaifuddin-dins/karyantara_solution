@@ -5,6 +5,10 @@
                 <i class="fa-solid fa-file-invoice-dollar mr-2"></i> {{ __('Daftar Klien & Proyek') }}
             </h2>
             <div class="flex flex-wrap gap-2">
+                <a href="{{ route('admin.projects.priority') }}"
+                    class="bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition inline-flex items-center">
+                    <i class="fa-solid fa-list-check mr-1"></i> Atur Prioritas
+                </a>
                 <a href="{{ route('admin.projects.export.pdf') }}" target="_blank"
                     class="bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition inline-flex items-center">
                     <i class="fa-solid fa-file-pdf mr-1"></i> Export PDF
@@ -137,7 +141,25 @@
                                                         class="fa-solid fa-lock text-xs"></i></span>
                                             @endif
                                         </div>
-                                        <div class="font-bold text-[#1E293B]">{{ $item->client_name }}</div>
+                                        <div class="font-bold text-[#1E293B] flex items-center gap-2">
+                                            {{ $item->client_name }}
+
+                                            @if ($item->status != 'Selesai')
+                                                @if ($index == 0 && $projects->currentPage() == 1)
+                                                    <span
+                                                        class="px-2 py-0.5 text-[9px] font-black bg-red-100 text-red-600 rounded flex items-center shadow-sm"
+                                                        title="Prioritas Utama">
+                                                        <i class="fa-solid fa-fire mr-1 animate-pulse"></i> PRIORITAS 1
+                                                    </span>
+                                                @elseif($index <= 2 && $projects->currentPage() == 1)
+                                                    <span
+                                                        class="px-2 py-0.5 text-[9px] font-black bg-orange-100 text-orange-600 rounded flex items-center shadow-sm"
+                                                        title="Prioritas Tinggi">
+                                                        <i class="fa-solid fa-star mr-1"></i> TOP {{ $index + 1 }}
+                                                    </span>
+                                                @endif
+                                            @endif
+                                        </div>
                                         @if ($item->client_type == 'mahasiswa')
                                             <div class="text-xs text-gray-500 mt-1"><i
                                                     class="fa-solid fa-id-card mr-1"></i> NPM: {{ $item->npm ?? '-' }}
