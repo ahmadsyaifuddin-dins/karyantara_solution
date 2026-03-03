@@ -1,0 +1,5 @@
+kalau di local:
+<img src="{{ public_path('logo/logo_transparent.png') }}
+
+kalau di hosting:
+<img src="{{ base_path('public/logo/logo_transparent.jpg') }}"
