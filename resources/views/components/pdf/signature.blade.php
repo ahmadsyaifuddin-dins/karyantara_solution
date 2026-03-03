@@ -19,7 +19,7 @@
         <td style="width: 40%; text-align: center; vertical-align: bottom;">
             <p style="margin-bottom: 5px; font-size: 11px;">Banjarmasin,
                 {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}</p>
-            <p style="margin-bottom: 50px; font-size: 11px;">Mengetahui,<br><strong>Pimpinan Operasional</strong></p>
+            <p style="margin-bottom: 50px; font-size: 11px;">Mengetahui,<br><strong>Co-Founder</strong></p>
             <p style="margin: 0; font-size: 11px; text-decoration: underline; font-weight: bold;">
                 {{ Auth::user()->name }}</p>
             <p style="margin: 0; font-size: 11px;">ID: ADM-{{ Auth::user()->id }}</p>
