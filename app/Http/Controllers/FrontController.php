@@ -9,6 +9,7 @@ use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth; // Tambahkan Facade Auth
 
 class FrontController extends Controller
 {
@@ -30,23 +31,17 @@ class FrontController extends Controller
         return view('public.portfolio', compact('portfolios'));
     }
 
-    // UPDATE: Halaman Detail Portfolio
     public function showPortfolio(Portfolio $portfolio, Request $request)
     {
-        // Catat View dengan format nama 'portfolio_ID' (contoh: portfolio_1)
         $pageName = 'portfolio_' . $portfolio->id;
         $this->recordPageView($pageName, $request);
         
-        // Hitung total tayangan
         $viewCount = PageView::where('page_name', $pageName)->count();
-
         $otherProjects = Portfolio::where('id', '!=', $portfolio->id)->latest()->take(3)->get();
 
-        // Mengirimkan $viewCount ke blade
         return view('public.portfolio-detail', compact('portfolio', 'otherProjects', 'viewCount'));
     }
 
-    // TAMBAHAN: Halaman About
     public function about(Request $request)
     {
         $this->recordPageView('about', $request);
@@ -81,7 +76,6 @@ class FrontController extends Controller
         return redirect()->route('testimonial')->with('success', $message);
     }
 
-    // UPDATE: Halaman Terms
     public function terms(Request $request)
     {
         $this->recordPageView('terms', $request);
@@ -90,15 +84,29 @@ class FrontController extends Controller
         return view('public.terms', compact('viewCount'));
     }
 
-
     /**
-     * ==========================================
-     * FUNGSI HELPER UNTUK MENCATAT VIEWER
-     * ==========================================
+     *
+     * FUNGSI HELPER UNTUK MENCATAT VIEWER (DIPERBARUI)
+     *
      */
     private function recordPageView($pageName, Request $request)
     {
+        // 1. PENGECUALIAN BOS (Ahmad Syaifuddin tidak akan pernah di-track)
+        // Kamu bisa pakai pengecekan nama atau ID (contoh ini pakai ID 1 asumsi kamu admin pertama)
+        if (Auth::check() && (Auth::user()->name === 'Ahmad Syaifuddin' || Auth::id() === 1)) {
+            return; // Hentikan fungsi di sini, jangan catat apapun.
+        }
+
         $ip = $request->ip();
+
+        // 2. CEK IDENTITAS VISITOR (Admin Lain vs Publik/Guest)
+        $visitorType = 'Guest';
+        $visitorName = 'Anonim';
+
+        if (Auth::check()) {
+            $visitorType = 'Admin';
+            $visitorName = Auth::user()->name; // Catat nama admin lain (misal: Abdan)
+        }
 
         // Cek apakah IP ini sudah berkunjung ke halaman ini
         $existingView = PageView::where('page_name', $pageName)->where('ip_address', $ip)->first();
@@ -143,14 +151,20 @@ class FrontController extends Controller
                 $isp = 'Local Network';
             }
 
+            // 3. SIMPAN KE DATABASE (Termasuk kolom baru)
             PageView::create([
-                'page_name' => $pageName,
-                'ip_address' => $ip,
-                'browser' => $browser,
-                'os' => $os,
-                'device_type' => $deviceType,
-                'location' => trim($location, ', '),
-                'isp' => $isp,
+                'page_name'      => $pageName,
+                'ip_address'     => $ip,
+                'browser'        => $browser,
+                'os'             => $os,
+                'device_type'    => $deviceType,
+                'location'       => trim($location, ', '),
+                'isp'            => $isp,
+                
+                // Data Baru Hasil Eksekusi
+                'visitor_type'   => $visitorType,
+                'visitor_name'   => $visitorName,
+                'raw_user_agent' => $agent, // Menyimpan string panjang seperti "Mozilla/5.0..."
             ]);
         }
     }

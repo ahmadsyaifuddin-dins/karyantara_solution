@@ -93,6 +93,9 @@
                                     Halaman</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Identitas</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                     IP & Network</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -102,12 +105,14 @@
                         <tbody class="bg-white divide-y divide-gray-100">
                             @forelse ($recentLogs as $log)
                                 <tr class="hover:bg-amber-50/30 transition-colors">
+
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         <div class="font-medium text-[#1E293B]">
                                             {{ $log->created_at->locale('id')->translatedFormat('d F Y') }}</div>
                                         <div class="text-xs text-gray-400">{{ $log->created_at->format('H:i:s') }} WITA
                                         </div>
                                     </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
                                             class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full {{ str_starts_with($log->page_name, 'portfolio_') ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800' }}">
@@ -115,6 +120,23 @@
                                                 class="fa-solid {{ str_starts_with($log->page_name, 'portfolio_') ? 'fa-briefcase' : 'fa-file' }} mr-1.5 mt-0.5"></i>
                                             {{ $log->display_name }}
                                         </span>
+                                    </td>
+
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if ($log->visitor_type == 'Admin')
+                                            <span
+                                                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">
+                                                <i class="fa-solid fa-user-shield mr-1"></i> ADMIN
+                                            </span>
+                                            <div class="text-sm font-bold text-gray-900 mt-1">
+                                                {{ $log->visitor_name ?? 'Admin System' }}</div>
+                                        @else
+                                            <span
+                                                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                                                <i class="fa-solid fa-user-astronaut mr-1"></i> GUEST
+                                            </span>
+                                            <div class="text-sm font-medium text-gray-500 mt-1">Publik / Klien</div>
+                                        @endif
                                     </td>
 
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -132,7 +154,7 @@
                                         </div>
                                     </td>
 
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-4 whitespace-nowrap align-top">
                                         <div class="flex items-center text-sm text-[#1E293B] font-medium">
                                             @if ($log->device_type == 'Mobile')
                                                 <i class="fa-solid fa-mobile-screen-button text-gray-500 mr-2"></i>
@@ -141,26 +163,34 @@
                                             @endif
                                             {{ $log->os ?? 'Unknown' }}
                                         </div>
+
                                         <div class="text-xs text-gray-500 mt-1">
                                             <i
-                                                class="fa-brands 
-                                {{ strtolower($log->browser) == 'chrome'
-                                    ? 'fa-chrome text-green-500'
-                                    : (strtolower($log->browser) == 'safari'
-                                        ? 'fa-safari text-blue-500'
-                                        : (strtolower($log->browser) == 'firefox'
-                                            ? 'fa-firefox text-orange-500'
-                                            : (strtolower($log->browser) == 'edge'
-                                                ? 'fa-edge text-blue-600'
-                                                : 'fa-internet-explorer text-gray-400'))) }} mr-1">
-                                            </i>
+                                                class="fa-brands {{ strtolower($log->browser) == 'chrome' ? 'fa-chrome text-green-500' : (strtolower($log->browser) == 'safari' ? 'fa-safari text-blue-500' : (strtolower($log->browser) == 'firefox' ? 'fa-firefox text-orange-500' : (strtolower($log->browser) == 'edge' ? 'fa-edge text-blue-600' : 'fa-internet-explorer text-gray-400'))) }} mr-1"></i>
                                             {{ $log->browser ?? '-' }}
                                         </div>
+
+                                        @if ($log->raw_user_agent)
+                                            <details class="group mt-2">
+                                                <summary
+                                                    class="text-[10px] text-blue-500 cursor-pointer list-none flex items-center font-medium hover:text-blue-700 transition-colors select-none">
+                                                    <i class="fa-solid fa-circle-info mr-1"></i>
+                                                    <span>Cek Raw Agent</span>
+                                                    <i
+                                                        class="fa-solid fa-chevron-down ml-1.5 text-[8px] transition-transform group-open:rotate-180"></i>
+                                                </summary>
+
+                                                <div
+                                                    class="mt-2 p-2.5 bg-slate-50 border border-slate-200 rounded-md text-[9px] text-slate-600 font-mono whitespace-normal break-all leading-relaxed max-w-[250px] sm:max-w-xs shadow-inner">
+                                                    {{ $log->raw_user_agent }}
+                                                </div>
+                                            </details>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">
+                                    <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">
                                         Tidak ada data log aktivitas.
                                     </td>
                                 </tr>

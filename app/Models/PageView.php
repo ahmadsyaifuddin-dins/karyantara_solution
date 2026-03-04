@@ -17,5 +17,8 @@ class PageView extends Model
         'device_type',
         'location',
         'isp',
+        'visitor_type',  
+        'visitor_name',  
+        'raw_user_agent',
     ];
 }
