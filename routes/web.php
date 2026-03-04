@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ValidationController;
 use Illuminate\Support\Facades\Route;
 
 // HALAMAN PUBLIK (Guest)
@@ -23,6 +24,9 @@ Route::get('/terms', [FrontController::class, 'terms'])->name('terms');
 
 // Arahkan route testimonial publik ke FrontController
 Route::get('/testimonial', [FrontController::class, 'testimonial'])->name('testimonial');
+
+Route::get('/validate/invoice/{id}/{hash}', [ValidationController::class, 'invoice'])->name('validate.invoice');
+Route::get('/validate/rekap/{date}/{hash}', [ValidationController::class, 'rekap'])->name('validate.rekap');
 
 Route::post('/testimonial', [FrontController::class, 'storeTestimonial'])
     ->middleware('throttle:3,1') // Layer 1: Maksimal 3 request per 1 menit per IP

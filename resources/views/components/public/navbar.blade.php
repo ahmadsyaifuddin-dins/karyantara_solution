@@ -4,7 +4,7 @@
 
             <div class="flex-shrink-0 flex items-center">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    <img src="{{ asset('logo/logo_transparent.png') }}" alt="Logo Karyantara Solution"
+                    <img src="{{ asset('logo/logo_transparent.jpg') }}" alt="Logo Karyantara Solution"
                         class="h-10 w-auto object-contain transform group-hover:scale-105 transition-transform duration-300">
 
                     <span

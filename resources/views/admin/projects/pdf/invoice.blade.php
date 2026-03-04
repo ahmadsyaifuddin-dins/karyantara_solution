@@ -5,11 +5,19 @@
     <meta charset="UTF-8">
     <title>Invoice & MoU - {{ $project->client_name }}</title>
     <style>
+        /* DIET CSS DIMULAI */
+        @page {
+            margin: 25px 40px;
+            /* Memaksimalkan ruang kertas */
+        }
+
         body {
             font-family: sans-serif;
-            font-size: 12px;
+            font-size: 11px;
+            /* Dikecilkan sedikit */
             color: #333;
-            line-height: 1.5;
+            line-height: 1.3;
+            /* Jarak antar baris dirapatkan */
         }
 
         .text-center {
@@ -25,10 +33,12 @@
         }
 
         .title {
-            font-size: 18px;
+            font-size: 16px;
+            /* Diperkecil dari 18px */
             font-weight: bold;
             text-align: center;
-            margin: 20px 0;
+            margin: 10px 0;
+            /* Margin atas bawah dikompres */
             text-decoration: underline;
             letter-spacing: 1px;
         }
@@ -36,21 +46,25 @@
         .section-title {
             background-color: #1E293B;
             color: #fff;
-            padding: 5px 10px;
-            font-size: 12px;
+            padding: 4px 8px;
+            /* Padding dikurangi */
+            font-size: 11px;
             font-weight: bold;
-            margin-top: 15px;
-            margin-bottom: 10px;
+            margin-top: 10px;
+            /* Margin dikompres */
+            margin-bottom: 6px;
         }
 
         .info-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
+            /* Margin bawah dikompres */
         }
 
         .info-table td {
-            padding: 4px 8px;
+            padding: 2px 4px;
+            /* Padding sel sangat dirapatkan */
             vertical-align: top;
         }
 
@@ -67,13 +81,14 @@
         .finance-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .finance-table th,
         .finance-table td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 4px 6px;
+            /* Padding tabel dikompres */
         }
 
         .finance-table th {
@@ -87,31 +102,22 @@
         }
 
         .terms {
-            font-size: 11px;
-            margin-top: 15px;
-            padding: 10px;
+            font-size: 10px;
+            /* Dikecilkan agar syarat & ketentuan tidak makan tempat */
+            margin-top: 8px;
+            padding: 6px 8px;
             border: 1px dashed #999;
             background-color: #fafafa;
         }
 
         .terms ul {
-            margin: 5px 0 0 0;
-            padding-left: 20px;
+            margin: 3px 0 0 0;
+            padding-left: 15px;
         }
 
         .terms li {
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             text-align: justify;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-weight: bold;
-            font-size: 10px;
-            color: #fff;
-            background-color: #10b981;
         }
     </style>
 </head>
@@ -156,6 +162,15 @@
             <td class="label">Deskripsi Pekerjaan</td>
             <td class="colon">:</td>
             <td style="text-align: justify;">{{ $project->project_description }}</td>
+        <tr>
+            <td style="padding: 4px 0; font-weight: bold; color: #475569;">Penanggung Jawab / Developer</td>
+            <td style="padding: 4px 0; text-align: center;">:</td>
+            <td style="padding: 4px 0; font-weight: bold; color: #1E293B;">
+                {{ $project->admin->name ?? 'Tim Karyantara Solution' }}
+                <span style="font-weight: normal; font-size: 9px; color: #64748B;">
+                    (ID: ADM-{{ $project->admin_id }})
+                </span>
+            </td>
         </tr>
     </table>
 
@@ -188,7 +203,7 @@
             </tr>
         </tbody>
     </table>
-    <p style="font-size: 11px; margin-top: 5px;">
+    <p style="font-size: 10px; margin-top: 4px; margin-bottom: 0;">
         <em>*Metode Pembayaran disepakati via: <strong>{{ strtoupper($project->payment_method) }}</strong></em>
     </p>
 
