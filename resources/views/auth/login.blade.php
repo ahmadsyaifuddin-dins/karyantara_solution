@@ -1,47 +1,53 @@
 <x-guest-layout>
-    <!-- Session Status -->
+    <div class="text-center mb-8">
+        <img src="{{ asset('logo/logo_transparent.jpg') }}" alt="Logo Karyantara Solution"
+            class="w-24 h-auto mx-auto mb-3 drop-shadow-sm">
+        <h2 class="text-3xl font-black text-gray-800 tracking-tight uppercase">KARYANTARA</h2>
+        <p class="text-sm text-gray-500 mt-1">IT Consultant & Software Development</p>
+    </div>
+
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" class="space-y-5">
         @csrf
 
-        <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <label for="email" class="block font-medium text-sm text-gray-700 mb-1.5">Email</label>
+            <input id="email" type="email" name="email" :value="old('email')" required autofocus
+                autocomplete="username"
+                class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2f3573] focus:border-[#2f3573] transition-colors text-gray-800"
+                placeholder="Masukkan email Anda">
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
+        <div>
+            <label for="password" class="block font-medium text-sm text-gray-700 mb-1.5">Kata Sandi</label>
+            <input id="password" type="password" name="password" required autocomplete="current-password"
+                class="block w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2f3573] focus:border-[#2f3573] transition-colors text-gray-800"
+                placeholder="Masukkan kata sandi">
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+        <div class="flex items-center justify-between pt-1">
+            <label for="remember_me" class="inline-flex items-center cursor-pointer">
+                <input id="remember_me" type="checkbox"
+                    class="rounded border-gray-300 text-[#2f3573] shadow-sm focus:ring-[#2f3573]" name="remember">
+                <span class="ms-2 text-sm text-gray-600">Ingat Saya</span>
             </label>
-        </div>
 
-        <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+                <a class="text-sm text-[#2f3573] hover:text-indigo-800 hover:underline transition-colors font-medium"
+                    href="{{ route('password.request') }}">
+                    Lupa sandi?
                 </a>
             @endif
+        </div>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+        <div class="pt-2">
+            <button type="submit"
+                class="w-full flex justify-center items-center bg-[#2f3573] hover:bg-indigo-900 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all active:scale-[0.98]">
+                Masuk Aplikasi
+            </button>
         </div>
     </form>
 </x-guest-layout>
