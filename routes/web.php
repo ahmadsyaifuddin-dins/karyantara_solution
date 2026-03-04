@@ -34,6 +34,7 @@ Route::post('/testimonial', [FrontController::class, 'storeTestimonial'])
 
 Route::get('/portofolio', [FrontController::class, 'portfolio'])->name('portfolio');
 Route::get('/portofolio/{portfolio}', [FrontController::class, 'showPortfolio'])->name('portfolio.show');
+Route::post('/portfolio/{id}/like', [FrontController::class, 'likePortfolio'])->name('portfolio.like');
 
 // HALAMAN ADMIN (Harus Login)
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {

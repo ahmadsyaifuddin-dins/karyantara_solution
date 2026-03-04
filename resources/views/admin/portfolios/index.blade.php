@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <h2 class="font-semibold text-xl text-[#1E293B] leading-tight">
-                <i class="fa-solid fa-briefcase text-amber-500 mr-2"></i> {{ __('Daftar Portofolio') }}
+                <i class="fa-solid fa-ranking-star text-amber-500 mr-2"></i> {{ __('Peringkat Portofolio') }}
             </h2>
             <a href="{{ route('admin.portfolios.create') }}"
                 class="bg-[#1E293B] text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition text-sm font-bold shadow-sm flex items-center">
@@ -31,22 +31,58 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col"
+                                    class="w-16 px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Rank
+                                </th>
+                                <th scope="col"
                                     class="w-32 px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Gambar</th>
+                                    Gambar
+                                </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Judul & Kategori</th>
+                                    Judul & Kategori
+                                </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Klien</th>
+                                    Klien
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Statistik
+                                </th>
                                 <th scope="col"
                                     class="w-32 px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Aksi</th>
+                                    Aksi
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse ($portfolios as $item)
+                            @php $rankOffset = ($portfolios->currentPage() - 1) * $portfolios->perPage(); @endphp
+
+                            @forelse ($portfolios as $index => $item)
                                 <tr class="hover:bg-gray-50 transition">
+
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        @php $currentRank = $rankOffset + $index + 1; @endphp
+                                        @if ($currentRank == 1)
+                                            <span
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 font-black shadow-sm text-lg"
+                                                title="Peringkat 1">🥇</span>
+                                        @elseif($currentRank == 2)
+                                            <span
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 text-gray-600 font-black shadow-sm text-lg"
+                                                title="Peringkat 2">🥈</span>
+                                        @elseif($currentRank == 3)
+                                            <span
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-200 text-amber-700 font-black shadow-sm text-lg"
+                                                title="Peringkat 3">🥉</span>
+                                        @else
+                                            <span
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 text-gray-500 font-bold border border-gray-200 text-sm">
+                                                {{ $currentRank }}
+                                            </span>
+                                        @endif
+                                    </td>
 
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div
@@ -55,7 +91,6 @@
                                                 <img src="{{ asset('uploads/portfolios/' . $item->thumbnail) }}"
                                                     class="w-full h-full object-cover transition duration-300 hover:scale-110"
                                                     alt="{{ $item->title }}">
-
                                                 @if ($item->images->count() > 1)
                                                     <div
                                                         class="absolute bottom-1 right-1 bg-[#1E293B]/80 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
@@ -83,21 +118,33 @@
                                         </div>
                                     </td>
 
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <div class="flex flex-col items-center justify-center gap-1.5">
+                                            <div class="flex items-center gap-2 text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-md border border-blue-100 w-24 justify-center"
+                                                title="Total Tayangan">
+                                                <i class="fa-solid fa-eye"></i>
+                                                {{ number_format($item->views_count, 0, ',', '.') }}
+                                            </div>
+                                            <div class="flex items-center gap-2 text-sm font-bold text-pink-600 bg-pink-50 px-3 py-1 rounded-md border border-pink-100 w-24 justify-center"
+                                                title="Total Disukai">
+                                                <i class="fa-solid fa-heart"></i>
+                                                {{ number_format($item->likes_count, 0, ',', '.') }}
+                                            </div>
+                                        </div>
+                                    </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                         <div class="flex items-center justify-center gap-2">
-
                                             <a href="{{ route('admin.portfolios.show', $item->id) }}"
                                                 class="text-teal-600 hover:text-teal-900 bg-teal-50 hover:bg-teal-100 p-2.5 rounded-lg transition shadow-sm"
                                                 title="Lihat Detail">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
-
                                             <a href="{{ route('admin.portfolios.edit', $item->id) }}"
                                                 class="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 p-2.5 rounded-lg transition shadow-sm"
                                                 title="Edit Data">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
-
                                             <form action="{{ route('admin.portfolios.destroy', $item->id) }}"
                                                 method="POST" class="inline-block"
                                                 onsubmit="return confirm('Yakin ingin menghapus portofolio ini secara permanen?');">
@@ -114,7 +161,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                                    <td colspan="6" class="px-6 py-12 text-center text-gray-500">
                                         <div class="flex flex-col items-center justify-center">
                                             <i class="fa-regular fa-folder-open text-5xl mb-4 text-gray-300"></i>
                                             <p class="text-lg font-medium text-gray-600">Belum ada portofolio</p>

@@ -57,10 +57,27 @@
                 <div class="lg:col-span-2">
                     <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 h-full">
                         <div class="mb-6 pb-6 border-b border-gray-100">
-                            <span
-                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800 uppercase tracking-widest mb-4">
-                                {{ $portfolio->category }}
-                            </span>
+                            <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                                <span
+                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800 uppercase tracking-widest">
+                                    {{ $portfolio->category }}
+                                </span>
+
+                                <div class="flex items-center gap-3">
+                                    <div class="flex items-center gap-2 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-lg"
+                                        title="Total Tayangan">
+                                        <i class="fa-solid fa-eye text-blue-500"></i>
+                                        <span
+                                            class="text-blue-700 font-bold text-sm">{{ number_format($portfolio->views_count, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 bg-pink-50 border border-pink-100 px-3 py-1.5 rounded-lg"
+                                        title="Total Disukai">
+                                        <i class="fa-solid fa-heart text-pink-500"></i>
+                                        <span
+                                            class="text-pink-700 font-bold text-sm">{{ number_format($portfolio->likes_count, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+                            </div>
                             <h3 class="text-3xl font-black text-[#1E293B]">{{ $portfolio->title }}</h3>
                         </div>
 

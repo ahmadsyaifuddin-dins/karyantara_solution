@@ -24,8 +24,12 @@ class PortfolioController extends Controller
                     ->orWhere('category', 'like', "%{$search}%");
             });
         }
-
-        $portfolios = $query->latest()->paginate(10)->appends($request->query());
+        // Urutkan dari: 1. Views terbanyak -> 2. Likes terbanyak -> 3. Terbaru (latest)
+        $portfolios = $query->orderByDesc('views_count')
+                            ->orderByDesc('likes_count')
+                            ->latest()
+                            ->paginate(10)
+                            ->appends($request->query());
 
         return view('admin.portfolios.index', compact('portfolios'));
     }
@@ -70,7 +74,6 @@ class PortfolioController extends Controller
         return redirect()->route('admin.portfolios.index')->with('success', 'Portofolio beserta galeri berhasil ditambahkan.');
     }
 
-    // METHOD BARU: Untuk Halaman Detail Show
     public function show(Portfolio $portfolio)
     {
         // Load relasi gambar agar lebih cepat dipanggil di view

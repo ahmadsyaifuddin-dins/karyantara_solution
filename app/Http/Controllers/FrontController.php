@@ -27,19 +27,61 @@ class FrontController extends Controller
 
     public function portfolio()
     {
-        $portfolios = Portfolio::latest()->get();
+        // 1. Urutkan dari Views terbanyak, lalu Likes terbanyak, baru yang terbaru
+        $portfolios = Portfolio::orderByDesc('views_count')
+                                ->orderByDesc('likes_count')
+                                ->latest()
+                                ->get();
         return view('public.portfolio', compact('portfolios'));
     }
 
+    // HALAMAN DETAIL PORTOFOLIO
     public function showPortfolio(Portfolio $portfolio, Request $request)
     {
         $pageName = 'portfolio_' . $portfolio->id;
-        $this->recordPageView($pageName, $request);
         
-        $viewCount = PageView::where('page_name', $pageName)->count();
-        $otherProjects = Portfolio::where('id', '!=', $portfolio->id)->latest()->take(3)->get();
+        // 1. Catat IP. Jika ini pengunjung BARU yang unik, fungsi akan me-return TRUE
+        $isNewUniqueView = $this->recordPageView($pageName, $request);
+        
+        // 2. Jika pengunjung baru (bukan bos, dan unik), tambahkan counter di tabel portfolio
+        if ($isNewUniqueView) {
+            $portfolio->increment('views_count');
+        }
 
-        return view('public.portfolio-detail', compact('portfolio', 'otherProjects', 'viewCount'));
+        $viewCount = $portfolio->views_count;
+        $likeCount = $portfolio->likes_count;
+
+        // Ambil project lain yang juga lagi ngetren
+        $otherProjects = Portfolio::where('id', '!=', $portfolio->id)
+                                  ->orderByDesc('views_count')
+                                  ->take(3)->get();
+
+        return view('public.portfolio-detail', compact('portfolio', 'otherProjects', 'viewCount', 'likeCount'));
+    }
+
+    // FITUR TOMBOL LIKE (AJAX)
+    public function likePortfolio(Request $request, $id)
+    {
+        $portfolio = Portfolio::findOrFail($id);
+        
+        // Cek pakai Session agar 1 browser cuma bisa like 1 kali
+        $sessionKey = 'liked_portfolio_' . $id;
+
+        if (!$request->session()->has($sessionKey)) {
+            $portfolio->increment('likes_count');
+            $request->session()->put($sessionKey, true);
+            
+            return response()->json([
+                'success' => true, 
+                'likes' => $portfolio->likes_count,
+                'message' => 'Terima kasih atas apresiasinya! ❤️'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false, 
+            'message' => 'Anda sudah menyukai proyek ini sebelumnya.'
+        ]);
     }
 
     public function about(Request $request)
@@ -85,16 +127,15 @@ class FrontController extends Controller
     }
 
     /**
-     *
+     * ==========================================
      * FUNGSI HELPER UNTUK MENCATAT VIEWER (DIPERBARUI)
-     *
+     * ==========================================
      */
     private function recordPageView($pageName, Request $request)
     {
         // 1. PENGECUALIAN BOS (Ahmad Syaifuddin tidak akan pernah di-track)
-        // Kamu bisa pakai pengecekan nama atau ID (contoh ini pakai ID 1 asumsi kamu admin pertama)
         if (Auth::check() && (Auth::user()->name === 'Ahmad Syaifuddin' || Auth::id() === 1)) {
-            return; // Hentikan fungsi di sini, jangan catat apapun.
+            return false; // Hentikan fungsi dan jangan hitung view_count portofolio
         }
 
         $ip = $request->ip();
@@ -105,12 +146,13 @@ class FrontController extends Controller
 
         if (Auth::check()) {
             $visitorType = 'Admin';
-            $visitorName = Auth::user()->name; // Catat nama admin lain (misal: Abdan)
+            $visitorName = Auth::user()->name; // Catat nama admin lain
         }
 
         // Cek apakah IP ini sudah berkunjung ke halaman ini
         $existingView = PageView::where('page_name', $pageName)->where('ip_address', $ip)->first();
 
+        // JIKA PENGUNJUNG BARU (BELUM ADA DI DATABASE)
         if (! $existingView) {
             $agent = $request->userAgent();
 
@@ -144,14 +186,14 @@ class FrontController extends Controller
                         $isp = $data['org'] ?? 'Unknown ISP';
                     }
                 } catch (\Exception $e) {
-                    // Abaikan jika timeout
+                    // Abaikan jika API timeout/limit
                 }
             } else {
                 $location = 'Localhost';
                 $isp = 'Local Network';
             }
 
-            // 3. SIMPAN KE DATABASE (Termasuk kolom baru)
+            // 3. SIMPAN KE DATABASE (Tabel page_views)
             PageView::create([
                 'page_name'      => $pageName,
                 'ip_address'     => $ip,
@@ -160,12 +202,18 @@ class FrontController extends Controller
                 'device_type'    => $deviceType,
                 'location'       => trim($location, ', '),
                 'isp'            => $isp,
-                
-                // Data Baru Hasil Eksekusi
                 'visitor_type'   => $visitorType,
                 'visitor_name'   => $visitorName,
-                'raw_user_agent' => $agent, // Menyimpan string panjang seperti "Mozilla/5.0..."
+                'raw_user_agent' => $agent,
             ]);
+
+            // PENTING: Beri sinyal TRUE agar sistem tahu ini viewer unik baru,
+            // sehingga angka views_count di portfolio bisa ditambah (+1).
+            return true; 
         }
+
+        // PENTING: Jika sudah pernah berkunjung, kembalikan FALSE.
+        // Agar sistem tidak menambah (+1) views_count di portfolio lagi.
+        return false; 
     }
 }
