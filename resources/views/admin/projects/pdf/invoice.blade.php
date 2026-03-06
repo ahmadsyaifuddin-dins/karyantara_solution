@@ -209,7 +209,7 @@
 
     <div class="terms">
         <strong>SYARAT & KETENTUAN (WAJIB DIBACA):</strong>
-        <ul>
+        <ol>
             <li>Pengerjaan selesai per aplikasi/skripsi target <strong>Maksimal 7 Hari Kerja</strong>.</li>
             <li>Biaya yang tercantum di atas adalah Harga Fix/Bersih yang disepakati di awal.</li>
             <li><strong>Revisi Minor GRATIS maksimal 5x</strong> (Ubah warna, geser tombol, perbaiki teks).</li>
@@ -220,7 +220,7 @@
                 sepihak.</li>
             <li><em>Source Code Full</em> dan Database akan diberikan setelah <strong>Sisa Pembayaran dilunasi
                     100%</strong>.</li>
-        </ul>
+        </ol>
     </div>
 
     <div style="page-break-inside: avoid;">
