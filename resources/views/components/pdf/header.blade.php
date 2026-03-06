@@ -2,7 +2,7 @@
     style="width: 100%; border-bottom: 3px solid #1E293B; padding-bottom: 8px; margin-bottom: 12px; font-family: Helvetica, Arial, sans-serif;">
     <tr>
         <td style="width: 20%; text-align: left; vertical-align: middle;">
-            <img src="{{ public_path('logo/logo_transparent.png') }}" alt="Logo Karyantara Solution"
+            <img src="{{ public_path('logo/logo_transparent.jpg') }}" alt="Logo Karyantara Solution"
                 style="max-width: 80px; height: auto;">
         </td>
 
