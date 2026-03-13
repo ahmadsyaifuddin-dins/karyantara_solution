@@ -1,15 +1,38 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <h2 class="font-semibold text-xl text-[#1E293B] leading-tight flex items-center">
                 <i class="fa-solid fa-chart-line text-amber-500 mr-3"></i> {{ __('Monitoring Pengunjung (Unique IP)') }}
             </h2>
-            <div class="bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm flex items-center">
-                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-3 border-r pr-3">Total Seluruh
-                    Tayangan:</span>
-                <span
-                    class="text-lg font-extrabold text-[#1E293B]">{{ number_format($totalUniqueVisitors, 0, ',', '.') }}
-                    <span class="text-sm font-medium text-gray-400">Views</span></span>
+
+            <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+
+                <div
+                    class="bg-white px-4 py-2 rounded-lg border border-amber-200 shadow-sm flex items-center relative overflow-hidden">
+                    <div class="absolute inset-y-0 left-0 w-1 bg-amber-500"></div>
+                    <span
+                        class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-3 border-r border-gray-100 pr-3 pl-2">
+                        Hari Ini:
+                    </span>
+                    <span class="text-lg font-extrabold text-amber-600">
+                        {{ number_format($todayViews, 0, ',', '.') }}
+                        <span class="text-sm font-medium text-gray-400">Views</span>
+                    </span>
+                </div>
+
+                <div
+                    class="bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm flex items-center relative overflow-hidden">
+                    <div class="absolute inset-y-0 left-0 w-1 bg-[#1E293B]"></div>
+                    <span
+                        class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-3 border-r border-gray-100 pr-3 pl-2">
+                        Total Seluruh:
+                    </span>
+                    <span class="text-lg font-extrabold text-[#1E293B]">
+                        {{ number_format($totalUniqueVisitors, 0, ',', '.') }}
+                        <span class="text-sm font-medium text-gray-400">Views</span>
+                    </span>
+                </div>
+
             </div>
         </div>
     </x-slot>

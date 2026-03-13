@@ -8,6 +8,7 @@ use App\Models\Portfolio;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Carbon\Carbon; 
 
 class PageViewController extends Controller
 {
@@ -21,22 +22,18 @@ class PageViewController extends Controller
 
         // SIHIR TRANSFORM: Terjemahkan nama halaman dan cari siapa pemiliknya
         $pageStats->transform(function ($stat) {
-            $stat->display_name = ucfirst($stat->page_name); // Default (Misal: 'About', 'Terms')
+            $stat->display_name = ucfirst($stat->page_name);
             $stat->owner_name = null;
             $stat->is_portfolio = false;
 
-            // Jika halamannya adalah portofolio (contoh: 'portfolio_3')
             if (str_starts_with($stat->page_name, 'portfolio_')) {
                 $stat->is_portfolio = true;
                 $portfolioId = str_replace('portfolio_', '', $stat->page_name);
                 
-                // Cari data portofolio
                 $portfolio = Portfolio::find($portfolioId);
 
                 if ($portfolio) {
                     $stat->display_name = Str::limit($portfolio->title, 25);
-                    
-                    // Cari nama admin (developer) berdasarkan admin_id
                     $admin = User::find($portfolio->admin_id);
                     $stat->owner_name = $admin ? $admin->name : 'Internal Team';
                 } else {
@@ -49,7 +46,6 @@ class PageViewController extends Controller
         // 2. Ambil log pengunjung terakhir
         $recentLogs = PageView::latest()->paginate(15);
 
-        // Terjemahkan juga nama halaman untuk tabel log aktivitas di bawah
         $recentLogs->getCollection()->transform(function ($log) {
             $log->display_name = ucfirst($log->page_name);
             if (str_starts_with($log->page_name, 'portfolio_')) {
@@ -63,6 +59,10 @@ class PageViewController extends Controller
         // 3. Menghitung total pengunjung
         $totalUniqueVisitors = PageView::count();
 
-        return view('admin.visitors.index', compact('pageStats', 'recentLogs', 'totalUniqueVisitors'));
+        // 4. Menghitung pengunjung khusus hari ini (NEW!)
+        $todayViews = PageView::whereDate('created_at', Carbon::today())->count();
+
+        // Jangan lupa tambahkan $todayViews ke compact()
+        return view('admin.visitors.index', compact('pageStats', 'recentLogs', 'totalUniqueVisitors', 'todayViews'));
     }
 }
