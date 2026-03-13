@@ -2,12 +2,13 @@
     'variant' => 'dark',
     'bgIcon',
     'avatar',
+    'avatar2' => null, // Tambahan Prop untuk gambar kedua (opsional)
     'name',
     'role',
     'igLink',
     'igHandle',
-    'githubLink', // Tambahan Prop Github Link
-    'githubHandle', // Tambahan Prop Github Handle
+    'githubLink',
+    'githubHandle',
     'quote',
     'focus',
 ])
@@ -25,7 +26,7 @@
         // Warna Tombol Sosmed
         $socialBtnClasses = 'text-[#1E293B] hover:text-black hover:bg-white/40 bg-white/20';
         $igIconColor = 'text-pink-700';
-        $githubIconColor = 'text-[#1E293B]'; // Warna icon github gelap
+        $githubIconColor = 'text-[#1E293B]';
 
         $quoteColor = 'text-amber-900 border-[#1E293B]';
         $focusHeading = 'text-amber-900/70';
@@ -43,7 +44,7 @@
         // Warna Tombol Sosmed
         $socialBtnClasses = 'text-gray-300 hover:text-white bg-white/10 hover:bg-white/20';
         $igIconColor = 'text-pink-500';
-        $githubIconColor = 'text-white'; // Warna icon github terang
+        $githubIconColor = 'text-white';
 
         $quoteColor = 'text-gray-300 border-amber-500';
         $focusHeading = 'text-gray-400';
@@ -60,9 +61,24 @@
 
     <div class="relative z-10">
         <div class="flex flex-col sm:flex-row gap-6 items-center sm:items-start mb-6">
-            <div class="w-28 h-28 rounded-2xl overflow-hidden border-4 {{ $avatarBorder }} shadow-lg flex-shrink-0">
-                <img src="{{ $avatar }}" alt="{{ $name }}" class="w-full h-full object-cover">
-            </div>
+
+            @if ($avatar2)
+                <div x-data="{ showFirst: true }" x-init="setInterval(() => showFirst = !showFirst, 7000)"
+                    class="w-28 h-28 rounded-2xl overflow-hidden border-4 {{ $avatarBorder }} shadow-lg flex-shrink-0 relative">
+                    <img src="{{ $avatar }}" alt="{{ $name }}"
+                        class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out"
+                        :class="showFirst ? 'opacity-100' : 'opacity-0'">
+                    <img src="{{ $avatar2 }}" alt="{{ $name }} Alt"
+                        class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out"
+                        :class="showFirst ? 'opacity-0' : 'opacity-100'">
+                </div>
+            @else
+                <div
+                    class="w-28 h-28 rounded-2xl overflow-hidden border-4 {{ $avatarBorder }} shadow-lg flex-shrink-0 relative">
+                    <img src="{{ $avatar }}" alt="{{ $name }}" class="w-full h-full object-cover">
+                </div>
+            @endif
+
             <div class="text-center sm:text-left mt-2">
                 <h3 class="text-2xl font-black {{ $nameColor }}">{{ $name }}</h3>
                 <p class="{{ $roleColor }} font-bold tracking-wide text-sm mb-3">{{ $role }}</p>

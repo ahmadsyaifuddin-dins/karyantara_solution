@@ -57,8 +57,7 @@
 
             <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
 
-                <x-founder-card variant="dark" bg-icon="fa-code"
-                    avatar="https://ui-avatars.com/api/?name=Abdan+Mustaqim&background=F59E0B&color=fff&size=200"
+                <x-founder-card variant="dark" bg-icon="fa-code" avatar="{{ asset('avatar/abdan_profile.png') }}"
                     name="Abdan Mustaqim W." role="Co-Founder & Chief Executive Officer"
                     ig-link="https://instagram.com/abdanmustawimw" ig-handle="@abdanmustawimw"
                     github-link="https://github.com/abdanmustaqim" github-handle="@abdanmustaqim"
@@ -73,16 +72,19 @@
                             Vanilla</span>
                         <span
                             class="px-2.5 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-bold rounded">MySQL</span>
+                        <span class="px-2.5 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">Python</span>
+                        <span class="px-2.5 py-1 bg-orange-600/20 text-orange-400 text-xs font-bold rounded">Java</span>
                         <span class="px-2.5 py-1 bg-red-500/20 text-red-400 text-xs font-bold rounded">Laravel</span>
                     </x-slot>
                 </x-founder-card>
 
                 <x-founder-card variant="amber" bg-icon="fa-mobile-screen-button"
-                    avatar="https://ui-avatars.com/api/?name=Ahmad+Syaifuddin&background=1E293B&color=fff&size=200"
-                    name="Ahmad Syaifuddin" role="Co-Founder & Chief Technology Officer"
-                    ig-link="https://instagram.com/dinsss_ai" ig-handle="@dinsss_ai"
-                    github-link="https://github.com/ahmadsyaifuddin-dins" github-handle="@ahmadsyaifuddin-dins"
-                    quote="Desain dan performa harus berjalan beriringan. Aplikasi yang hebat tidak hanya memanjakan mata, tapi juga nyaman saat disentuh."
+                    avatar="{{ asset('avatar/ahmads_profile.png') }}"
+                    avatar2="{{ asset('avatar/ahmads_profile_2.png') }}" name="Ahmad Syaifuddin"
+                    role="Co-Founder & Chief Technology Officer" ig-link="https://instagram.com/dinsss_ai"
+                    ig-handle="@dinsss_ai" github-link="https://github.com/ahmadsyaifuddin-dins"
+                    github-handle="@ahmadsyaifuddin-dins"
+                    quote="Kode yang hebat adalah kode yang tidak perlu ditulis ulang. Fokus saya adalah membangun arsitektur yang reusable dan maintainable menyelesaikan masalah hari ini, sekaligus mempersiapkan sistem untuk masa depan."
                     focus="Full Stack & Mobile Development">
                     <x-slot name="techStack">
                         <span class="px-2.5 py-1 bg-[#1E293B] text-red-400 text-xs font-bold rounded">Laravel</span>
@@ -103,6 +105,27 @@
                 </x-founder-card>
 
             </div>
+
+            <div class="mt-24">
+                <div class="text-center mb-10">
+                    <h3 class="text-2xl font-bold text-[#1E293B]">Tim Hebat di Balik Layar</h3>
+                    <p class="text-gray-500 mt-2 text-sm max-w-2xl mx-auto">Beberapa dari penyihir kode kami memilih
+                        untuk tetap berada di balik bayangan, memastikan sistem Anda berjalan sempurna tanpa harus
+                        tampil di depan kamera.</p>
+                    <div class="w-16 h-1 bg-gray-300 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+                    <x-team-card codename="DEV-01" role="Backend Ninja" icon="fa-user-ninja" />
+
+                    <x-team-card codename="FND-99" role="Frontend Alchemist" icon="fa-laptop-code" />
+
+                    <x-team-card codename="QA-SEC" role="Security Analyst" icon="fa-user-secret" />
+
+                    <x-team-card codename="DBA-77" role="Database Architect" icon="fa-database" />
+                </div>
+            </div>
+
         </div>
     </div>
 
