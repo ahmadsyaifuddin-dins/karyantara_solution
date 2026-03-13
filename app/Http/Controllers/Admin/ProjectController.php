@@ -65,11 +65,17 @@ class ProjectController extends Controller
     {
         $data = $request->validated();
 
-        // Assign admin_id ke user yang sedang login
-        $data['admin_id'] = auth()->id();
+        $data['is_skripsi_project'] = $request->has('is_skripsi_project');
+
+       $data['admin_id'] = auth()->id();
+
+       // 2. Developer ID otomatis jadi 1 jika Skripsi, jika tidak maka null
+        $data['developer_id'] = $data['is_skripsi_project'] ? 1 : null;
 
         // Bersihkan data mahasiswa jika client type = umum
         if ($data['client_type'] === 'umum') {
+            $data['is_skripsi_project'] = false;
+            $data['developer_id'] = null;
             $data['npm'] = null;
             $data['class_name'] = null;
             $data['dospem_1'] = null;
@@ -91,7 +97,13 @@ class ProjectController extends Controller
     {
         $data = $request->validated();
 
+        $data['is_skripsi_project'] = $request->has('is_skripsi_project');
+
+        $data['developer_id'] = $data['is_skripsi_project'] ? 1 : null;
+
         if ($data['client_type'] === 'umum') {
+            $data['is_skripsi_project'] = false;
+            $data['developer_id'] = null;
             $data['npm'] = null;
             $data['class_name'] = null;
             $data['dospem_1'] = null;

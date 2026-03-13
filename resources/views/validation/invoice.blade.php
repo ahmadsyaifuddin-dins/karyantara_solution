@@ -47,13 +47,29 @@
                 </div>
 
                 <div class="pt-4 border-t border-gray-100">
-                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Penanggung Jawab / Developer
-                        (PIC)</p>
-                    <p class="font-bold text-gray-800 mt-1 flex items-center">
-                        <i class="fa-solid fa-user-tie text-blue-500 mr-2"></i>
-                        {{ $project->admin->name ?? 'Tim Karyantara Solution' }}
-                        <span class="text-[10px] font-normal text-gray-400 ml-2">(ADM-{{ $project->admin_id }})</span>
-                    </p>
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Penanggung Jawab Proyek</p>
+
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center">
+                            <i class="fa-solid fa-headset text-blue-500 mr-2 w-4 text-center"></i>
+                            <div>
+                                <p class="text-[10px] text-gray-400 leading-none">Admin Pengelola</p>
+                                <p class="font-bold text-gray-800 text-sm">
+                                    {{ $project->admin->name ?? 'Tim Karyantara' }}</p>
+                            </div>
+                        </div>
+
+                        @if ($project->is_skripsi_project)
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-code text-amber-500 mr-2 w-4 text-center"></i>
+                                <div>
+                                    <p class="text-[10px] text-amber-600/70 leading-none">Penanggung Jawab Utama</p>
+                                    <p class="font-bold text-amber-600 text-sm">
+                                        {{ $project->developer->name ?? 'Ahmad Syaifuddin' }}</p>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="pt-4 border-t border-gray-100">

@@ -57,6 +57,22 @@
             <i class="fa-solid fa-graduation-cap mr-2"></i>Data Spesifik Mahasiswa
         </h3>
 
+        <div
+            class="col-span-1 md:col-span-2 bg-white p-4 rounded-md border border-amber-300 shadow-sm mt-2 flex items-start gap-3">
+            <div class="flex items-center h-5 mt-0.5">
+                <input type="checkbox" name="is_skripsi_project" id="is_skripsi_project" value="1"
+                    class="w-5 h-5 text-amber-500 bg-gray-50 border-gray-300 rounded focus:ring-amber-500 focus:ring-2 cursor-pointer"
+                    {{ old('is_skripsi_project', $project->is_skripsi_project ?? false) ? 'checked' : '' }}>
+            </div>
+            <div class="ml-2 text-sm">
+                <label for="is_skripsi_project" class="font-bold text-[#1E293B] cursor-pointer text-base">Ini adalah
+                    Project Skripsi</label>
+                <p class="text-xs text-gray-500 font-normal mt-1 leading-relaxed">
+                    Jika dicentang, sistem akan mencatat ini sebagai Project Skripsi dan Penanggung Jawab (Developer)
+                    akan otomatis ditugaskan ke <span class="font-bold text-amber-600">Admin yg bersangkutan</span>.
+                </p>
+            </div>
+        </div>
         <div>
             <x-forms.label value="NPM / NIM" />
             <x-forms.input type="text" name="npm" value="{{ old('npm', $project->npm) }}" />

@@ -28,13 +28,24 @@
 
             <div
                 class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+
                 <div class="flex items-center gap-4">
                     <div
-                        class="w-16 h-16 rounded-full bg-[#1E293B] text-amber-500 flex items-center justify-center text-2xl font-black shadow-inner">
+                        class="w-16 h-16 rounded-full bg-[#1E293B] text-amber-500 flex items-center justify-center text-2xl font-black shadow-inner shrink-0">
                         {{ strtoupper(substr($project->client_name, 0, 1)) }}
                     </div>
                     <div>
-                        <h3 class="text-2xl font-extrabold text-[#1E293B]">{{ $project->client_name }}</h3>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <h3 class="text-2xl font-extrabold text-[#1E293B]">{{ $project->client_name }}</h3>
+
+                            @if ($project->is_skripsi_project)
+                                <span
+                                    class="bg-amber-100 text-amber-700 border border-amber-200 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider flex items-center shadow-sm">
+                                    <i class="fa-solid fa-graduation-cap mr-1.5 text-amber-500"></i> Project Skripsi
+                                </span>
+                            @endif
+                        </div>
+
                         <div class="flex items-center gap-3 mt-1 text-sm text-gray-500 font-medium">
                             <span class="flex items-center">
                                 <i class="fa-solid fa-user-tag mr-1 text-gray-400"></i>
@@ -49,7 +60,8 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col items-end gap-2">
+                <div
+                    class="flex flex-col items-end gap-3 w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-gray-100">
                     @php
                         $badgeColors = [
                             'Pending' => 'bg-gray-100 text-gray-800 border-gray-200',
@@ -62,11 +74,29 @@
                         class="px-4 py-1.5 border inline-flex text-sm font-bold rounded-full {{ $badgeColors[$project->status] }} shadow-sm">
                         Status: {{ $project->status }}
                     </span>
-                    <div class="text-xs text-gray-500 font-medium">
-                        Admin Penanggung Jawab: <span
-                            class="text-[#1E293B] font-bold">{{ $project->admin->name ?? 'Unknown' }}</span>
-                        @if (!$project->is_shared)
-                            <span class="ml-1 text-red-500" title="Private"><i class="fa-solid fa-lock"></i></span>
+
+                    <div class="flex flex-col items-end gap-2 text-xs">
+                        <div class="flex items-center gap-2 text-gray-500 font-medium">
+                            <span>Admin Pengelola:</span>
+                            <span
+                                class="text-[#1E293B] font-bold bg-slate-100 border border-slate-200 px-2 py-0.5 rounded flex items-center">
+                                <i class="fa-solid fa-headset mr-1.5 text-blue-500"></i>
+                                {{ $project->admin->name ?? 'Unknown' }}
+                                @if (!$project->is_shared)
+                                    <i class="fa-solid fa-lock ml-1.5 text-red-500" title="Private"></i>
+                                @endif
+                            </span>
+                        </div>
+
+                        @if ($project->is_skripsi_project)
+                            <div class="flex items-center gap-2 text-amber-600/80 font-medium">
+                                <span>Developer Utama:</span>
+                                <span
+                                    class="text-amber-700 font-bold bg-amber-50 border border-amber-200 px-2 py-0.5 rounded flex items-center">
+                                    <i class="fa-solid fa-code mr-1.5 text-amber-500"></i>
+                                    {{ $project->developer->name ?? 'Ahmad Syaifuddin' }}
+                                </span>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -154,14 +184,12 @@
                 </div>
 
                 <div class="lg:col-span-2 space-y-6">
-
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden h-full">
                         <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                             <h4 class="font-bold text-[#1E293B]"><i
                                     class="fa-solid fa-list-check text-blue-500 mr-2"></i> Ruang Lingkup Pekerjaan</h4>
                         </div>
                         <div class="p-6">
-
                             @if ($project->client_type === 'mahasiswa')
                                 <div class="mb-6 pb-6 border-b border-gray-100">
                                     <span
@@ -198,7 +226,6 @@
 
                         </div>
                     </div>
-
                 </div>
             </div>
 

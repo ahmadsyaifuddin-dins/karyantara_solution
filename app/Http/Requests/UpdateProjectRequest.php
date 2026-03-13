@@ -15,6 +15,7 @@ class UpdateProjectRequest extends FormRequest
     {
         return [
             'is_shared' => ['required', 'boolean'],
+            'is_skripsi_project' => ['nullable'],
             'client_type' => ['required', 'in:mahasiswa,umum'],
             'client_name' => ['required', 'string', 'max:255'],
 

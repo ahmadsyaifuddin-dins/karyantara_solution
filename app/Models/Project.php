@@ -11,7 +11,9 @@ class Project extends Model
 
     protected $fillable = [
         'admin_id',
+        'developer_id',
         'is_shared',
+        'is_skripsi_project',
         'client_type',
         'client_name',
         'npm',
@@ -34,6 +36,11 @@ class Project extends Model
     public function admin()
     {
         return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    public function developer()
+    {
+        return $this->belongsTo(User::class, 'developer_id');
     }
 
     /**
