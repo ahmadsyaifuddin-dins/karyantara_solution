@@ -68,8 +68,16 @@
             if (list) {
                 new Sortable(list, {
                     animation: 150,
-                    ghostClass: 'opacity-50', // Efek transparan saat digeser
-                    handle: '.cursor-grab', // Area yang bisa di-drag
+                    ghostClass: 'opacity-50',
+                    handle: '.cursor-grab',
+
+                    delay: 200, // Harus ditahan (hold) 200ms sebelum kartu bisa ditarik
+                    delayOnTouchOnly: true, // Delay di atas HANYA berlaku untuk HP. Kalau pakai mouse di PC tetap instan.
+                    touchStartThreshold: 5, // Toleransi pergerakan jari (5px) saat menahan agar tidak mudah batal (cancel)
+                    forceFallback: true, // Memaksa Sortable pakai sistem drag buatannya sendiri, bukan bawaan HTML5 yang sering bug di HP
+                    fallbackClass: 'bg-white', // Warna background saat melayang (fallback)
+                    fallbackOnBody: true, // Membuat elemen yang di-drag tidak terpotong oleh overflow hidden
+
                     onEnd: function(evt) {
                         // Ambil semua ID berdasarkan urutan elemen li
                         let order = [];
