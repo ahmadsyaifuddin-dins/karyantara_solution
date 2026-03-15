@@ -11,9 +11,10 @@ class Project extends Model
 
     protected $fillable = [
         'admin_id',
-        'developer_id',
+        'programmer_id',
+        'writer_id',    
         'is_shared',
-        'is_skripsi_project',
+        'skripsi_package',
         'client_type',
         'client_name',
         'npm',
@@ -30,17 +31,28 @@ class Project extends Model
         'payment_method',
     ];
 
-    /**
-     * Relasi ke tabel users (Admin yang memegang project)
+   /**
+     * Relasi ke tabel users (Admin CS/Pengelola yang memegang project)
      */
     public function admin()
     {
         return $this->belongsTo(User::class, 'admin_id');
     }
 
-    public function developer()
+    /**
+     * Relasi ke tabel users (Programmer / Developer Aplikasi)
+     */
+    public function programmer()
     {
-        return $this->belongsTo(User::class, 'developer_id');
+        return $this->belongsTo(User::class, 'programmer_id');
+    }
+
+    /**
+     * Relasi ke tabel users (Penulis Naskah Skripsi)
+     */
+    public function writer()
+    {
+        return $this->belongsTo(User::class, 'writer_id');
     }
 
     /**

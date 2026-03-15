@@ -102,7 +102,7 @@
                                     class="w-12 px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                     No</th>
                                 <th scope="col"
-                                    class="w-64 px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    class="w-72 px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                     Klien & Akademik</th>
                                 <th scope="col"
                                     class="w-72 px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -121,27 +121,52 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($projects as $index => $item)
                                 <tr
-                                    class="transition-colors duration-200 {{ $item->is_paid_off ? 'bg-emerald-100 hover:bg-emerald-100/80' : 'bg-white hover:bg-gray-50' }}">
+                                    class="transition-colors duration-200 border-b {{ $item->is_paid_off ? 'bg-emerald-100 hover:bg-emerald-200' : 'bg-white hover:bg-gray-50' }}">
+
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $projects->firstItem() + $index }}
                                     </td>
 
                                     <td class="px-4 py-4">
-                                        <div class="flex items-center gap-2 mb-1">
+                                        <div class="flex flex-wrap items-center gap-2 mb-1">
+
                                             @if ($item->client_type == 'mahasiswa')
                                                 <span
-                                                    class="px-2 py-0.5 text-[10px] font-bold bg-blue-100 text-blue-700 rounded uppercase">Mahasiswa</span>
+                                                    class="px-2 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200 rounded uppercase">Mahasiswa</span>
                                             @else
                                                 <span
-                                                    class="px-2 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-700 rounded uppercase">Umum</span>
+                                                    class="px-2 py-0.5 text-[10px] font-bold bg-gray-100 text-gray-700 border border-gray-200 rounded uppercase">Umum</span>
+                                            @endif
+
+                                            @if ($item->skripsi_package)
+                                                @if ($item->skripsi_package == 'keduanya')
+                                                    <span
+                                                        class="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 rounded uppercase flex items-center"
+                                                        title="Aplikasi + Naskah">
+                                                        <i class="fa-solid fa-layer-group mr-1"></i> All-In
+                                                    </span>
+                                                @elseif($item->skripsi_package == 'aplikasi')
+                                                    <span
+                                                        class="px-2 py-0.5 text-[10px] font-bold bg-blue-100 text-blue-700 border border-blue-200 rounded uppercase flex items-center"
+                                                        title="Hanya Aplikasi">
+                                                        <i class="fa-solid fa-code mr-1"></i> App
+                                                    </span>
+                                                @elseif($item->skripsi_package == 'naskah')
+                                                    <span
+                                                        class="px-2 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200 rounded uppercase flex items-center"
+                                                        title="Hanya Naskah">
+                                                        <i class="fa-solid fa-file-word mr-1"></i> Naskah
+                                                    </span>
+                                                @endif
                                             @endif
 
                                             @if (!$item->is_shared)
-                                                <span class="text-gray-400" title="Private Project"><i
+                                                <span class="text-red-400 ml-1" title="Private Project"><i
                                                         class="fa-solid fa-lock text-xs"></i></span>
                                             @endif
                                         </div>
-                                        <div class="font-bold text-[#1E293B] flex items-center gap-2">
+
+                                        <div class="font-bold text-[#1E293B] flex items-center gap-2 mt-1">
                                             {{ $item->client_name }}
 
                                             @if ($item->status != 'Selesai')
@@ -160,13 +185,15 @@
                                                 @endif
                                             @endif
                                         </div>
+
                                         @if ($item->client_type == 'mahasiswa')
-                                            <div class="text-xs text-gray-500 mt-1"><i
-                                                    class="fa-solid fa-id-card mr-1"></i> NPM: {{ $item->npm ?? '-' }}
+                                            <div class="text-[11px] text-gray-500 mt-1">
+                                                <i class="fa-solid fa-id-card mr-1 text-gray-400"></i>
+                                                {{ $item->npm ?? '-' }}
+                                                <span class="mx-1 text-gray-300">|</span>
+                                                <i class="fa-solid fa-building-columns mr-1 text-gray-400"></i>
+                                                {{ $item->class_name ?? '-' }}
                                             </div>
-                                            <div class="text-xs text-gray-500"><i
-                                                    class="fa-solid fa-building-columns mr-1"></i> KLS:
-                                                {{ $item->class_name ?? '-' }}</div>
                                         @endif
                                     </td>
 
@@ -199,7 +226,7 @@
                                             ];
                                         @endphp
                                         <span
-                                            class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full {{ $badgeColors[$item->status] }}">
+                                            class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full border border-gray-100 shadow-sm {{ $badgeColors[$item->status] }}">
                                             {{ $item->status }}
                                         </span>
                                         @if ($item->revision_notes)
@@ -226,7 +253,7 @@
                                             <span class="text-gray-500 font-bold">Sisa:</span>
                                             @if ($item->is_paid_off)
                                                 <span
-                                                    class="font-bold text-emerald-600 text-xs px-2 py-0.5 bg-emerald-100 rounded shadow-sm"><i
+                                                    class="font-bold text-emerald-600 text-[10px] px-2 py-0.5 bg-emerald-100 rounded shadow-sm"><i
                                                         class="fa-solid fa-check-double mr-1"></i>LUNAS</span>
                                             @else
                                                 <span class="font-bold text-red-500">Rp

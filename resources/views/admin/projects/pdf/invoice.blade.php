@@ -110,7 +110,8 @@
             background-color: #fafafa;
         }
 
-        .terms ul {
+        .terms ul,
+        .terms ol {
             margin: 3px 0 0 0;
             padding-left: 15px;
         }
@@ -136,20 +137,32 @@
             <td><strong>{{ strtoupper($project->client_name) }}</strong> (Klien {{ ucfirst($project->client_type) }})
             </td>
         </tr>
-        @if ($project->is_skripsi_project)
+
+        @if ($project->skripsi_package)
             <tr>
-                <td class="label" style="color: #d97706;">Kategori Proyek</td>
+                <td class="label" style="color: #d97706;">Paket Pengerjaan</td>
                 <td class="colon" style="color: #d97706;">:</td>
-                <td><strong
-                        style="background-color: #fef3c7; color: #b45309; padding: 2px 6px; border-radius: 3px; font-size: 10px;">PROJECT
-                        SKRIPSI</strong></td>
+                <td>
+                    <strong
+                        style="background-color: #fef3c7; color: #b45309; padding: 2px 6px; border-radius: 3px; font-size: 10px;">
+                        @if ($project->skripsi_package == 'keduanya')
+                            [ ALL-IN ] APLIKASI + NASKAH BAB 1-5
+                        @elseif($project->skripsi_package == 'aplikasi')
+                            [ APLIKASI SAJA ] TANPA NASKAH
+                        @else
+                            [ NASKAH SAJA ] TANPA APLIKASI
+                        @endif
+                    </strong>
+                </td>
             </tr>
         @endif
+
         <tr>
             <td class="label">Tanggal Order</td>
             <td class="colon">:</td>
             <td>{{ $project->created_at->locale('id')->translatedFormat('d F Y') }}</td>
         </tr>
+
         @if ($project->client_type == 'mahasiswa')
             <tr>
                 <td class="label">NPM / Kelas</td>
@@ -167,27 +180,47 @@
                 <td><em>"{{ $project->skripsi_title ?? '-' }}"</em></td>
             </tr>
         @endif
+
         <tr>
             <td class="label">Deskripsi Pekerjaan</td>
             <td class="colon">:</td>
             <td style="text-align: justify;">{{ $project->project_description }}</td>
+        </tr>
+
         <tr>
-            <td style="padding: 4px 0; font-weight: bold; color: #475569; vertical-align: top;">Penanggung Jawab</td>
+            <td style="padding: 4px 0; font-weight: bold; color: #475569; vertical-align: top;">Tim Karyantara</td>
             <td style="padding: 4px 0; text-align: center; vertical-align: top;">:</td>
             <td style="padding: 4px 0;">
+
                 <div style="margin-bottom: 4px;">
                     <span style="font-size: 10px; color: #64748B;">Admin / Pengelola:</span><br>
                     <strong style="color: #1E293B;">{{ $project->admin->name ?? 'Tim Karyantara' }}</strong>
                     <span style="font-size: 9px; color: #94A3B8;">(ADM-{{ $project->admin_id }})</span>
                 </div>
 
-                @if ($project->is_skripsi_project)
-                    <div>
-                        <span style="font-size: 10px; color: #d97706;">Penanggung Jawab Utama:</span><br>
-                        <strong style="color: #b45309;">{{ $project->developer->name ?? 'Ahmad Syaifuddin' }}</strong>
-                        <span style="font-size: 9px; color: #f59e0b;">(DEV-{{ $project->developer_id }})</span>
+                @if ($project->skripsi_package)
+                    <div style="border-top: 1px dashed #cbd5e1; margin: 4px 0; padding-top: 4px;">
+
+                        @if ($project->programmer_id)
+                            <div style="margin-bottom: 2px;">
+                                <span style="font-size: 10px; color: #3b82f6;">Dev. Aplikasi:</span><br>
+                                <strong style="color: #1d4ed8;">{{ $project->programmer->name ?? 'Unknown' }}</strong>
+                                <span
+                                    style="font-size: 9px; color: #93c5fd;">(DEV-{{ $project->programmer_id }})</span>
+                            </div>
+                        @endif
+
+                        @if ($project->writer_id)
+                            <div>
+                                <span style="font-size: 10px; color: #d97706;">Penyusun Naskah:</span><br>
+                                <strong style="color: #b45309;">{{ $project->writer->name ?? 'Unknown' }}</strong>
+                                <span style="font-size: 9px; color: #fcd34d;">(WRT-{{ $project->writer_id }})</span>
+                            </div>
+                        @endif
+
                     </div>
                 @endif
+
             </td>
         </tr>
     </table>

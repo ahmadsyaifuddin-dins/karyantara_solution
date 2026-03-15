@@ -38,10 +38,17 @@
                         <div class="flex flex-wrap items-center gap-3">
                             <h3 class="text-2xl font-extrabold text-[#1E293B]">{{ $project->client_name }}</h3>
 
-                            @if ($project->is_skripsi_project)
+                            @if ($project->skripsi_package)
                                 <span
                                     class="bg-amber-100 text-amber-700 border border-amber-200 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider flex items-center shadow-sm">
-                                    <i class="fa-solid fa-graduation-cap mr-1.5 text-amber-500"></i> Project Skripsi
+                                    <i class="fa-solid fa-graduation-cap mr-1.5 text-amber-500"></i>
+                                    @if ($project->skripsi_package == 'keduanya')
+                                        Skripsi All-In (App + Naskah)
+                                    @elseif($project->skripsi_package == 'aplikasi')
+                                        Skripsi (Aplikasi Saja)
+                                    @else
+                                        Skripsi (Naskah Saja)
+                                    @endif
                                 </span>
                             @endif
                         </div>
@@ -88,13 +95,24 @@
                             </span>
                         </div>
 
-                        @if ($project->is_skripsi_project)
-                            <div class="flex items-center gap-2 text-amber-600/80 font-medium">
-                                <span>Developer Utama:</span>
+                        @if ($project->programmer_id)
+                            <div class="flex items-center gap-2 text-blue-600/80 font-medium mt-1">
+                                <span>Pembuat Aplikasi:</span>
                                 <span
-                                    class="text-amber-700 font-bold bg-amber-50 border border-amber-200 px-2 py-0.5 rounded flex items-center">
-                                    <i class="fa-solid fa-code mr-1.5 text-amber-500"></i>
-                                    {{ $project->developer->name ?? 'Ahmad Syaifuddin' }}
+                                    class="text-blue-700 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded flex items-center shadow-sm">
+                                    <i class="fa-solid fa-code mr-1.5 text-blue-500"></i>
+                                    {{ $project->programmer->name ?? 'Unknown' }}
+                                </span>
+                            </div>
+                        @endif
+
+                        @if ($project->writer_id)
+                            <div class="flex items-center gap-2 text-amber-600/80 font-medium mt-0.5">
+                                <span>Penulis Naskah:</span>
+                                <span
+                                    class="text-amber-700 font-bold bg-amber-50 border border-amber-200 px-2 py-0.5 rounded flex items-center shadow-sm">
+                                    <i class="fa-solid fa-file-word mr-1.5 text-amber-500"></i>
+                                    {{ $project->writer->name ?? 'Unknown' }}
                                 </span>
                             </div>
                         @endif
@@ -190,6 +208,33 @@
                                     class="fa-solid fa-list-check text-blue-500 mr-2"></i> Ruang Lingkup Pekerjaan</h4>
                         </div>
                         <div class="p-6">
+
+                            @if ($project->skripsi_package)
+                                <div
+                                    class="mb-6 p-4 rounded-xl border border-amber-200 bg-amber-50/50 flex items-start gap-4">
+                                    <div class="mt-1">
+                                        <i class="fa-solid fa-bullseye text-2xl text-amber-500"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-amber-800 text-sm uppercase tracking-wider">Target
+                                            Pekerjaan Tim</h4>
+                                        <p class="text-amber-700 font-medium text-sm mt-1 leading-relaxed">
+                                            @if ($project->skripsi_package == 'keduanya')
+                                                Tim wajib menyelesaikan <strong>Sistem/Aplikasi</strong> beserta
+                                                penyusunan <strong>Naskah Skripsi Lengkap (Bab 1 - 5)</strong> sesuai
+                                                panduan kampus.
+                                            @elseif($project->skripsi_package == 'aplikasi')
+                                                Tim hanya fokus mengembangkan <strong>Sistem/Aplikasi</strong>. Klien
+                                                menyusun naskah secara mandiri.
+                                            @else
+                                                Tim hanya fokus menyusun <strong>Naskah Skripsi Lengkap</strong>.
+                                                Aplikasi sudah ada atau dikerjakan pihak lain.
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
+
                             @if ($project->client_type === 'mahasiswa')
                                 <div class="mb-6 pb-6 border-b border-gray-100">
                                     <span

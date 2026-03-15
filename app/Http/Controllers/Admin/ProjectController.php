@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -58,24 +59,39 @@ class ProjectController extends Controller
 
     public function create()
     {
-        return view('admin.projects.create');
+        // Ambil semua user/admin untuk dropdown penugasan
+        $users = User::all(); 
+        return view('admin.projects.create', compact('users'));
     }
 
     public function store(StoreProjectRequest $request)
     {
         $data = $request->validated();
 
-        $data['is_skripsi_project'] = $request->has('is_skripsi_project');
+        if (request()->routeIs('*.store')) {
+            $data['admin_id'] = auth()->id();
+        }
 
-       $data['admin_id'] = auth()->id();
-
-       // 2. Developer ID otomatis jadi 1 jika Skripsi, jika tidak maka null
-        $data['developer_id'] = $data['is_skripsi_project'] ? 1 : null;
+      if ($data['skripsi_package'] === 'aplikasi') {
+            $data['programmer_id'] = $request->programmer_id; 
+            $data['writer_id'] = null; // Kosongkan writer karena cuma aplikasi
+        } elseif ($data['skripsi_package'] === 'naskah') {
+            $data['programmer_id'] = null; // Kosongkan programmer karena cuma naskah
+            $data['writer_id'] = $request->writer_id;
+        } elseif ($data['skripsi_package'] === 'keduanya') {
+            $data['programmer_id'] = $request->programmer_id;
+            $data['writer_id'] = $request->writer_id;
+        } else {
+            // Jika Klien Umum atau Paket Dikosongkan
+            $data['programmer_id'] = null;
+            $data['writer_id'] = null;
+        }
 
         // Bersihkan data mahasiswa jika client type = umum
         if ($data['client_type'] === 'umum') {
-            $data['is_skripsi_project'] = false;
-            $data['developer_id'] = null;
+            $data['skripsi_package'] = null;
+            $data['programmer_id'] = null;
+            $data['writer_id'] = null;
             $data['npm'] = null;
             $data['class_name'] = null;
             $data['dospem_1'] = null;
@@ -90,20 +106,38 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        return view('admin.projects.edit', compact('project'));
+        $users = User::all();
+        return view('admin.projects.edit', compact('project', 'users'));
     }
 
     public function update(UpdateProjectRequest $request, Project $project)
     {
         $data = $request->validated();
 
-        $data['is_skripsi_project'] = $request->has('is_skripsi_project');
+      if (request()->routeIs('*.store')) {
+            $data['admin_id'] = auth()->id();
+        }
 
-        $data['developer_id'] = $data['is_skripsi_project'] ? 1 : null;
+        // 2. LOGIKA PENUGASAN DINAMIS (Berdasarkan Dropdown Form)
+        if ($data['skripsi_package'] === 'aplikasi') {
+            $data['programmer_id'] = $request->programmer_id; 
+            $data['writer_id'] = null; // Kosongkan writer karena cuma aplikasi
+        } elseif ($data['skripsi_package'] === 'naskah') {
+            $data['programmer_id'] = null; // Kosongkan programmer karena cuma naskah
+            $data['writer_id'] = $request->writer_id;
+        } elseif ($data['skripsi_package'] === 'keduanya') {
+            $data['programmer_id'] = $request->programmer_id;
+            $data['writer_id'] = $request->writer_id;
+        } else {
+            // Jika Klien Umum atau Paket Dikosongkan
+            $data['programmer_id'] = null;
+            $data['writer_id'] = null;
+        }
 
         if ($data['client_type'] === 'umum') {
-            $data['is_skripsi_project'] = false;
-            $data['developer_id'] = null;
+            $data['skripsi_package'] = null;
+            $data['programmer_id'] = null;
+            $data['writer_id'] = null;
             $data['npm'] = null;
             $data['class_name'] = null;
             $data['dospem_1'] = null;

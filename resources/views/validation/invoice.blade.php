@@ -22,50 +22,94 @@
         </div>
 
         <div class="p-6">
-            <div class="space-y-4">
+            <div class="space-y-5">
+
                 <div>
                     <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Nama Klien</p>
-                    <p class="font-bold text-gray-800 text-lg">{{ $project->client_name }}</p>
+                    <p class="font-bold text-[#1E293B] text-lg">{{ $project->client_name }}</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Tipe Klien</p>
                         <span
-                            class="inline-block mt-1 px-2.5 py-1 text-[10px] font-bold bg-blue-100 text-blue-700 rounded-md uppercase">
-                            {{ $project->client_type }}
+                            class="inline-flex items-center mt-1 px-2.5 py-1 text-[10px] font-bold bg-slate-100 text-slate-700 rounded-md uppercase border border-slate-200">
+                            <i class="fa-solid fa-user-tag mr-1.5 text-slate-400"></i> {{ $project->client_type }}
                         </span>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Status Proyek</p>
                         <span
-                            class="inline-block mt-1 px-2.5 py-1 text-[10px] font-bold rounded-md uppercase
-                            {{ $project->status == 'Selesai' ? 'bg-emerald-100 text-emerald-700' : ($project->status == 'Progress' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700') }}">
+                            class="inline-block mt-1 px-2.5 py-1 text-[10px] font-bold rounded-md uppercase border
+                            {{ $project->status == 'Selesai' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : ($project->status == 'Progress' ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-amber-100 text-amber-700 border-amber-200') }}">
                             {{ $project->status }}
                         </span>
                     </div>
                 </div>
 
-                <div class="pt-4 border-t border-gray-100">
-                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Penanggung Jawab Proyek</p>
+                @if ($project->skripsi_package)
+                    <div>
+                        <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Paket Pengerjaan</p>
+                        <span
+                            class="inline-flex items-center mt-1 px-3 py-1.5 text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 rounded-md uppercase shadow-sm">
+                            <i class="fa-solid fa-graduation-cap mr-1.5 text-amber-500"></i>
+                            @if ($project->skripsi_package == 'keduanya')
+                                Skripsi All-In (App + Naskah)
+                            @elseif($project->skripsi_package == 'aplikasi')
+                                Skripsi (Aplikasi Saja)
+                            @else
+                                Skripsi (Naskah Saja)
+                            @endif
+                        </span>
+                    </div>
+                @endif
 
-                    <div class="flex flex-col gap-2">
-                        <div class="flex items-center">
-                            <i class="fa-solid fa-headset text-blue-500 mr-2 w-4 text-center"></i>
+                <div class="pt-4 border-t border-gray-100">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-3">Tim Karyantara</p>
+
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                            <div
+                                class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center mr-3 shrink-0">
+                                <i class="fa-solid fa-headset text-slate-500 text-sm"></i>
+                            </div>
                             <div>
-                                <p class="text-[10px] text-gray-400 leading-none">Admin Pengelola</p>
-                                <p class="font-bold text-gray-800 text-sm">
+                                <p
+                                    class="text-[10px] text-slate-500 font-bold uppercase tracking-wider leading-none mb-1">
+                                    Admin Pengelola</p>
+                                <p class="font-bold text-[#1E293B] text-sm">
                                     {{ $project->admin->name ?? 'Tim Karyantara' }}</p>
                             </div>
                         </div>
 
-                        @if ($project->is_skripsi_project)
-                            <div class="flex items-center">
-                                <i class="fa-solid fa-code text-amber-500 mr-2 w-4 text-center"></i>
+                        @if ($project->programmer_id)
+                            <div class="flex items-center bg-blue-50 p-2.5 rounded-lg border border-blue-100">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center mr-3 shrink-0">
+                                    <i class="fa-solid fa-code text-blue-600 text-sm"></i>
+                                </div>
                                 <div>
-                                    <p class="text-[10px] text-amber-600/70 leading-none">Penanggung Jawab Utama</p>
-                                    <p class="font-bold text-amber-600 text-sm">
-                                        {{ $project->developer->name ?? 'Ahmad Syaifuddin' }}</p>
+                                    <p
+                                        class="text-[10px] text-blue-600 font-bold uppercase tracking-wider leading-none mb-1">
+                                        Developer Aplikasi</p>
+                                    <p class="font-bold text-blue-800 text-sm">
+                                        {{ $project->programmer->name ?? 'Unknown' }}</p>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if ($project->writer_id)
+                            <div class="flex items-center bg-amber-50 p-2.5 rounded-lg border border-amber-100">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-amber-200 flex items-center justify-center mr-3 shrink-0">
+                                    <i class="fa-solid fa-file-word text-amber-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-[10px] text-amber-600 font-bold uppercase tracking-wider leading-none mb-1">
+                                        Penyusun Naskah</p>
+                                    <p class="font-bold text-amber-800 text-sm">
+                                        {{ $project->writer->name ?? 'Unknown' }}</p>
                                 </div>
                             </div>
                         @endif
@@ -74,7 +118,8 @@
 
                 <div class="pt-4 border-t border-gray-100">
                     <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Detail Pekerjaan</p>
-                    <p class="text-sm text-gray-700 mt-1 leading-relaxed">
+                    <p
+                        class="text-sm text-gray-700 mt-1.5 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
                         {{ $project->skripsi_title ?? $project->project_description }}
                     </p>
                 </div>
@@ -100,7 +145,7 @@
                 </div>
             </div>
 
-            <div class="mt-8 text-center text-xs text-gray-400">
+            <div class="mt-8 text-center text-[10px] text-gray-400">
                 <p>Waktu Pemindaian: {{ \Carbon\Carbon::now()->timezone('Asia/Makassar')->format('d M Y, H:i') }} WITA
                 </p>
                 <p class="mt-1 font-semibold">&copy; {{ date('Y') }} Karyantara Solution</p>

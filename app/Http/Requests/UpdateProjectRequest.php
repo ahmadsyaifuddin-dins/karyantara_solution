@@ -15,7 +15,10 @@ class UpdateProjectRequest extends FormRequest
     {
         return [
             'is_shared' => ['required', 'boolean'],
-            'is_skripsi_project' => ['nullable'],
+            'skripsi_package' => ['nullable', 'in:aplikasi,naskah,keduanya'],
+            'programmer_id' => ['nullable', 'exists:users,id'],
+            'writer_id' => ['nullable', 'exists:users,id'],
+            
             'client_type' => ['required', 'in:mahasiswa,umum'],
             'client_name' => ['required', 'string', 'max:255'],
 
