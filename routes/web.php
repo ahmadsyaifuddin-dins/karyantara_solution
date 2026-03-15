@@ -44,6 +44,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Dashboard Admin
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/my-earnings', [DashboardController::class, 'myEarnings'])->name('earnings.index');
+    Route::patch('/my-earnings/{project}/toggle-paid', [DashboardController::class, 'toggleEarningStatus'])->name('earnings.toggle-paid');
     Route::resource('admins', AdminController::class)->except(['show']);
     Route::resource('portfolios', PortfolioController::class);
 

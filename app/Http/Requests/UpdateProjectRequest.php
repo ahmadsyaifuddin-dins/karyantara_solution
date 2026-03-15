@@ -33,7 +33,11 @@ class UpdateProjectRequest extends FormRequest
             'project_description' => ['required', 'string'],
             'status' => ['required', 'in:Pending,Progress,Revisi,Selesai'],
             'revision_notes' => ['nullable', 'string'],
-            'net_income' => ['required', 'numeric', 'min:0'],
+
+            'app_price' => ['nullable', 'numeric', 'min:0'],
+            'writer_price' => ['nullable', 'numeric', 'min:0'],
+
+            'net_income' => ['nullable', 'numeric', 'min:0'],
             'paid_amount' => ['required', 'numeric', 'min:0'],
             'payment_method' => ['required', 'in:cash,transfer'],
         ];

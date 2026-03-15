@@ -62,7 +62,7 @@
         </h3>
 
         <div class="col-span-1 md:col-span-2 mt-2">
-            <x-forms.label value="Paket Pengerjaan Skripsi" required="true" class="text-amber-700" />
+            <x-forms.label value="Paket Pengerjaan Skripsi" class="text-amber-700" />
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
 
                 <label
@@ -92,8 +92,7 @@
                             <span class="block text-sm font-bold text-[#1E293B] mb-1"><i
                                     class="fa-solid fa-file-word text-amber-600 mr-1.5"></i> Naskah Saja</span>
                             <span class="mt-1 flex items-center text-[11px] leading-tight text-gray-500">Hanya pembuatan
-                                skripsi
-                                bab 1-5.</span>
+                                skripsi bab 1-5.</span>
                         </span>
                     </span>
                     <i class="fa-solid fa-circle-check text-amber-500 text-lg absolute top-4 right-4"
@@ -128,7 +127,7 @@
                 x-transition:enter-start="opacity-0 transform -translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
                 class="bg-blue-50/50 p-4 rounded-lg border border-blue-100">
-                <x-forms.label value="Pilih Developer Aplikasi" required="true" class="text-blue-700" />
+                <x-forms.label value="Pilih Developer Aplikasi" class="text-blue-700" />
                 <x-forms.dropdown name="programmer_id" class="mt-1 border-blue-200 focus:ring-blue-500">
                     <option value="">-- Pilih Developer --</option>
                     @foreach ($users as $user)
@@ -145,7 +144,7 @@
                 x-transition:enter-start="opacity-0 transform -translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
                 class="bg-amber-50/50 p-4 rounded-lg border border-amber-100">
-                <x-forms.label value="Pilih Penyusun Naskah" required="true" class="text-amber-700" />
+                <x-forms.label value="Pilih Penyusun Naskah" class="text-amber-700" />
                 <x-forms.dropdown name="writer_id" class="mt-1 border-amber-200 focus:ring-amber-500">
                     <option value="">-- Pilih Penulis Naskah --</option>
                     @foreach ($users as $user)
@@ -193,17 +192,30 @@
             <i class="fa-solid fa-rupiah-sign mr-2"></i>Keuangan
         </h3>
 
-        <div>
-            <x-forms.label value="Pendapatan Bersih (Harga Fix)" required="true" />
-            <x-forms.currency name="net_income" value="{{ old('net_income', $project->net_income ?? 0) }}"
-                required="true" />
-            <span class="text-xs text-gray-500 mt-1 block">Harga final setelah potong fee broker.</span>
+        <div x-show="clientType === 'mahasiswa' && (package === 'aplikasi' || package === 'keduanya')" x-cloak>
+            <x-forms.label value="Harga Fix Aplikasi" class="text-blue-700" />
+            <x-forms.currency name="app_price" value="{{ old('app_price', $project->app_price ?? 0) }}" />
+            <span class="text-xs text-blue-600 mt-1 block font-medium">Alokasi untuk Developer.</span>
         </div>
+
+        <div x-show="clientType === 'mahasiswa' && (package === 'naskah' || package === 'keduanya')" x-cloak>
+            <x-forms.label value="Harga Fix Naskah" class="text-amber-700" />
+            <x-forms.currency name="writer_price" value="{{ old('writer_price', $project->writer_price ?? 0) }}" />
+            <span class="text-xs text-amber-600 mt-1 block font-medium">Alokasi untuk Penulis.</span>
+        </div>
+
+        <div x-show="clientType !== 'mahasiswa' || package === ''" x-cloak>
+            <x-forms.label value="Pendapatan Bersih (Harga Total)" />
+            <x-forms.currency name="net_income" value="{{ old('net_income', $project->net_income ?? 0) }}" />
+            <span class="text-xs text-gray-500 mt-1 block">Harga final setelah potong fee.</span>
+        </div>
+
         <div>
             <x-forms.label value="Sudah Terbayar (DP/Lunas)" required="true" />
             <x-forms.currency name="paid_amount" value="{{ old('paid_amount', $project->paid_amount ?? 0) }}"
                 required="true" />
         </div>
+
         <div>
             <x-forms.label value="Jenis Pembayaran" required="true" />
             <x-forms.dropdown name="payment_method" required>

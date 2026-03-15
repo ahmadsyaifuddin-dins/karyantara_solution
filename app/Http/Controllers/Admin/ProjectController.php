@@ -68,27 +68,34 @@ class ProjectController extends Controller
     {
         $data = $request->validated();
 
-        if (request()->routeIs('*.store')) {
-            $data['admin_id'] = auth()->id();
-        }
+        // 1. Admin Pengelola (Set ke yang sedang login saat create)
+        $data['admin_id'] = auth()->id();
 
-      if ($data['skripsi_package'] === 'aplikasi') {
-            $data['programmer_id'] = $request->programmer_id; 
-            $data['writer_id'] = null; // Kosongkan writer karena cuma aplikasi
-        } elseif ($data['skripsi_package'] === 'naskah') {
-            $data['programmer_id'] = null; // Kosongkan programmer karena cuma naskah
-            $data['writer_id'] = $request->writer_id;
-        } elseif ($data['skripsi_package'] === 'keduanya') {
-            $data['programmer_id'] = $request->programmer_id;
-            $data['writer_id'] = $request->writer_id;
+        // 2. LOGIKA PENUGASAN DINAMIS & HARGA
+        if ($data['client_type'] === 'mahasiswa' && !empty($data['skripsi_package'])) {
+            
+            // Pastikan nilai harga tidak null (default 0)
+            $data['app_price'] = $data['app_price'] ?? 0;
+            $data['writer_price'] = $data['writer_price'] ?? 0;
+
+            if ($data['skripsi_package'] === 'aplikasi') {
+                $data['programmer_id'] = $request->programmer_id; 
+                $data['writer_id'] = null; 
+                $data['writer_price'] = 0; // Pastikan 0 jika cuma aplikasi
+            } elseif ($data['skripsi_package'] === 'naskah') {
+                $data['programmer_id'] = null; 
+                $data['writer_id'] = $request->writer_id;
+                $data['app_price'] = 0; // Pastikan 0 jika cuma naskah
+            } elseif ($data['skripsi_package'] === 'keduanya') {
+                $data['programmer_id'] = $request->programmer_id;
+                $data['writer_id'] = $request->writer_id;
+            }
+
+            // OTOMATIS HITUNG NET INCOME (Total Tagihan)
+            $data['net_income'] = $data['app_price'] + $data['writer_price'];
+
         } else {
-            // Jika Klien Umum atau Paket Dikosongkan
-            $data['programmer_id'] = null;
-            $data['writer_id'] = null;
-        }
-
-        // Bersihkan data mahasiswa jika client type = umum
-        if ($data['client_type'] === 'umum') {
+            // JIKA KLIEN UMUM ATAU PAKET DIKOSONGKAN
             $data['skripsi_package'] = null;
             $data['programmer_id'] = null;
             $data['writer_id'] = null;
@@ -97,6 +104,11 @@ class ProjectController extends Controller
             $data['dospem_1'] = null;
             $data['dospem_2'] = null;
             $data['skripsi_title'] = null;
+            
+            // Harga pisah dikosongkan, ambil net_income dari inputan manual form
+            $data['app_price'] = 0;
+            $data['writer_price'] = 0;
+            $data['net_income'] = $data['net_income'] ?? 0;
         }
 
         Project::create($data);
@@ -114,27 +126,31 @@ class ProjectController extends Controller
     {
         $data = $request->validated();
 
-      if (request()->routeIs('*.store')) {
-            $data['admin_id'] = auth()->id();
-        }
+        // 1. LOGIKA PENUGASAN DINAMIS & HARGA
+        if ($data['client_type'] === 'mahasiswa' && !empty($data['skripsi_package'])) {
+            
+            // Pastikan nilai harga tidak null (default 0)
+            $data['app_price'] = $data['app_price'] ?? 0;
+            $data['writer_price'] = $data['writer_price'] ?? 0;
 
-        // 2. LOGIKA PENUGASAN DINAMIS (Berdasarkan Dropdown Form)
-        if ($data['skripsi_package'] === 'aplikasi') {
-            $data['programmer_id'] = $request->programmer_id; 
-            $data['writer_id'] = null; // Kosongkan writer karena cuma aplikasi
-        } elseif ($data['skripsi_package'] === 'naskah') {
-            $data['programmer_id'] = null; // Kosongkan programmer karena cuma naskah
-            $data['writer_id'] = $request->writer_id;
-        } elseif ($data['skripsi_package'] === 'keduanya') {
-            $data['programmer_id'] = $request->programmer_id;
-            $data['writer_id'] = $request->writer_id;
+            if ($data['skripsi_package'] === 'aplikasi') {
+                $data['programmer_id'] = $request->programmer_id; 
+                $data['writer_id'] = null; 
+                $data['writer_price'] = 0; // Pastikan 0 jika cuma aplikasi
+            } elseif ($data['skripsi_package'] === 'naskah') {
+                $data['programmer_id'] = null; 
+                $data['writer_id'] = $request->writer_id;
+                $data['app_price'] = 0; // Pastikan 0 jika cuma naskah
+            } elseif ($data['skripsi_package'] === 'keduanya') {
+                $data['programmer_id'] = $request->programmer_id;
+                $data['writer_id'] = $request->writer_id;
+            }
+
+            // OTOMATIS HITUNG NET INCOME (Total Tagihan)
+            $data['net_income'] = $data['app_price'] + $data['writer_price'];
+
         } else {
-            // Jika Klien Umum atau Paket Dikosongkan
-            $data['programmer_id'] = null;
-            $data['writer_id'] = null;
-        }
-
-        if ($data['client_type'] === 'umum') {
+            // JIKA KLIEN UMUM ATAU PAKET DIKOSONGKAN
             $data['skripsi_package'] = null;
             $data['programmer_id'] = null;
             $data['writer_id'] = null;
@@ -143,6 +159,11 @@ class ProjectController extends Controller
             $data['dospem_1'] = null;
             $data['dospem_2'] = null;
             $data['skripsi_title'] = null;
+            
+            // Harga pisah dikosongkan, ambil net_income dari inputan manual form
+            $data['app_price'] = 0;
+            $data['writer_price'] = 0;
+            $data['net_income'] = $data['net_income'] ?? 0;
         }
 
         $project->update($data);
