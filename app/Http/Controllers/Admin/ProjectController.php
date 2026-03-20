@@ -10,106 +10,49 @@ use App\Models\Project;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Project::query();
+        // 1. Ambil query dasar yang sudah difilter
+        $query = $this->buildFilterQuery($request);
 
-        // LOGIKA VISIBILITAS (Shared atau Milik Sendiri)
-        $query->where(function ($q) {
-            $q->where('is_shared', 1)
-                ->orWhere('admin_id', auth()->id());
-        });
-
-        // FILTER SEARCH
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('client_name', 'like', "%{$search}%")
-                    ->orWhere('skripsi_title', 'like', "%{$search}%")
-                    ->orWhere('npm', 'like', "%{$search}%");
-            });
-        }
-
-        // FILTER STATUS
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // PERHITUNGAN REKAP KEUANGAN (Berdasarkan data yang difilter)
-        // Clone query agar tidak mengganggu proses pagination di bawahnya
+        // 2. Perhitungan Rekap Keuangan & Proyek (Clone agar tidak merusak pagination)
+        $totalProjects  = (clone $query)->count();
         $totalNetIncome = (clone $query)->sum('net_income');
-        $totalPaid = (clone $query)->sum('paid_amount');
+        $totalPaid      = (clone $query)->sum('paid_amount');
         $totalRemaining = $totalNetIncome - $totalPaid;
 
-        // PAGINATION
+        // 3. Pagination & Ordering
         $projects = $query->orderByRaw("CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END ASC")
-                          ->orderBy('sort_order', 'asc')
-                          ->latest()
-                          ->paginate(10)
-                          ->appends($request->query());
+            ->orderBy('sort_order', 'asc')
+            ->latest()
+            ->paginate(10)
+            ->appends($request->query());
 
         return view('admin.projects.index', compact(
-            'projects', 'totalNetIncome', 'totalPaid', 'totalRemaining'
+            'projects', 'totalNetIncome', 'totalPaid', 'totalRemaining', 'totalProjects'
         ));
     }
 
     public function create()
     {
-        // Ambil semua user/admin untuk dropdown penugasan
-        $users = User::all(); 
+        $users = User::all();
         return view('admin.projects.create', compact('users'));
     }
 
     public function store(StoreProjectRequest $request)
     {
         $data = $request->validated();
-
-        // 1. Admin Pengelola (Set ke yang sedang login saat create)
+        
+        // Set Admin Pengelola
         $data['admin_id'] = auth()->id();
-
-        // 2. LOGIKA PENUGASAN DINAMIS & HARGA
-        if ($data['client_type'] === 'mahasiswa' && !empty($data['skripsi_package'])) {
-            
-            // Pastikan nilai harga tidak null (default 0)
-            $data['app_price'] = $data['app_price'] ?? 0;
-            $data['writer_price'] = $data['writer_price'] ?? 0;
-
-            if ($data['skripsi_package'] === 'aplikasi') {
-                $data['programmer_id'] = $request->programmer_id; 
-                $data['writer_id'] = null; 
-                $data['writer_price'] = 0; // Pastikan 0 jika cuma aplikasi
-            } elseif ($data['skripsi_package'] === 'naskah') {
-                $data['programmer_id'] = null; 
-                $data['writer_id'] = $request->writer_id;
-                $data['app_price'] = 0; // Pastikan 0 jika cuma naskah
-            } elseif ($data['skripsi_package'] === 'keduanya') {
-                $data['programmer_id'] = $request->programmer_id;
-                $data['writer_id'] = $request->writer_id;
-            }
-
-            // OTOMATIS HITUNG NET INCOME (Total Tagihan)
-            $data['net_income'] = $data['app_price'] + $data['writer_price'];
-
-        } else {
-            // JIKA KLIEN UMUM ATAU PAKET DIKOSONGKAN
-            $data['skripsi_package'] = null;
-            $data['programmer_id'] = null;
-            $data['writer_id'] = null;
-            $data['npm'] = null;
-            $data['class_name'] = null;
-            $data['dospem_1'] = null;
-            $data['dospem_2'] = null;
-            $data['skripsi_title'] = null;
-            
-            // Harga pisah dikosongkan, ambil net_income dari inputan manual form
-            $data['app_price'] = 0;
-            $data['writer_price'] = 0;
-            $data['net_income'] = $data['net_income'] ?? 0;
-        }
+        
+        // Format data penugasan dan harga menggunakan helper private
+        $data = $this->formatProjectData($data, $request);
 
         Project::create($data);
 
@@ -125,46 +68,9 @@ class ProjectController extends Controller
     public function update(UpdateProjectRequest $request, Project $project)
     {
         $data = $request->validated();
-
-        // 1. LOGIKA PENUGASAN DINAMIS & HARGA
-        if ($data['client_type'] === 'mahasiswa' && !empty($data['skripsi_package'])) {
-            
-            // Pastikan nilai harga tidak null (default 0)
-            $data['app_price'] = $data['app_price'] ?? 0;
-            $data['writer_price'] = $data['writer_price'] ?? 0;
-
-            if ($data['skripsi_package'] === 'aplikasi') {
-                $data['programmer_id'] = $request->programmer_id; 
-                $data['writer_id'] = null; 
-                $data['writer_price'] = 0; // Pastikan 0 jika cuma aplikasi
-            } elseif ($data['skripsi_package'] === 'naskah') {
-                $data['programmer_id'] = null; 
-                $data['writer_id'] = $request->writer_id;
-                $data['app_price'] = 0; // Pastikan 0 jika cuma naskah
-            } elseif ($data['skripsi_package'] === 'keduanya') {
-                $data['programmer_id'] = $request->programmer_id;
-                $data['writer_id'] = $request->writer_id;
-            }
-
-            // OTOMATIS HITUNG NET INCOME (Total Tagihan)
-            $data['net_income'] = $data['app_price'] + $data['writer_price'];
-
-        } else {
-            // JIKA KLIEN UMUM ATAU PAKET DIKOSONGKAN
-            $data['skripsi_package'] = null;
-            $data['programmer_id'] = null;
-            $data['writer_id'] = null;
-            $data['npm'] = null;
-            $data['class_name'] = null;
-            $data['dospem_1'] = null;
-            $data['dospem_2'] = null;
-            $data['skripsi_title'] = null;
-            
-            // Harga pisah dikosongkan, ambil net_income dari inputan manual form
-            $data['app_price'] = 0;
-            $data['writer_price'] = 0;
-            $data['net_income'] = $data['net_income'] ?? 0;
-        }
+        
+        // Format data penugasan dan harga menggunakan helper private
+        $data = $this->formatProjectData($data, $request);
 
         $project->update($data);
 
@@ -174,71 +80,60 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
-
         return redirect()->route('admin.projects.index')->with('success', 'Data berhasil dihapus.');
     }
 
     public function show(Project $project)
     {
-        // Fitur Keamanan Ekstra: Cek apakah project ini private milik admin lain
-        if (! $project->is_shared && $project->admin_id !== auth()->id()) {
-            abort(403, 'Akses Ditolak: Anda tidak memiliki akses ke data proyek private ini.');
-        }
-
+        $this->authorizeAccess($project);
         return view('admin.projects.show', compact('project'));
     }
 
     public function exportExcel()
     {
-        $fileName = 'Laporan_Proyek_Karyantara_'.now()->format('d-m-Y_H-i-s').'.xlsx';
-
+        $fileName = 'Laporan_Proyek_Karyantara_' . now()->format('d-m-Y_H-i-s') . '.xlsx';
         return Excel::download(new ProjectsExport, $fileName);
     }
 
     public function exportPdf()
     {
-        // Ambil data (sama seperti logic export Excel)
-         $projects = Project::where('is_shared', 1)
-                           ->orWhere('admin_id', auth()->id())
-                           ->orderByRaw("CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END ASC")
-                           ->orderBy('sort_order', 'asc')
-                           ->latest()
-                           ->get();
+        $projects = Project::where('is_shared', 1)
+            ->orWhere('admin_id', auth()->id())
+            ->orderByRaw("CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END ASC")
+            ->orderBy('sort_order', 'asc')
+            ->latest()
+            ->get();
 
-        // Load View PDF
-        $pdf = Pdf::loadView('admin.projects.pdf.export', compact('projects'));
+        $pdf = Pdf::loadView('admin.projects.pdf.export', compact('projects'))
+            ->setOptions([
+                'chroot'  => base_path(),              // Izinkan baca folder laravel (akses image/css lokal)
+                'tempDir' => storage_path('app')       // Hindari folder /tmp server yang sering diblokir
+            ])
+            ->setPaper('A4', 'portrait');
 
-        // Atur ukuran kertas ke A4 (Landscape atau Portrait terserah, kita pakai Portrait)
-        $pdf->setPaper('A4', 'portrait');
-
-        $fileName = 'Laporan_Proyek_Karyantara_'.now()->format('d-m-Y_H-i-s').'.pdf';
+        $fileName = 'Laporan_Proyek_Karyantara_' . now()->format('d-m-Y_H-i-s') . '.pdf';
 
         return $pdf->stream($fileName);
     }
 
     public function exportInvoice(Project $project)
     {
-        // Fitur Keamanan Ekstra
-        if (! $project->is_shared && $project->admin_id !== auth()->id()) {
-            abort(403, 'Akses Ditolak: Anda tidak memiliki akses ke data proyek ini.');
-        }
+        $this->authorizeAccess($project);
 
-        // Load View PDF khusus untuk 1 Invoice
-        $pdf = Pdf::loadView('admin.projects.pdf.invoice', compact('project'));
+        $pdf = Pdf::loadView('admin.projects.pdf.invoice', compact('project'))
+            ->setOptions([
+                'chroot'  => base_path(),              // Izinkan baca folder laravel
+                'tempDir' => storage_path('app')       // Hindari folder /tmp server yang sering diblokir
+            ])
+            ->setPaper('A4', 'portrait');
 
-        // Atur ukuran kertas ke A4 Portrait
-        $pdf->setPaper('A4', 'portrait');
-
-        // STREAM (Preview di browser) dengan nama file dinamis sesuai nama klien
-        $fileName = 'Invoice_MoU_'.str_replace(' ', '_', $project->client_name).'.pdf';
+        $fileName = 'Invoice_MoU_' . str_replace(' ', '_', $project->client_name) . '.pdf';
 
         return $pdf->stream($fileName);
     }
 
     public function priorityBoard()
     {
-        // Hanya ambil proyek yang belum selesai (Pending, Progress, Revisi)
-        // Urutkan berdasarkan sort_order (0, 1, 2, dst), lalu by created_at jika urutannya sama
         $projects = Project::where('status', '!=', 'Selesai')
             ->where(function ($q) {
                 $q->where('is_shared', 1)->orWhere('admin_id', auth()->id());
@@ -250,19 +145,97 @@ class ProjectController extends Controller
         return view('admin.projects.priority', compact('projects'));
     }
 
-    // Menerima request AJAX dari Drag & Drop
     public function updatePriority(Request $request)
     {
-        $orders = $request->input('orders'); // Berisi array ID proyek yang sudah diurutkan
+        $orders = $request->input('orders'); 
 
         if ($orders) {
             foreach ($orders as $index => $id) {
-                // Update kolom sort_order sesuai urutan index (0, 1, 2, dst)
                 Project::where('id', $id)->update(['sort_order' => $index]);
             }
             return response()->json(['success' => true, 'message' => 'Prioritas berhasil diperbarui!']);
         }
 
         return response()->json(['success' => false, 'message' => 'Gagal memperbarui urutan.']);
+    }
+
+    
+    // PRIVATE HELPER METHODS (Modularisasi Logika)
+    /**
+     * Membangun base query untuk filtering dan pencarian
+     */
+    private function buildFilterQuery(Request $request): Builder
+    {
+        $query = Project::query()->where(function ($q) {
+            $q->where('is_shared', 1)->orWhere('admin_id', auth()->id());
+        });
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('client_name', 'like', "%{$search}%")
+                    ->orWhere('skripsi_title', 'like', "%{$search}%")
+                    ->orWhere('npm', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Memformat logika harga dan penugasan yang tadinya berulang di store() & update()
+     */
+    private function formatProjectData(array $data, Request $request): array
+    {
+        if ($data['client_type'] === 'mahasiswa' && !empty($data['skripsi_package'])) {
+            $data['app_price'] = $data['app_price'] ?? 0;
+            $data['writer_price'] = $data['writer_price'] ?? 0;
+
+            if ($data['skripsi_package'] === 'aplikasi') {
+                $data['programmer_id'] = $request->programmer_id;
+                $data['writer_id'] = null;
+                $data['writer_price'] = 0;
+            } elseif ($data['skripsi_package'] === 'naskah') {
+                $data['programmer_id'] = null;
+                $data['writer_id'] = $request->writer_id;
+                $data['app_price'] = 0;
+            } elseif ($data['skripsi_package'] === 'keduanya') {
+                $data['programmer_id'] = $request->programmer_id;
+                $data['writer_id'] = $request->writer_id;
+            }
+
+            $data['net_income'] = $data['app_price'] + $data['writer_price'];
+        } else {
+            // Null-kan field spesifik jika bukan mahasiswa atau paket kosong
+            $data = array_merge($data, [
+                'skripsi_package' => null,
+                'programmer_id'   => null,
+                'writer_id'       => null,
+                'npm'             => null,
+                'class_name'      => null,
+                'dospem_1'        => null,
+                'dospem_2'        => null,
+                'skripsi_title'   => null,
+                'app_price'       => 0,
+                'writer_price'    => 0,
+                'net_income'      => $data['net_income'] ?? 0,
+            ]);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Cek otorisasi agar tidak ada duplikasi kode di show() dan exportInvoice()
+     */
+    private function authorizeAccess(Project $project): void
+    {
+        if (!$project->is_shared && $project->admin_id !== auth()->id()) {
+            abort(403, 'Akses Ditolak: Anda tidak memiliki akses ke data proyek private ini.');
+        }
     }
 }

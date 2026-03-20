@@ -1,0 +1,25 @@
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <h2 class="font-semibold text-xl text-[#1E293B] leading-tight">
+        <i class="fa-solid fa-file-invoice-dollar mr-2"></i> {{ __('Daftar Klien & Proyek') }}
+    </h2>
+    <div class="flex flex-wrap gap-2">
+        <a href="{{ route('admin.projects.priority') }}"
+            class="bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition inline-flex items-center">
+            <i class="fa-solid fa-list-check mr-1"></i> Atur Prioritas
+        </a>
+        <a href="{{ route('admin.projects.export.pdf') }}" target="_blank"
+            class="bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition inline-flex items-center">
+            <i class="fa-solid fa-file-pdf mr-1"></i> Export PDF
+        </a>
+
+        <a href="{{ route('admin.projects.export.excel') }}"
+            class="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition inline-flex items-center">
+            <i class="fa-solid fa-file-excel mr-1"></i> Export Excel
+        </a>
+
+        <a href="{{ route('admin.projects.create') }}"
+            class="bg-[#1E293B] text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition text-sm font-bold shadow-sm inline-flex items-center">
+            <i class="fa-solid fa-plus mr-1"></i> Tambah Data
+        </a>
+    </div>
+</div>
