@@ -46,6 +46,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/my-earnings', [DashboardController::class, 'myEarnings'])->name('earnings.index');
     Route::patch('/my-earnings/{project}/toggle-paid', [DashboardController::class, 'toggleEarningStatus'])->name('earnings.toggle-paid');
+    
+    Route::get('/my-earnings/export/pdf', [DashboardController::class, 'exportEarningsPdf'])->name('earnings.export.pdf');
+    Route::get('/my-earnings/export/excel', [DashboardController::class, 'exportEarningsExcel'])->name('earnings.export.excel');
+
     Route::resource('admins', AdminController::class)->except(['show']);
     Route::resource('portfolios', PortfolioController::class);
 

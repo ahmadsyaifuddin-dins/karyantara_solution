@@ -9,6 +9,9 @@ use App\Models\PageView;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MyEarningsExport;
 
 class DashboardController extends Controller
 {
@@ -85,26 +88,40 @@ class DashboardController extends Controller
             $writerQuery->whereYear('created_at', $selectedYear);
         }
 
+        // DATA PROGRAMMER
         $appProjects = $appQuery->orderBy('created_at', 'desc')->get();
         $totalAppEarnings = $appProjects->sum('app_price');
-        // Hitung fee aplikasi yang BELUM cair
         $unpaidAppEarnings = $appProjects->where('is_programmer_paid', false)->sum('app_price'); 
+        
+        // Kalkulasi khusus proyek SELESAI
+        $completedAppProjects = $appProjects->where('status', 'Selesai');
+        $completedAppEarnings = $completedAppProjects->sum('app_price');
 
+        // DATA WRITER
         $writerProjects = $writerQuery->orderBy('created_at', 'desc')->get();
         $totalWriterEarnings = $writerProjects->sum('writer_price');
-        // Hitung fee naskah yang BELUM cair
         $unpaidWriterEarnings = $writerProjects->where('is_writer_paid', false)->sum('writer_price');
 
+        // Kalkulasi khusus proyek SELESAI
+        $completedWriterProjects = $writerProjects->where('status', 'Selesai');
+        $completedWriterEarnings = $completedWriterProjects->sum('writer_price');
+
+        // TOTAL KESELURUHAN
         $totalEarnings = $totalAppEarnings + $totalWriterEarnings;
-        $totalUnpaidEarnings = $unpaidAppEarnings + $unpaidWriterEarnings; // Total Piutang ke Admin 2
+        $totalUnpaidEarnings = $unpaidAppEarnings + $unpaidWriterEarnings; 
         $totalProjects = $appProjects->count() + $writerProjects->count();
+
+        // TOTAL ESTIMASI CAIR (DARI PROYEK YANG SUDAH SELESAI)
+        $totalCompletedEarnings = $completedAppEarnings + $completedWriterEarnings;
+        $totalCompletedProjects = $completedAppProjects->count() + $completedWriterProjects->count();
 
         $years = range(2024, date('Y'));
 
         return view('admin.earnings.index', compact(
-            'appProjects', 'totalAppEarnings', 'unpaidAppEarnings',
-            'writerProjects', 'totalWriterEarnings', 'unpaidWriterEarnings',
+            'appProjects', 'totalAppEarnings', 'unpaidAppEarnings', 'completedAppEarnings',
+            'writerProjects', 'totalWriterEarnings', 'unpaidWriterEarnings', 'completedWriterEarnings',
             'totalEarnings', 'totalUnpaidEarnings', 'totalProjects',
+            'totalCompletedEarnings', 'totalCompletedProjects', // Variabel Baru
             'selectedMonth', 'selectedYear', 'years'
         ));
     }
@@ -128,5 +145,62 @@ class DashboardController extends Controller
         }
 
         return back()->with('error', 'Akses ditolak.');
+    }
+
+    public function exportEarningsPdf(Request $request)
+    {
+        $userId = auth()->id();
+        $selectedMonth = $request->input('month', date('m'));
+        $selectedYear = $request->input('year', date('Y'));
+
+        // Query Dasar
+        $appQuery = Project::where('programmer_id', $userId);
+        $writerQuery = Project::where('writer_id', $userId);
+
+        // Filter
+        if ($selectedMonth != 'all') {
+            $appQuery->whereMonth('created_at', $selectedMonth);
+            $writerQuery->whereMonth('created_at', $selectedMonth);
+        }
+        if ($selectedYear != 'all') {
+            $appQuery->whereYear('created_at', $selectedYear);
+            $writerQuery->whereYear('created_at', $selectedYear);
+        }
+
+        $appProjects = $appQuery->orderBy('created_at', 'desc')->get();
+        $writerProjects = $writerQuery->orderBy('created_at', 'desc')->get();
+
+        $bulanIndo = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+        ];
+        
+        $periode = ($selectedMonth == 'all' ? 'Semua Bulan' : $bulanIndo[(int)$selectedMonth]) . ' ' . ($selectedYear == 'all' ? 'Semua Tahun' : $selectedYear);
+
+        $pdf = Pdf::loadView('admin.earnings.pdf', compact('appProjects', 'writerProjects', 'periode'))
+        ->setOptions([
+                      'chroot'  => base_path(),             
+                      'tempDir' => storage_path('app')      
+                  ]);
+        
+        // Atur ukuran kertas
+        $pdf->setPaper('A4', 'portrait');
+
+        $namaUser = str_replace(' ', '_', auth()->user()->name);
+        $waktuDownload = now()->locale('id')->translatedFormat('l_d_F_Y_H_i'); 
+        $fileName = 'Slip_Pendapatan_Karyantara_' . $namaUser . '_' . $waktuDownload . '.pdf';
+
+        return $pdf->stream($fileName);
+    }
+
+    public function exportEarningsExcel(Request $request)
+    {
+        $selectedMonth = $request->input('month', date('m'));
+        $selectedYear = $request->input('year', date('Y'));
+        
+        $fileName = 'Rekap_Pendapatan_' . auth()->user()->name . '_' . $selectedMonth . '_' . $selectedYear . '.xlsx';
+        
+        return Excel::download(new MyEarningsExport($selectedMonth, $selectedYear, auth()->id()), $fileName);
     }
 }
