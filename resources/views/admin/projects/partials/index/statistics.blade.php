@@ -11,21 +11,24 @@
             class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
         </div>
 
-        <div class="relative z-10">
-            <div class="flex items-center gap-2 mb-1">
-                <p class="text-sm font-bold text-amber-900 uppercase tracking-wider drop-shadow-sm">Total Pendapatan
-                    Bersih</p>
+        <div class="relative z-10 w-full pr-4">
+            <div class="mb-2">
                 <span
-                    class="px-2 py-0.5 text-[10px] font-black bg-[#1E293B] text-amber-400 border border-[#1E293B] rounded-md shadow-sm">
-                    {{ $totalProjects }} Proyek
+                    class="inline-flex items-center px-2.5 py-1 text-[11px] font-black bg-[#1E293B] text-amber-400 border border-[#1E293B] rounded-md shadow-sm whitespace-nowrap">
+                    <i class="fa-solid fa-chart-pie mr-1.5 opacity-80"></i> {{ $totalProjects }} Proyek
                 </span>
             </div>
-            <h4 class="text-2xl font-black text-[#1E293B] mt-1 drop-shadow-sm">Rp
-                {{ number_format($totalNetIncome, 0, ',', '.') }}</h4>
+
+            <p class="text-sm font-bold text-amber-900 uppercase tracking-wider drop-shadow-sm leading-tight">
+                Total Pendapatan Bersih
+            </p>
+            <h4 class="text-2xl font-black text-[#1E293B] mt-1 drop-shadow-sm">
+                Rp {{ number_format($totalNetIncome, 0, ',', '.') }}
+            </h4>
         </div>
 
         <div
-            class="relative z-10 w-12 h-12 bg-white/40 backdrop-blur-sm border border-white/50 text-[#1E293B] rounded-full flex items-center justify-center text-xl shadow-inner group-hover:rotate-12 transition-transform duration-300">
+            class="relative z-10 w-12 h-12 flex-shrink-0 bg-white/40 backdrop-blur-sm border border-white/50 text-[#1E293B] rounded-full flex items-center justify-center text-xl shadow-inner group-hover:rotate-12 transition-transform duration-300">
             <i class="fa-solid fa-wallet"></i>
         </div>
     </div>
