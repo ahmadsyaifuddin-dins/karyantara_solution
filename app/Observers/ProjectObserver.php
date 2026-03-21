@@ -20,50 +20,44 @@ class ProjectObserver
         $sisa_pembayaran = $project->net_income - $project->paid_amount;
 
         return [
-            $project->id,                                 // A: 0
-            $project->client_type,                        // B: 1
-            $project->client_name,                        // C: 2
-            $project->skripsi_package ?? '-',             // D: 3
-            $project->npm ?? '-',                         // E: 4
-            $project->class_name ?? '-',                  // F: 5 (BARU)
-            $project->dospem_1 ?? '-',                    // G: 6 (BARU)
-            $project->dospem_2 ?? '-',                    // H: 7 (BARU)
-            $project->skripsi_title ?? '-',               // I: 8
-            $project->project_description ?? '-',         // J: 9 (BARU)
-            $project->programmer_id ?? '-',               // K: 10 (BARU)
-            $project->writer_id ?? '-',                   // L: 11 (BARU)
-            $project->status,                             // M: 12
-            $project->revision_notes ?? '-',              // N: 13 (BARU)
-            $project->net_income,                         // O: 14
-            $project->paid_amount,                        // P: 15
-            $sisa_pembayaran,                             // Q: 16
-            $project->payment_method,                     // R: 17
-            $project->created_at ? $project->created_at->format('Y-m-d H:i:s') : '-', // S: 18
+            '=ROW()-1',                                   // A: 0 (NOMOR URUT OTOMATIS)
+            $project->id,                                 // B: 1
+            $project->client_type,                        // C: 2
+            $project->client_name,                        // D: 3
+            $project->skripsi_package ?? '-',             // E: 4
+            $project->npm ?? '-',                         // F: 5
+            $project->class_name ?? '-',                  // G: 6
+            $project->dospem_1 ?? '-',                    // H: 7
+            $project->dospem_2 ?? '-',                    // I: 8
+            $project->skripsi_title ?? '-',               // J: 9
+            $project->project_description ?? '-',         // K: 10
+            $project->programmer ? $project->programmer->name : '-', // L: 11 (PERBAIKAN BUG NAMA)
+            $project->writer ? $project->writer->name : '-',         // M: 12 (PERBAIKAN BUG NAMA)
+            $project->status,                             // N: 13
+            $project->revision_notes ?? '-',              // O: 14
+            $project->net_income,                         // P: 15 (HARGA SEKARANG DI P)
+            $project->paid_amount,                        // Q: 16
+            $sisa_pembayaran,                             // R: 17
+            $project->payment_method,                     // S: 18
+            $project->created_at ? $project->created_at->format('Y-m-d H:i:s') : '-', // T: 19
         ];
     }
 
     public function created(Project $project): void
     {
-        // Ambil value dari setting (berupa string '0' atau '1')
         $autoSync = Setting::where('key', 'auto_sync_sheet')->value('value');
-
-        // Jika bukan '1' (mati), hentikan proses
-        if ($autoSync !== '1') {
-            return;
-        }
+        if ($autoSync !== '1') return;
 
         if ($project->is_shared) {
-            $this->googleSheetService->appendData('Sheet1!A:S', [$this->mapProjectData($project)]);
+            // Jangkauan diubah jadi A:T
+            $this->googleSheetService->appendData('Sheet1!A:T', [$this->mapProjectData($project)]);
         }
     }
 
     public function updated(Project $project): void
     {
         $autoSync = Setting::where('key', 'auto_sync_sheet')->value('value');
-
-        if ($autoSync !== '1') {
-            return;
-        }
+        if ($autoSync !== '1') return;
 
         if ($project->is_shared) {
             $this->googleSheetService->updateDataById('Sheet1', $project->id, [$this->mapProjectData($project)]);

@@ -31,15 +31,16 @@ class SyncProjectsToGoogleSheet extends Command
 
         // HEADER SEKARANG ADA 19 KOLOM (A sampai S)
         $values[] = [
-            'ID', 'TIPE KLIEN', 'NAMA KLIEN', 'PAKET', 'NPM', 'KELAS', 'DOSPEM 1', 'DOSPEM 2',
-            'JUDUL SKRIPSI', 'DESKRIPSI PROYEK', 'PROGRAMMER ID', 'WRITER ID',
-            'STATUS', 'CATATAN REVISI', 'TOTAL HARGA', 'TERBAYARKAN', 'SISA TAGIHAN', 'METODE', 'TANGGAL DIBUAT',
+            'NO', 'ID', 'TIPE KLIEN', 'NAMA KLIEN', 'PAKET', 'NPM', 'KELAS', 'DOSPEM 1', 'DOSPEM 2',
+            'JUDUL SKRIPSI', 'DESKRIPSI PROYEK', 'PROGRAMMER', 'WRITER',
+            'STATUS', 'CATATAN REVISI', 'TOTAL HARGA', 'TERBAYARKAN', 'SISA TAGIHAN', 'METODE', 'TANGGAL DIBUAT'
         ];
 
         foreach ($projects as $project) {
             $sisa_pembayaran = $project->net_income - $project->paid_amount;
 
             $values[] = [
+                '=ROW()-1',
                 $project->id,
                 $project->client_type,
                 $project->client_name,
@@ -50,8 +51,8 @@ class SyncProjectsToGoogleSheet extends Command
                 $project->dospem_2 ?? '-',
                 $project->skripsi_title ?? '-',
                 $project->project_description ?? '-',
-                $project->programmer_id ?? '-',
-                $project->writer_id ?? '-',
+                $project->programmer ? $project->programmer->name : '-',
+                $project->writer ? $project->writer->name : '-',
                 $project->status,
                 $project->revision_notes ?? '-',
                 $project->net_income,
