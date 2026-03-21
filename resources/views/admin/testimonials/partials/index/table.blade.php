@@ -86,7 +86,7 @@
                                     class="text-blue-600 hover:text-blue-900"><i
                                         class="fa-solid fa-pen-to-square"></i></a>
                                 <form action="{{ route('admin.testimonials.destroy', $item->id) }}" method="POST"
-                                    onsubmit="return confirm('Hapus data ini?');">
+                                    class="form-delete" data-name="{{ $item->client_name }}">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="text-red-600 hover:text-red-900"><i
                                             class="fa-solid fa-trash"></i></button>

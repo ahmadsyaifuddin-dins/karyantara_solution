@@ -80,8 +80,7 @@
 
                                         @if ($item->id !== Auth::id())
                                             <form action="{{ route('admin.admins.destroy', $item->id) }}" method="POST"
-                                                class="inline-block"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus admin ini?');">
+                                                class="inline-block form-delete" data-name="{{ $item->name }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"

@@ -194,7 +194,7 @@
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                                 <form action="{{ route('admin.projects.destroy', $item->id) }}" method="POST"
-                                    class="inline-block" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                    class="inline-block form-delete" data-name="{{ $item->client_name }}">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"

@@ -46,7 +46,7 @@
     </main>
 
     <x-public.footer />
-
+    <x-flash-message />
 </body>
 
 </html>

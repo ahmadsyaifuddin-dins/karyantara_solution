@@ -146,8 +146,8 @@
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             <form action="{{ route('admin.portfolios.destroy', $item->id) }}"
-                                                method="POST" class="inline-block"
-                                                onsubmit="return confirm('Yakin ingin menghapus portofolio ini secara permanen?');">
+                                                method="POST" class="inline-block form-delete"
+                                                data-name="{{ $item->title }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
