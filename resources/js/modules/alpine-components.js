@@ -142,4 +142,116 @@ document.addEventListener('alpine:init', () => {
             form.submit();
         }
     }));
+
+    Alpine.data('googleSheetSync', (syncUrl) => ({
+        syncData() {
+            Swal.fire({
+                title: 'Konfirmasi Sinkronisasi',
+                    html: `
+                    <p class="mb-4">Tindakan ini akan memperbarui seluruh data proyek publik di Google Spreadsheet secara massal. Pastikan data di sistem saat ini sudah akurat dan tidak ada data penting yang tidak sengaja terhapus sebelum Anda melanjutkan.</p>
+                    
+                    <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-100 inline-block w-full">
+                        <p class="text-xs text-gray-500 font-semibold mb-1 uppercase tracking-wider">Target File Backup:</p>
+                        <a href="https://docs.google.com/spreadsheets/d/1HFmSp8B6V03saKbhjLotI3OSfemU2eoxfftdAdTpUYQ/edit?usp=sharing" 
+                           target="_blank" 
+                           class="text-amber-600 hover:text-amber-700 font-bold flex items-center justify-center gap-2 transition-colors">
+                            <i class="fa-solid fa-file-excel text-emerald-600 text-lg"></i>
+                            Buka Google Spreadsheet Karyantara
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1"></i>
+                        </a>
+                    </div>
+                `,
+                
+                iconHtml: '<i class="fa-solid fa-cloud-arrow-up text-amber-500 text-4xl"></i>',
+                customClass: {
+                    popup: 'rounded-2xl shadow-xl border border-gray-100 bg-white p-6',
+                    icon: 'border-0 bg-amber-50 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-5',
+                    title: 'text-[#1E293B] font-bold text-2xl mt-2',
+                    htmlContainer: 'text-gray-500 text-sm mt-2 mb-6', 
+                    actions: 'flex gap-3 w-full justify-center',
+                    confirmButton: 'bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 px-6 rounded-lg focus:outline-none focus:ring-2 transition-all',
+                    cancelButton: 'bg-white border-2 border-[#1E293B] text-[#1E293B] hover:bg-gray-50 font-semibold py-2.5 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-300 transition-all'
+                },
+                buttonsStyling: false,
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Sync Sekarang',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Menyinkronkan...',
+                        text: 'Mohon tunggu, jangan tutup halaman ini.',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = syncUrl;
+
+                    const csrf = document.createElement('input');
+                    csrf.type = 'hidden';
+                    csrf.name = '_token';
+                    csrf.value = document.querySelector('meta[name="csrf-token"]').content;
+                    form.appendChild(csrf);
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+    }));
+
+    Alpine.data('settingToggle', (initialState, toggleUrl) => ({
+        isActive: initialState,
+        isLoading: false,
+
+        toggleSetting() {
+            this.isLoading = true;
+            fetch(toggleUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    this.isActive = data.value === '1';
+                    
+                    window.Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        customClass: {
+                            popup: 'bg-white border-2 border-emerald-100 shadow-xl rounded-xl',
+                            title: 'text-[#1E293B] text-sm font-bold'
+                        }
+                    });
+                }
+                this.isLoading = false;
+            })
+            .catch(() => {
+                this.isLoading = false;
+                window.Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Gagal memperbarui pengaturan!',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            });
+        }
+    }));
 });
+

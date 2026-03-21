@@ -26,16 +26,24 @@
                 <i class="fa-solid fa-users-gear w-5 text-center text-lg"></i>
                 <span>Kelola Admin</span>
             </a>
+
+            <a href="{{ route('admin.ikhtiar') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.ikhtiar') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
+                <i class="fa-solid fa-leaf w-5 text-center text-lg"></i>
+                <span>Ruang Ikhtiar</span>
+            </a>
         </div>
 
         <div class="pt-4 border-t border-gray-700/50 space-y-2">
             <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Operasional & Finansial
             </p>
+
             <a href="{{ route('admin.projects.index') }}"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.projects.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
                 <i class="fa-solid fa-file-invoice-dollar w-5 text-center text-lg"></i>
                 <span>Daftar Klien & Proyek</span>
             </a>
+
             <a href="{{ route('admin.earnings.index') }}"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.earnings.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
                 <i class="fa-solid fa-wallet w-5 text-center text-lg"></i>
@@ -45,6 +53,7 @@
 
         <div class="pt-4 border-t border-gray-700/50 space-y-2">
             <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Manajemen Konten</p>
+
             <a href="{{ route('admin.portfolios.index') }}"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.portfolios.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
                 <i class="fa-solid fa-briefcase w-5 text-center text-lg"></i>
@@ -70,10 +79,18 @@
         </div>
 
         <div class="pt-4 border-t border-gray-700/50 space-y-2">
+            <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Sistem & Konfigurasi</p>
+
             <a href="{{ route('admin.visitors.index') }}"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.visitors.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
                 <i class="fa-solid fa-chart-line w-5 text-center text-lg"></i>
                 <span>Statistik Pengunjung</span>
+            </a>
+
+            <a href="{{ route('admin.settings.index') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.settings.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
+                <i class="fa-solid fa-cogs w-5 text-center text-lg"></i>
+                <span>Pengaturan Sistem</span>
             </a>
         </div>
 

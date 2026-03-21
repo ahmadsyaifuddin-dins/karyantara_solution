@@ -3,10 +3,19 @@
         <i class="fa-solid fa-file-invoice-dollar mr-2"></i> {{ __('Daftar Klien & Proyek') }}
     </h2>
     <div class="flex flex-wrap gap-2">
+
+        <div x-data="googleSheetSync('{{ route('admin.projects.sync-sheet') }}')" class="inline-block">
+            <button @click="syncData" type="button"
+                class="bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition inline-flex items-center focus:outline-none focus:ring-2 focus:ring-amber-500">
+                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Sync Spreadsheet
+            </button>
+        </div>
+
         <a href="{{ route('admin.projects.priority') }}"
             class="bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition inline-flex items-center">
             <i class="fa-solid fa-list-check mr-1"></i> Atur Prioritas
         </a>
+
         <a href="{{ route('admin.projects.export.pdf') }}" target="_blank"
             class="bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition inline-flex items-center">
             <i class="fa-solid fa-file-pdf mr-1"></i> Export PDF

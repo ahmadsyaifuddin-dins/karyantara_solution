@@ -5,10 +5,12 @@ use App\Http\Controllers\Admin\DashboardController; // Alias agar tidak bentrok
 use App\Http\Controllers\Admin\PageViewController;
 use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ValidationController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 // HALAMAN PUBLIK (Guest)
@@ -46,7 +48,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/my-earnings', [DashboardController::class, 'myEarnings'])->name('earnings.index');
     Route::patch('/my-earnings/{project}/toggle-paid', [DashboardController::class, 'toggleEarningStatus'])->name('earnings.toggle-paid');
-    
+
     Route::get('/my-earnings/export/pdf', [DashboardController::class, 'exportEarningsPdf'])->name('earnings.export.pdf');
     Route::get('/my-earnings/export/excel', [DashboardController::class, 'exportEarningsExcel'])->name('earnings.export.excel');
 
@@ -66,6 +68,24 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('projects', ProjectController::class);
 
     Route::get('/visitors', [PageViewController::class, 'index'])->name('visitors.index');
+
+    Route::post('/admin/projects/sync-google-sheet', function () {
+        try {
+            // Memanggil command Artisan dari dalam web!
+            Artisan::call('project:sync-sheet');
+
+            return back()->with('success', 'Data berhasil disinkronkan ke Google Sheet!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal sinkronisasi: '.$e->getMessage());
+        }
+    })->name('projects.sync-sheet');
+
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings/{setting}/toggle', [SettingController::class, 'toggle'])->name('settings.toggle');
+
+    Route::get('/ikhtiar', function () {
+        return view('pages.admin.ikhtiar.index'); // Sesuaikan dengan path view kamu
+    })->name('ikhtiar');
 });
 
 // PROFILE BAWAAN BREEZE
