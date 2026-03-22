@@ -146,6 +146,14 @@
                             [ SEMPRO ] NASKAH SAJA (BAB 1-3)
                         @elseif($project->skripsi_package == 'sempro_bab3')
                             [ SEMPRO ] NASKAH KHUSUS BAB 3
+                        @elseif($project->skripsi_package == 'sidang_aplikasi')
+                            [ SIDANG ] REVISI APLIKASI
+                        @elseif($project->skripsi_package == 'sidang_naskah')
+                            [ SIDANG ] NASKAH BAB 4-5
+                        @elseif($project->skripsi_package == 'sidang_bab4')
+                            [ SIDANG ] NASKAH KHUSUS BAB 4
+                        @elseif($project->skripsi_package == 'sidang_keduanya')
+                            [ SIDANG ALL-IN ] REVISI APP + NASKAH BAB 4-5
                         @endif
                     </strong>
                 </td>

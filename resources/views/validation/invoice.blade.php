@@ -50,10 +50,18 @@
                 @if ($project->skripsi_package)
                     @php
                         $isSempro = str_starts_with($project->skripsi_package, 'sempro_');
-                        $badgeClass = $isSempro
-                            ? 'bg-teal-50 text-teal-700 border border-teal-200'
-                            : 'bg-amber-50 text-amber-700 border border-amber-200';
-                        $iconClass = $isSempro ? 'fa-file-lines text-teal-500' : 'fa-graduation-cap text-amber-500';
+                        $isSidang = str_starts_with($project->skripsi_package, 'sidang_');
+
+                        if ($isSempro) {
+                            $badgeClass = 'bg-teal-50 text-teal-700 border border-teal-200';
+                            $iconClass = 'fa-file-lines text-teal-500';
+                        } elseif ($isSidang) {
+                            $badgeClass = 'bg-purple-50 text-purple-700 border border-purple-200';
+                            $iconClass = 'fa-medal text-purple-500';
+                        } else {
+                            $badgeClass = 'bg-amber-50 text-amber-700 border border-amber-200';
+                            $iconClass = 'fa-graduation-cap text-amber-500';
+                        }
                     @endphp
                     <div>
                         <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Paket Pengerjaan</p>
@@ -72,6 +80,14 @@
                                 Sempro (Naskah Bab 1-3)
                             @elseif($project->skripsi_package == 'sempro_bab3')
                                 Sempro (Naskah Khusus Bab 3)
+                            @elseif($project->skripsi_package == 'sidang_aplikasi')
+                                Sidang (Revisi Aplikasi)
+                            @elseif($project->skripsi_package == 'sidang_naskah')
+                                Sidang (Naskah Bab 4-5)
+                            @elseif($project->skripsi_package == 'sidang_bab4')
+                                Sidang (Naskah Khusus Bab 4)
+                            @elseif($project->skripsi_package == 'sidang_keduanya')
+                                Sidang All-In (Revisi App + Bab 4-5)
                             @endif
                         </span>
                     </div>

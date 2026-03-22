@@ -196,9 +196,9 @@ class ProjectController extends Controller
             $data['app_price'] = $data['app_price'] ?? 0;
             $data['writer_price'] = $data['writer_price'] ?? 0;
 
-            // Cek kebutuhan tim berdasarkan paket yang dipilih (Termasuk paket Sempro)
-            $needsProgrammer = in_array($pkg, ['aplikasi', 'keduanya', 'sempro_keduanya']);
-            $needsWriter = in_array($pkg, ['naskah', 'keduanya', 'sempro_naskah', 'sempro_bab3', 'sempro_keduanya']);
+            // Cek kebutuhan tim (Tambahkan paket sidang)
+            $needsProgrammer = in_array($pkg, ['aplikasi', 'keduanya', 'sempro_keduanya', 'sidang_aplikasi', 'sidang_keduanya']);
+            $needsWriter = in_array($pkg, ['naskah', 'keduanya', 'sempro_naskah', 'sempro_bab3', 'sempro_keduanya', 'sidang_naskah', 'sidang_keduanya', 'sidang_bab4']);
 
             // Assign ID Penanggung Jawab
             $data['programmer_id'] = $needsProgrammer ? $request->programmer_id : null;
@@ -208,11 +208,9 @@ class ProjectController extends Controller
             if (!$needsProgrammer) $data['app_price'] = 0;
             if (!$needsWriter) $data['writer_price'] = 0;
 
-            // Hitung net_income
             $data['net_income'] = $data['app_price'] + $data['writer_price'];
             
         } else {
-            // Null-kan field spesifik jika bukan mahasiswa atau paket kosong
             $data = array_merge($data, [
                 'skripsi_package' => null,
                 'programmer_id'   => null,
