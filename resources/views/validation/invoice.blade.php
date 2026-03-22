@@ -48,17 +48,30 @@
                 </div>
 
                 @if ($project->skripsi_package)
+                    @php
+                        $isSempro = str_starts_with($project->skripsi_package, 'sempro_');
+                        $badgeClass = $isSempro
+                            ? 'bg-teal-50 text-teal-700 border border-teal-200'
+                            : 'bg-amber-50 text-amber-700 border border-amber-200';
+                        $iconClass = $isSempro ? 'fa-file-lines text-teal-500' : 'fa-graduation-cap text-amber-500';
+                    @endphp
                     <div>
                         <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Paket Pengerjaan</p>
                         <span
-                            class="inline-flex items-center mt-1 px-3 py-1.5 text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 rounded-md uppercase shadow-sm">
-                            <i class="fa-solid fa-graduation-cap mr-1.5 text-amber-500"></i>
+                            class="inline-flex items-center mt-1 px-3 py-1.5 text-[10px] font-bold {{ $badgeClass }} rounded-md uppercase shadow-sm">
+                            <i class="fa-solid {{ $iconClass }} mr-1.5"></i>
                             @if ($project->skripsi_package == 'keduanya')
                                 Skripsi All-In (App + Naskah)
                             @elseif($project->skripsi_package == 'aplikasi')
                                 Skripsi (Aplikasi Saja)
-                            @else
+                            @elseif($project->skripsi_package == 'naskah')
                                 Skripsi (Naskah Saja)
+                            @elseif($project->skripsi_package == 'sempro_keduanya')
+                                Sempro All-In (App + Bab 1-3)
+                            @elseif($project->skripsi_package == 'sempro_naskah')
+                                Sempro (Naskah Bab 1-3)
+                            @elseif($project->skripsi_package == 'sempro_bab3')
+                                Sempro (Naskah Khusus Bab 3)
                             @endif
                         </span>
                     </div>

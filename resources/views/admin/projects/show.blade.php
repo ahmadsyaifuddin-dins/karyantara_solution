@@ -39,15 +39,31 @@
                             <h3 class="text-2xl font-extrabold text-[#1E293B]">{{ $project->client_name }}</h3>
 
                             @if ($project->skripsi_package)
+                                @php
+                                    // Set warna berbeda antara Skripsi dan Sempro
+                                    $isSempro = str_starts_with($project->skripsi_package, 'sempro_');
+                                    $badgeClass = $isSempro
+                                        ? 'bg-teal-100 text-teal-700 border border-teal-200'
+                                        : 'bg-amber-100 text-amber-700 border border-amber-200';
+                                    $iconClass = $isSempro
+                                        ? 'fa-file-lines text-teal-500'
+                                        : 'fa-graduation-cap text-amber-500';
+                                @endphp
                                 <span
-                                    class="bg-amber-100 text-amber-700 border border-amber-200 text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider flex items-center shadow-sm">
-                                    <i class="fa-solid fa-graduation-cap mr-1.5 text-amber-500"></i>
+                                    class="{{ $badgeClass }} text-[10px] px-2.5 py-1 rounded-md font-bold uppercase tracking-wider flex items-center shadow-sm">
+                                    <i class="fa-solid {{ $iconClass }} mr-1.5"></i>
                                     @if ($project->skripsi_package == 'keduanya')
                                         Skripsi All-In (App + Naskah)
                                     @elseif($project->skripsi_package == 'aplikasi')
                                         Skripsi (Aplikasi Saja)
-                                    @else
+                                    @elseif($project->skripsi_package == 'naskah')
                                         Skripsi (Naskah Saja)
+                                    @elseif($project->skripsi_package == 'sempro_keduanya')
+                                        Sempro All-In (App + Bab 1-3)
+                                    @elseif($project->skripsi_package == 'sempro_naskah')
+                                        Sempro (Naskah Bab 1-3)
+                                    @elseif($project->skripsi_package == 'sempro_bab3')
+                                        Sempro (Naskah Khusus Bab 3)
                                     @endif
                                 </span>
                             @endif
@@ -210,15 +226,24 @@
                         <div class="p-6">
 
                             @if ($project->skripsi_package)
-                                <div
-                                    class="mb-6 p-4 rounded-xl border border-amber-200 bg-amber-50/50 flex items-start gap-4">
+                                @php
+                                    $isSempro = str_starts_with($project->skripsi_package, 'sempro_');
+                                    $boxClass = $isSempro
+                                        ? 'border-teal-200 bg-teal-50/50'
+                                        : 'border-amber-200 bg-amber-50/50';
+                                    $iconColor = $isSempro ? 'text-teal-500' : 'text-amber-500';
+                                    $textColor = $isSempro ? 'text-teal-800' : 'text-amber-800';
+                                    $descColor = $isSempro ? 'text-teal-700' : 'text-amber-700';
+                                @endphp
+                                <div class="mb-6 p-4 rounded-xl border {{ $boxClass }} flex items-start gap-4">
                                     <div class="mt-1">
-                                        <i class="fa-solid fa-bullseye text-2xl text-amber-500"></i>
+                                        <i class="fa-solid fa-bullseye text-2xl {{ $iconColor }}"></i>
                                     </div>
                                     <div>
-                                        <h4 class="font-bold text-amber-800 text-sm uppercase tracking-wider">Target
+                                        <h4 class="font-bold {{ $textColor }} text-sm uppercase tracking-wider">
+                                            Target
                                             Pekerjaan Tim</h4>
-                                        <p class="text-amber-700 font-medium text-sm mt-1 leading-relaxed">
+                                        <p class="{{ $descColor }} font-medium text-sm mt-1 leading-relaxed">
                                             @if ($project->skripsi_package == 'keduanya')
                                                 Tim wajib menyelesaikan <strong>Sistem/Aplikasi</strong> beserta
                                                 penyusunan <strong>Naskah Skripsi Lengkap (Bab 1 - 5)</strong> sesuai
@@ -226,9 +251,21 @@
                                             @elseif($project->skripsi_package == 'aplikasi')
                                                 Tim hanya fokus mengembangkan <strong>Sistem/Aplikasi</strong>. Klien
                                                 menyusun naskah secara mandiri.
-                                            @else
-                                                Tim hanya fokus menyusun <strong>Naskah Skripsi Lengkap</strong>.
+                                            @elseif($project->skripsi_package == 'naskah')
+                                                Tim hanya fokus menyusun <strong>Naskah Skripsi Lengkap (Bab 1 -
+                                                    5)</strong>.
                                                 Aplikasi sudah ada atau dikerjakan pihak lain.
+                                            @elseif($project->skripsi_package == 'sempro_keduanya')
+                                                Tim wajib menyelesaikan <strong>Sistem/Aplikasi Prototype</strong>
+                                                beserta
+                                                penyusunan <strong>Naskah Proposal (Bab 1 - 3)</strong> untuk keperluan
+                                                Seminar.
+                                            @elseif($project->skripsi_package == 'sempro_naskah')
+                                                Tim fokus menyusun <strong>Naskah Proposal (Bab 1 - 3)</strong> untuk
+                                                keperluan Seminar Proposal.
+                                            @elseif($project->skripsi_package == 'sempro_bab3')
+                                                Tim khusus menyusun lanjutan naskah pada bagian <strong>Bab 3
+                                                    (Metodologi Penelitian)</strong> saja.
                                             @endif
                                         </p>
                                     </div>
@@ -239,9 +276,9 @@
                                 <div class="mb-6 pb-6 border-b border-gray-100">
                                     <span
                                         class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Judul
-                                        Skripsi (Fix)</span>
+                                        Skripsi / Sempro (Fix)</span>
                                     <h3 class="text-lg font-bold text-gray-800 leading-relaxed">
-                                        {{ $project->skripsi_title ? '"' . $project->skripsi_title . '"' : 'Belum ada judul skripsi' }}
+                                        {{ $project->skripsi_title ? '"' . $project->skripsi_title . '"' : 'Belum ada judul' }}
                                     </h3>
                                 </div>
                             @endif

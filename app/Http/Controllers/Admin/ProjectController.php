@@ -192,23 +192,25 @@ class ProjectController extends Controller
     private function formatProjectData(array $data, Request $request): array
     {
         if ($data['client_type'] === 'mahasiswa' && !empty($data['skripsi_package'])) {
+            $pkg = $data['skripsi_package'];
             $data['app_price'] = $data['app_price'] ?? 0;
             $data['writer_price'] = $data['writer_price'] ?? 0;
 
-            if ($data['skripsi_package'] === 'aplikasi') {
-                $data['programmer_id'] = $request->programmer_id;
-                $data['writer_id'] = null;
-                $data['writer_price'] = 0;
-            } elseif ($data['skripsi_package'] === 'naskah') {
-                $data['programmer_id'] = null;
-                $data['writer_id'] = $request->writer_id;
-                $data['app_price'] = 0;
-            } elseif ($data['skripsi_package'] === 'keduanya') {
-                $data['programmer_id'] = $request->programmer_id;
-                $data['writer_id'] = $request->writer_id;
-            }
+            // Cek kebutuhan tim berdasarkan paket yang dipilih (Termasuk paket Sempro)
+            $needsProgrammer = in_array($pkg, ['aplikasi', 'keduanya', 'sempro_keduanya']);
+            $needsWriter = in_array($pkg, ['naskah', 'keduanya', 'sempro_naskah', 'sempro_bab3', 'sempro_keduanya']);
 
+            // Assign ID Penanggung Jawab
+            $data['programmer_id'] = $needsProgrammer ? $request->programmer_id : null;
+            $data['writer_id'] = $needsWriter ? $request->writer_id : null;
+
+            // Pastikan harga 0 jika paket tidak butuh role tersebut
+            if (!$needsProgrammer) $data['app_price'] = 0;
+            if (!$needsWriter) $data['writer_price'] = 0;
+
+            // Hitung net_income
             $data['net_income'] = $data['app_price'] + $data['writer_price'];
+            
         } else {
             // Null-kan field spesifik jika bukan mahasiswa atau paket kosong
             $data = array_merge($data, [

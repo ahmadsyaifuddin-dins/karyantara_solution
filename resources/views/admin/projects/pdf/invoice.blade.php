@@ -8,16 +8,13 @@
         /* DIET CSS DIMULAI */
         @page {
             margin: 25px 40px;
-            /* Memaksimalkan ruang kertas */
         }
 
         body {
             font-family: sans-serif;
             font-size: 11px;
-            /* Dikecilkan sedikit */
             color: #333;
             line-height: 1.3;
-            /* Jarak antar baris dirapatkan */
         }
 
         .text-center {
@@ -34,11 +31,9 @@
 
         .title {
             font-size: 16px;
-            /* Diperkecil dari 18px */
             font-weight: bold;
             text-align: center;
             margin: 10px 0;
-            /* Margin atas bawah dikompres */
             text-decoration: underline;
             letter-spacing: 1px;
         }
@@ -47,11 +42,9 @@
             background-color: #1E293B;
             color: #fff;
             padding: 4px 8px;
-            /* Padding dikurangi */
             font-size: 11px;
             font-weight: bold;
             margin-top: 10px;
-            /* Margin dikompres */
             margin-bottom: 6px;
         }
 
@@ -59,12 +52,10 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 8px;
-            /* Margin bawah dikompres */
         }
 
         .info-table td {
             padding: 2px 4px;
-            /* Padding sel sangat dirapatkan */
             vertical-align: top;
         }
 
@@ -88,7 +79,6 @@
         .finance-table td {
             border: 1px solid #ddd;
             padding: 4px 6px;
-            /* Padding tabel dikompres */
         }
 
         .finance-table th {
@@ -103,7 +93,6 @@
 
         .terms {
             font-size: 10px;
-            /* Dikecilkan agar syarat & ketentuan tidak makan tempat */
             margin-top: 8px;
             padding: 6px 8px;
             border: 1px dashed #999;
@@ -146,11 +135,17 @@
                     <strong
                         style="background-color: #fef3c7; color: #b45309; padding: 2px 6px; border-radius: 3px; font-size: 10px;">
                         @if ($project->skripsi_package == 'keduanya')
-                            [ ALL-IN ] APLIKASI + NASKAH BAB 1-5
+                            [ SKRIPSI ALL-IN ] APLIKASI + NASKAH BAB 1-5
                         @elseif($project->skripsi_package == 'aplikasi')
-                            [ APLIKASI SAJA ] TANPA NASKAH
-                        @else
-                            [ NASKAH SAJA ] TANPA APLIKASI
+                            [ SKRIPSI ] APLIKASI SAJA
+                        @elseif($project->skripsi_package == 'naskah')
+                            [ SKRIPSI ] NASKAH SAJA (BAB 1-5)
+                        @elseif($project->skripsi_package == 'sempro_keduanya')
+                            [ SEMPRO ALL-IN ] APLIKASI + NASKAH BAB 1-3
+                        @elseif($project->skripsi_package == 'sempro_naskah')
+                            [ SEMPRO ] NASKAH SAJA (BAB 1-3)
+                        @elseif($project->skripsi_package == 'sempro_bab3')
+                            [ SEMPRO ] NASKAH KHUSUS BAB 3
                         @endif
                     </strong>
                 </td>
@@ -175,7 +170,7 @@
                 <td>1. {{ $project->dospem_1 ?? '-' }} &nbsp;|&nbsp; 2. {{ $project->dospem_2 ?? '-' }}</td>
             </tr>
             <tr>
-                <td class="label">Judul Skripsi</td>
+                <td class="label">Judul Skripsi / Sempro</td>
                 <td class="colon">:</td>
                 <td><em>"{{ $project->skripsi_title ?? '-' }}"</em></td>
             </tr>

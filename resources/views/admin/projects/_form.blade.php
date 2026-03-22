@@ -62,21 +62,21 @@
         </h3>
 
         <div class="col-span-1 md:col-span-2 mt-2">
-            <x-forms.label value="Paket Pengerjaan Skripsi" class="text-amber-700" />
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
+            <x-forms.label value="Pilih Paket Pengerjaan" class="text-amber-700" />
 
+            <p class="text-xs font-bold text-amber-600 mt-2 mb-1 border-b border-amber-100 pb-1">Kategori: Skripsi /
+                Tugas Akhir</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                 <label
                     class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition-all duration-200"
                     :class="package === 'aplikasi' ? 'border-amber-500 ring-1 ring-amber-500 bg-amber-50/30' :
                         'border-gray-200 hover:bg-gray-50'">
                     <input type="radio" name="skripsi_package" value="aplikasi" class="sr-only" x-model="package">
-                    <span class="flex flex-1">
-                        <span class="flex flex-col">
-                            <span class="block text-sm font-bold text-[#1E293B] mb-1"><i
-                                    class="fa-solid fa-code text-blue-500 mr-1.5"></i> Aplikasi Saja</span>
-                            <span class="mt-1 flex items-center text-[11px] leading-tight text-gray-500">Hanya pembuatan
-                                program/aplikasi.</span>
-                        </span>
+                    <span class="flex flex-1 flex-col">
+                        <span class="block text-sm font-bold text-[#1E293B] mb-1"><i
+                                class="fa-solid fa-code text-blue-500 mr-1.5"></i> App Saja</span>
+                        <span class="mt-1 flex items-center text-[10px] leading-tight text-gray-500">Hanya pembuatan
+                            program.</span>
                     </span>
                     <i class="fa-solid fa-circle-check text-amber-500 text-lg absolute top-4 right-4"
                         x-show="package === 'aplikasi'"></i>
@@ -87,13 +87,11 @@
                     :class="package === 'naskah' ? 'border-amber-500 ring-1 ring-amber-500 bg-amber-50/30' :
                         'border-gray-200 hover:bg-gray-50'">
                     <input type="radio" name="skripsi_package" value="naskah" class="sr-only" x-model="package">
-                    <span class="flex flex-1">
-                        <span class="flex flex-col">
-                            <span class="block text-sm font-bold text-[#1E293B] mb-1"><i
-                                    class="fa-solid fa-file-word text-amber-600 mr-1.5"></i> Naskah Saja</span>
-                            <span class="mt-1 flex items-center text-[11px] leading-tight text-gray-500">Hanya pembuatan
-                                skripsi bab 1-5.</span>
-                        </span>
+                    <span class="flex flex-1 flex-col">
+                        <span class="block text-sm font-bold text-[#1E293B] mb-1"><i
+                                class="fa-solid fa-file-word text-amber-600 mr-1.5"></i> Naskah Saja</span>
+                        <span class="mt-1 flex items-center text-[10px] leading-tight text-gray-500">Skripsi Bab 1-5
+                            full.</span>
                     </span>
                     <i class="fa-solid fa-circle-check text-amber-500 text-lg absolute top-4 right-4"
                         x-show="package === 'naskah'"></i>
@@ -104,17 +102,66 @@
                     :class="package === 'keduanya' ? 'border-amber-500 ring-1 ring-amber-500 bg-amber-50/30' :
                         'border-gray-200 hover:bg-gray-50'">
                     <input type="radio" name="skripsi_package" value="keduanya" class="sr-only" x-model="package">
-                    <span class="flex flex-1">
-                        <span class="flex flex-col">
-                            <span class="block text-sm font-bold text-[#1E293B] mb-1"><i
-                                    class="fa-solid fa-layer-group text-emerald-500 mr-1.5"></i> All-in
-                                (Keduanya)</span>
-                            <span class="mt-1 flex items-center text-[11px] leading-tight text-gray-500">Aplikasi &
-                                naskah lengkap.</span>
-                        </span>
+                    <span class="flex flex-1 flex-col">
+                        <span class="block text-sm font-bold text-[#1E293B] mb-1"><i
+                                class="fa-solid fa-layer-group text-emerald-500 mr-1.5"></i> All-in</span>
+                        <span class="mt-1 flex items-center text-[10px] leading-tight text-gray-500">Aplikasi & naskah
+                            full.</span>
                     </span>
                     <i class="fa-solid fa-circle-check text-amber-500 text-lg absolute top-4 right-4"
                         x-show="package === 'keduanya'"></i>
+                </label>
+            </div>
+
+            <p class="text-xs font-bold text-teal-600 mt-2 mb-1 border-b border-teal-100 pb-1">Kategori: Sempro (Seminar
+                Proposal)</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <label
+                    class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition-all duration-200"
+                    :class="package === 'sempro_naskah' ? 'border-teal-500 ring-1 ring-teal-500 bg-teal-50/30' :
+                        'border-gray-200 hover:bg-gray-50'">
+                    <input type="radio" name="skripsi_package" value="sempro_naskah" class="sr-only"
+                        x-model="package">
+                    <span class="flex flex-1 flex-col">
+                        <span class="block text-sm font-bold text-[#1E293B] mb-1"><i
+                                class="fa-solid fa-file-lines text-teal-600 mr-1.5"></i> Sempro 1-3</span>
+                        <span class="mt-1 flex items-center text-[10px] leading-tight text-gray-500">Naskah Bab 1
+                            sampai 3.</span>
+                    </span>
+                    <i class="fa-solid fa-circle-check text-teal-500 text-lg absolute top-4 right-4"
+                        x-show="package === 'sempro_naskah'"></i>
+                </label>
+
+                <label
+                    class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition-all duration-200"
+                    :class="package === 'sempro_bab3' ? 'border-teal-500 ring-1 ring-teal-500 bg-teal-50/30' :
+                        'border-gray-200 hover:bg-gray-50'">
+                    <input type="radio" name="skripsi_package" value="sempro_bab3" class="sr-only"
+                        x-model="package">
+                    <span class="flex flex-1 flex-col">
+                        <span class="block text-sm font-bold text-[#1E293B] mb-1"><i
+                                class="fa-regular fa-file-lines text-teal-500 mr-1.5"></i> Sempro Bab 3</span>
+                        <span class="mt-1 flex items-center text-[10px] leading-tight text-gray-500">Hanya naskah Bab 3
+                            saja.</span>
+                    </span>
+                    <i class="fa-solid fa-circle-check text-teal-500 text-lg absolute top-4 right-4"
+                        x-show="package === 'sempro_bab3'"></i>
+                </label>
+
+                <label
+                    class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition-all duration-200"
+                    :class="package === 'sempro_keduanya' ? 'border-teal-500 ring-1 ring-teal-500 bg-teal-50/30' :
+                        'border-gray-200 hover:bg-gray-50'">
+                    <input type="radio" name="skripsi_package" value="sempro_keduanya" class="sr-only"
+                        x-model="package">
+                    <span class="flex flex-1 flex-col">
+                        <span class="block text-sm font-bold text-[#1E293B] mb-1"><i
+                                class="fa-solid fa-cubes-stacked text-teal-600 mr-1.5"></i> Sempro All-in</span>
+                        <span class="mt-1 flex items-center text-[10px] leading-tight text-gray-500">App + Naskah Bab
+                            1-3.</span>
+                    </span>
+                    <i class="fa-solid fa-circle-check text-teal-500 text-lg absolute top-4 right-4"
+                        x-show="package === 'sempro_keduanya'"></i>
                 </label>
             </div>
         </div>
@@ -122,7 +169,7 @@
         <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 mt-2"
             x-show="package !== '' && package !== null" x-cloak>
 
-            <div x-show="package === 'aplikasi' || package === 'keduanya'"
+            <div x-show="['aplikasi', 'keduanya', 'sempro_keduanya'].includes(package)"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 transform -translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
@@ -139,7 +186,7 @@
                 </x-forms.dropdown>
             </div>
 
-            <div x-show="package === 'naskah' || package === 'keduanya'"
+            <div x-show="['naskah', 'keduanya', 'sempro_naskah', 'sempro_bab3', 'sempro_keduanya'].includes(package)"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 transform -translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
@@ -175,7 +222,7 @@
             <x-forms.input type="text" name="dospem_2" value="{{ old('dospem_2', $project->dospem_2 ?? '') }}" />
         </div>
         <div class="col-span-1 md:col-span-2">
-            <x-forms.label value="Judul Skripsi (Fix)" />
+            <x-forms.label value="Judul Skripsi / Sempro (Fix)" />
             <x-forms.input type="text" name="skripsi_title"
                 value="{{ old('skripsi_title', $project->skripsi_title ?? '') }}" />
         </div>
@@ -192,13 +239,15 @@
             <i class="fa-solid fa-rupiah-sign mr-2"></i>Keuangan
         </h3>
 
-        <div x-show="clientType === 'mahasiswa' && (package === 'aplikasi' || package === 'keduanya')" x-cloak>
+        <div x-show="clientType === 'mahasiswa' && ['aplikasi', 'keduanya', 'sempro_keduanya'].includes(package)"
+            x-cloak>
             <x-forms.label value="Harga Fix Aplikasi" class="text-blue-700" />
             <x-forms.currency name="app_price" value="{{ old('app_price', $project->app_price ?? 0) }}" />
             <span class="text-xs text-blue-600 mt-1 block font-medium">Alokasi untuk Developer.</span>
         </div>
 
-        <div x-show="clientType === 'mahasiswa' && (package === 'naskah' || package === 'keduanya')" x-cloak>
+        <div x-show="clientType === 'mahasiswa' && ['naskah', 'keduanya', 'sempro_naskah', 'sempro_bab3', 'sempro_keduanya'].includes(package)"
+            x-cloak>
             <x-forms.label value="Harga Fix Naskah" class="text-amber-700" />
             <x-forms.currency name="writer_price" value="{{ old('writer_price', $project->writer_price ?? 0) }}" />
             <span class="text-xs text-amber-600 mt-1 block font-medium">Alokasi untuk Penulis.</span>
