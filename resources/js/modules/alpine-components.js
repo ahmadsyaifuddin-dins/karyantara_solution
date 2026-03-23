@@ -253,5 +253,80 @@ document.addEventListener('alpine:init', () => {
             });
         }
     }));
+
+    Alpine.data('bgMusicPlayer', (userAutoplayPref, currentRoute) => ({
+        isPlaying: false,
+        audio: null,
+        
+        // Menyesuaikan Route Name dengan file web.php (prefix 'admin.')
+        tracks: {
+            'admin.ikhtiar': '/audio/islami-calming.mp3',
+            'admin.earnings.index': '/audio/happy-nation.mp3',
+            'admin.projects.index': '/audio/happy-nation.mp3', // Asumsi untuk daftar project
+            'admin.dashboard': '/audio/karyantara-theme.mp3'
+        },
+        
+        init() {
+            // Tentukan lagu berdasarkan route, jika tidak ada pakai lagu default
+            let trackSource = this.tracks[currentRoute] || this.tracks['admin.dashboard'];
+            this.audio = new Audio(trackSource);
+            this.audio.loop = true;
+
+            // Cek localStorage
+            let savedState = localStorage.getItem('karyantara_music_playing');
+            let shouldPlay = (savedState === 'true') || (savedState === null && userAutoplayPref);
+
+            if (shouldPlay) {
+                this.attemptAutoPlay();
+            } else {
+                this.isPlaying = false;
+            }
+        },
+
+        attemptAutoPlay() {
+            let playPromise = this.audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Sukses autoplay (berarti sudah ada interaksi atau diizinkan browser)
+                    this.isPlaying = true;
+                    localStorage.setItem('karyantara_music_playing', 'true');
+                }).catch(error => {
+                    // Autoplay dicegah oleh browser!
+                    console.warn("BGM Standby: Menunggu klik pertama dari user untuk mulai memutar.");
+                    this.isPlaying = false; 
+
+                    // Trik: Pasang event listener untuk klik pertama kali di halaman ini
+                    const resumeAudio = () => {
+                        this.audio.play();
+                        this.isPlaying = true;
+                        localStorage.setItem('karyantara_music_playing', 'true');
+                        
+                        // Segera hapus listener setelah dieksekusi agar tidak berat
+                        document.removeEventListener('click', resumeAudio);
+                        document.removeEventListener('keydown', resumeAudio);
+                    };
+
+                    // '{ once: true }' memastikan event ini hanya dipanggil 1 kali
+                    document.addEventListener('click', resumeAudio, { once: true });
+                    document.addEventListener('keydown', resumeAudio, { once: true });
+                });
+            }
+        },
+
+        toggleMusic() {
+            if (this.isPlaying) {
+                this.pauseMusic();
+            } else {
+                this.attemptAutoPlay(); // Gunakan fungsi attempt supaya aman
+            }
+        },
+
+        pauseMusic() {
+            this.audio.pause();
+            this.isPlaying = false;
+            localStorage.setItem('karyantara_music_playing', 'false');
+        }
+    }));
 });
 

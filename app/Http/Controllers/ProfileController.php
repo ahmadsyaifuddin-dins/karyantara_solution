@@ -38,6 +38,21 @@ class ProfileController extends Controller
     }
 
     /**
+     * Update the user's background music preference.
+     */
+    public function updateMusic(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+        
+        // Cek apakah toggle dicentang (mengirimkan value 'on' atau '1')
+        // Jika tidak ada di request, berarti checkbox tidak dicentang (false)
+        $user->autoplay_music = $request->has('autoplay_music');
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('status', 'music-updated');
+    }
+
+    /**
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse

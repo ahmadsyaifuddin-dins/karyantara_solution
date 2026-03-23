@@ -100,6 +100,23 @@
 
     @stack('scripts')
 
+    <div x-data="bgMusicPlayer({{ Auth::user()->autoplay_music ? 'true' : 'false' }}, '{{ Route::currentRouteName() }}')" class="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+
+        <div
+            class="bg-white px-3 py-1.5 rounded-lg shadow-lg border border-gray-100 text-xs font-semibold text-[#1E293B] opacity-0 hover:opacity-100 transition-opacity duration-300 hidden sm:block">
+            <span x-text="isPlaying ? 'Playing BGM...' : 'BGM Paused'"></span>
+        </div>
+
+        <button @click="toggleMusic()"
+            class="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 border-2"
+            :class="isPlaying ? 'bg-amber-500 border-amber-400 text-white animate-pulse' :
+                'bg-[#1E293B] border-slate-700 text-amber-500 hover:bg-slate-800'">
+
+            <i class="fa-solid text-2xl transition-transform duration-300"
+                :class="isPlaying ? 'fa-circle-pause scale-110' : 'fa-music'"></i>
+
+        </button>
+    </div>
 </body>
 
 </html>
