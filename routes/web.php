@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ValidationController;
 use Illuminate\Support\Facades\Artisan;
@@ -86,6 +87,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/ikhtiar', function () {
         return view('pages.admin.ikhtiar.index'); // Sesuaikan dengan path view kamu
     })->name('ikhtiar');
+    
+    Route::get('meetings/{meeting}/print', [MeetingController::class, 'print'])->name('meetings.print');
+    Route::resource('meetings', MeetingController::class);
 });
 
 // PROFILE BAWAAN BREEZE

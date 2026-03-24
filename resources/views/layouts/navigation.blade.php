@@ -21,12 +21,6 @@
                 <span>Dashboard</span>
             </a>
 
-            <a href="{{ route('admin.admins.index') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.admins.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
-                <i class="fa-solid fa-users-gear w-5 text-center text-lg"></i>
-                <span>Kelola Admin</span>
-            </a>
-
             <a href="{{ route('admin.ikhtiar') }}"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.ikhtiar') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
                 <i class="fa-solid fa-leaf w-5 text-center text-lg"></i>
@@ -48,6 +42,12 @@
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.earnings.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
                 <i class="fa-solid fa-wallet w-5 text-center text-lg"></i>
                 <span>Pendapatan Saya</span>
+            </a>
+
+            <a href="{{ route('admin.meetings.index') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.meetings.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
+                <i class="fa-solid fa-calendar-check w-5 text-center text-lg"></i>
+                <span>Agenda & Rapat</span>
             </a>
         </div>
 
@@ -80,6 +80,12 @@
 
         <div class="pt-4 border-t border-gray-700/50 space-y-2">
             <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Sistem & Konfigurasi</p>
+
+            <a href="{{ route('admin.admins.index') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.admins.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
+                <i class="fa-solid fa-users-gear w-5 text-center text-lg"></i>
+                <span>Kelola Admin</span>
+            </a>
 
             <a href="{{ route('admin.visitors.index') }}"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.visitors.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
