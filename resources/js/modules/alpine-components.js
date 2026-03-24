@@ -263,7 +263,7 @@ document.addEventListener('alpine:init', () => {
             'admin.ikhtiar': '/audio/islami-calming.mp3',
             'admin.earnings.index': '/audio/happy-nation.mp3',
             'admin.projects.index': '/audio/happy-nation.mp3', // Asumsi untuk daftar project
-            'admin.dashboard': '/audio/karyantara-theme.mp3'
+            'admin.dashboard': '/audio/karyantara_solution_theme.mp3'
         },
         
         init() {
