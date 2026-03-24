@@ -33,6 +33,42 @@
             'desc' =>
                 'Saat server error kita berdoa kuat, saat sukses kita lupa bersyukur. Jangan jadi kacang lupa kulitnya.',
         ],
+        [
+            'surah' => 'QS. Al-Hadid : 20',
+            'ayat' => 'Kehidupan dunia itu tidak lain hanyalah kesenangan yang memperdaya.',
+            'icon' => 'fa-globe',
+            'desc' =>
+                'Proyek besar, uang banyak, dan jabatan tinggi itu hanyalah ilusi (cache) sementara. Jangan sampai ia merusak database akheratmu.',
+        ],
+        [
+            'surah' => 'QS. Ar-Ra\'d : 28',
+            'ayat' => 'Ingatlah, hanya dengan mengingat Allah-lah hati menjadi tenteram.',
+            'icon' => 'fa-heart-pulse',
+            'desc' =>
+                'Saat kepala mau pecah karena error yang tak kunjung *solved* atau *client* yang menekan, menepilah. Bukan Google atau StackOverflow yang menenangkan hati, tapi mengingat-Nya.',
+        ],
+        [
+            'surah' => 'QS. Al-Baqarah : 286',
+            'ayat' => 'Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya.',
+            'icon' => 'fa-dumbbell',
+            'desc' =>
+                'Merasa beban kerjaan ini terlalu berat? Terlalu mumet? Percayalah, Tuhan tahu kamu adalah developer/manusia dengan kapasitas yang sanggup melewatinya.',
+        ],
+        [
+            'surah' => 'QS. Al-Insyirah : 5-6',
+            'ayat' =>
+                'Maka sesungguhnya bersama kesulitan ada kemudahan. Sesungguhnya bersama kesulitan ada kemudahan.',
+            'icon' => 'fa-door-open',
+            'desc' =>
+                'Ditegaskan dua kali. Setiap kerumitan logika sistem yang sedang kamu hadapi hari ini, pasti ada jalan keluarnya di depan mata. Teruslah melangkah.',
+        ],
+        [
+            'surah' => 'QS. Al-Ankabut : 64',
+            'ayat' => 'Dan tiadalah kehidupan dunia ini melainkan senda gurau dan main-main...',
+            'icon' => 'fa-chess-knight',
+            'desc' =>
+                'Jangan terlalu stres jika hari ini rencanamu gagal atau aplikasimu *down*. Ini cuma dunia. Jangan masukkan ke dalam hati sampai merusak mentalmu.',
+        ],
     ];
 @endphp
 
