@@ -43,7 +43,11 @@ class DashboardController extends Controller
         $myTotalProjects = $myAppProjectsCount + $myWriterProjectsCount;
 
         // 3. DATA TABEL PROYEK TERBARU (5 Teratas)
-        $recentProjects = Project::latest()->take(5)->get();
+        $priorityProjects = Project::where('status', '!=', 'Selesai')
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
 
         // 4. FITUR ADMIN ONLINE
         $onlineAdmins = User::select('users.*')
@@ -102,7 +106,7 @@ class DashboardController extends Controller
             'myAppProjectsCount', 'myAppEarnings',
             'myWriterProjectsCount', 'myWriterEarnings',
             'myTotalEarnings', 'myTotalProjects',
-            'recentProjects', 
+            'priorityProjects', 
             'onlineAdmins',
             'chartData', 'chartYear', 'yearlyData' // Variabel untuk Chart.js
         ));
