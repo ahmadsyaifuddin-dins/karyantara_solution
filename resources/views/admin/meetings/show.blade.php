@@ -131,7 +131,7 @@
                 (Tindak Lanjut)</h3>
 
             @if (is_array($meeting->action_items) && count($meeting->action_items) > 0)
-                <div class="overflow-hidden rounded-lg border border-gray-200">
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
                     <table class="min-w-full divide-y divide-gray-200 text-left">
                         <thead class="bg-slate-50 print:bg-gray-100">
                             <tr>
@@ -139,13 +139,15 @@
                                     class="px-6 py-3 text-xs font-bold text-[#1E293B] uppercase tracking-wider w-16 text-center">
                                     No</th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-xs font-bold text-[#1E293B] uppercase tracking-wider">Tugas /
+                                    class="px-6 py-3 text-xs font-bold text-[#1E293B] uppercase tracking-wider min-w-[200px]">
+                                    Tugas /
                                     Tindakan</th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-xs font-bold text-[#1E293B] uppercase tracking-wider w-48">PIC
+                                    class="px-6 py-3 text-xs font-bold text-[#1E293B] uppercase tracking-wider w-48 min-w-[150px]">
+                                    PIC
                                 </th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-xs font-bold text-[#1E293B] uppercase tracking-wider w-48">
+                                    class="px-6 py-3 text-xs font-bold text-[#1E293B] uppercase tracking-wider w-48 min-w-[150px]">
                                     Tenggat Waktu</th>
                             </tr>
                         </thead>

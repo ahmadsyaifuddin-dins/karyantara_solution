@@ -54,23 +54,86 @@
                                 @endif
 
                                 @if ($item->skripsi_package)
-                                    @if ($item->skripsi_package == 'keduanya')
+                                    @php
+                                        // Array Mapping untuk 10 Jenis Paket agar rapi
+                                        $pkg = $item->skripsi_package;
+                                        $badges = [
+                                            // SKRIPSI
+                                            'keduanya' => [
+                                                'class' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                                                'icon' => 'fa-layer-group',
+                                                'text' => 'All-In',
+                                                'title' => 'Skripsi: Aplikasi + Naskah',
+                                            ],
+                                            'aplikasi' => [
+                                                'class' => 'bg-blue-100 text-blue-700 border-blue-200',
+                                                'icon' => 'fa-code',
+                                                'text' => 'App',
+                                                'title' => 'Skripsi: Hanya Aplikasi',
+                                            ],
+                                            'naskah' => [
+                                                'class' => 'bg-amber-100 text-amber-700 border-amber-200',
+                                                'icon' => 'fa-file-word',
+                                                'text' => 'Naskah',
+                                                'title' => 'Skripsi: Hanya Naskah',
+                                            ],
+
+                                            // SEMPRO
+                                            'sempro_keduanya' => [
+                                                'class' => 'bg-teal-100 text-teal-700 border-teal-200',
+                                                'icon' => 'fa-cubes-stacked',
+                                                'text' => 'Sempro All-In',
+                                                'title' => 'Sempro: Aplikasi + Naskah Bab 1-3',
+                                            ],
+                                            'sempro_naskah' => [
+                                                'class' => 'bg-teal-100 text-teal-700 border-teal-200',
+                                                'icon' => 'fa-file-lines',
+                                                'text' => 'Sempro 1-3',
+                                                'title' => 'Sempro: Naskah Bab 1-3',
+                                            ],
+                                            'sempro_bab3' => [
+                                                'class' => 'bg-teal-100 text-teal-700 border-teal-200',
+                                                'icon' => 'fa-solid fa-file-lines',
+                                                'text' => 'Sempro Bab 3',
+                                                'title' => 'Sempro: Khusus Bab 3',
+                                            ],
+
+                                            // SIDANG
+                                            'sidang_keduanya' => [
+                                                'class' => 'bg-purple-100 text-purple-700 border-purple-200',
+                                                'icon' => 'fa-medal',
+                                                'text' => 'Sidang All-In',
+                                                'title' => 'Sidang: Revisi App + Bab 4-5',
+                                            ],
+                                            'sidang_aplikasi' => [
+                                                'class' => 'bg-purple-100 text-purple-700 border-purple-200',
+                                                'icon' => 'fa-laptop-code',
+                                                'text' => 'Revisi App',
+                                                'title' => 'Sidang: Revisi Aplikasi',
+                                            ],
+                                            'sidang_naskah' => [
+                                                'class' => 'bg-purple-100 text-purple-700 border-purple-200',
+                                                'icon' => 'fa-book-open',
+                                                'text' => 'Bab 4-5',
+                                                'title' => 'Sidang: Naskah Bab 4-5',
+                                            ],
+                                            'sidang_bab4' => [
+                                                'class' => 'bg-purple-100 text-purple-700 border-purple-200',
+                                                'icon' => 'fa-vial-circle-check',
+                                                'text' => 'Bab 4 Saja',
+                                                'title' => 'Sidang: Khusus Bab 4 / Blackbox',
+                                            ],
+                                        ];
+
+                                        $currentBadge = $badges[$pkg] ?? null;
+                                    @endphp
+
+                                    @if ($currentBadge)
                                         <span
-                                            class="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 rounded uppercase flex items-center"
-                                            title="Aplikasi + Naskah">
-                                            <i class="fa-solid fa-layer-group mr-1"></i> All-In
-                                        </span>
-                                    @elseif($item->skripsi_package == 'aplikasi')
-                                        <span
-                                            class="px-2 py-0.5 text-[10px] font-bold bg-blue-100 text-blue-700 border border-blue-200 rounded uppercase flex items-center"
-                                            title="Hanya Aplikasi">
-                                            <i class="fa-solid fa-code mr-1"></i> App
-                                        </span>
-                                    @elseif($item->skripsi_package == 'naskah')
-                                        <span
-                                            class="px-2 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200 rounded uppercase flex items-center"
-                                            title="Hanya Naskah">
-                                            <i class="fa-solid fa-file-word mr-1"></i> Naskah
+                                            class="px-2 py-0.5 text-[10px] font-bold border rounded uppercase flex items-center {{ $currentBadge['class'] }}"
+                                            title="{{ $currentBadge['title'] }}">
+                                            <i class="fa-solid {{ $currentBadge['icon'] }} mr-1"></i>
+                                            {{ $currentBadge['text'] }}
                                         </span>
                                     @endif
                                 @endif
@@ -133,7 +196,7 @@
 
                         <td class="px-4 py-4 text-center">
                             @php
-                                $badgeColors = [
+                                $statusColors = [
                                     'Pending' => 'bg-gray-100 text-gray-800',
                                     'Progress' => 'bg-blue-100 text-blue-800',
                                     'Revisi' => 'bg-amber-100 text-amber-800 animate-pulse',
@@ -141,7 +204,7 @@
                                 ];
                             @endphp
                             <span
-                                class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full border border-gray-100 shadow-sm {{ $badgeColors[$item->status] }}">
+                                class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full border border-gray-100 shadow-sm {{ $statusColors[$item->status] }}">
                                 {{ $item->status }}
                             </span>
                             @if ($item->revision_notes)
@@ -167,8 +230,9 @@
                                 <span class="text-gray-500 font-bold">Sisa:</span>
                                 @if ($item->is_paid_off)
                                     <span
-                                        class="font-bold text-emerald-600 text-[10px] px-2 py-0.5 bg-emerald-100 rounded shadow-sm"><i
-                                            class="fa-solid fa-check-double mr-1"></i>LUNAS</span>
+                                        class="font-bold text-emerald-600 text-[10px] px-2 py-0.5 bg-emerald-100 rounded shadow-sm">
+                                        <i class="fa-solid fa-check-double mr-1"></i>LUNAS
+                                    </span>
                                 @else
                                     <span class="font-bold text-red-500">Rp
                                         {{ number_format($item->remaining_amount, 0, ',', '.') }}</span>
@@ -190,7 +254,6 @@
                                     title="Lihat Detail">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
-
                                 <a href="{{ route('admin.projects.edit', $item->id) }}"
                                     class="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 p-2 rounded transition"
                                     title="Edit">

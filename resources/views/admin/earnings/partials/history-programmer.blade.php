@@ -21,10 +21,18 @@
 
                 <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
                     <div class="text-[11px] font-medium flex items-center gap-2">
-                        <span
-                            class="px-2 py-0.5 rounded border shadow-sm {{ $project->status == 'Selesai' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-gray-100 text-gray-600 border-gray-200' }}">
+                        @php
+                            $statusColors = [
+                                'Pending' => 'bg-gray-100 text-gray-800 border-gray-200',
+                                'Progress' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                'Revisi' => 'bg-amber-100 text-amber-800 border-amber-200 animate-pulse',
+                                'Selesai' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                            ];
+                        @endphp
+                        <span class="px-2 py-0.5 rounded border shadow-sm {{ $statusColors[$project->status] }}">
                             {{ $project->status }}
                         </span>
+
                         @if ($project->is_programmer_paid)
                             <span class="text-emerald-600 bg-emerald-50 px-2 py-1 rounded"><i
                                     class="fa-solid fa-check-double mr-1"></i> Cair</span>
@@ -33,6 +41,7 @@
                                     class="fa-solid fa-clock mr-1"></i> Belum Cair</span>
                         @endif
                     </div>
+
                     <form action="{{ route('admin.earnings.toggle-paid', $project->id) }}" method="POST">
                         @csrf
                         @method('PATCH')
