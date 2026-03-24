@@ -15,7 +15,7 @@ use App\Exports\MyEarningsExport;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // 1. STATISTIK KEUANGAN GLOBAL (KARYANTARA)
         $totalRevenue = Project::sum('net_income');
@@ -56,6 +56,44 @@ class DashboardController extends Controller
             ->orderByDesc('last_seen')
             ->get();
 
+        // 5. CHART JS DATA (Tren Omzet Global Per Bulan)
+        // Ambil tahun dari request (jika ada filter tahun depan), default: Tahun Ini
+        $chartYear = $request->input('year', date('Y'));
+        
+        // Ambil semua project di tahun terpilih (Hanya field yg diperlukan agar memori ringan)
+        $projectsThisYear = Project::whereYear('created_at', $chartYear)
+            ->select('created_at', 'net_income')
+            ->get();
+
+        $chartData = [];
+        // Looping 12 bulan
+        for ($month = 1; $month <= 12; $month++) {
+            // Filter collection berdasarkan bulan, lalu sum net_income nya
+            $chartData[] = $projectsThisYear->filter(function($project) use ($month) {
+                return $project->created_at->format('n') == $month; // 'n' = angka bulan tanpa 0 di depan
+            })->sum('net_income');
+        }
+
+        // 6. CHART JS DATA (Tren Omzet Global Per Tahun - 5 Tahun Terakhir)
+        $yearlyLabels = [];
+        $yearlyValues = [];
+        $currentYear = date('Y'); // Mengambil tahun saat ini (2026)
+
+        // Looping mundur 5 tahun terakhir (2022, 2023, 2024, 2025, 2026)
+        for ($i = 4; $i >= 0; $i--) {
+            $year = $currentYear - $i;
+            $yearlyLabels[] = (string)$year;
+            
+            // Hitung total net_income pada tahun tersebut
+            $yearlyValues[] = Project::whereYear('created_at', $year)->sum('net_income');
+        }
+
+        $yearlyData = [
+            'labels' => $yearlyLabels,
+            'values' => $yearlyValues
+        ];
+
+        // RETURN KE VIEW
         return view('dashboard', compact(
             'totalRevenue', 'appRevenue', 'writerRevenue',
             'activeProjects', 
@@ -65,7 +103,8 @@ class DashboardController extends Controller
             'myWriterProjectsCount', 'myWriterEarnings',
             'myTotalEarnings', 'myTotalProjects',
             'recentProjects', 
-            'onlineAdmins'
+            'onlineAdmins',
+            'chartData', 'chartYear', 'yearlyData' // Variabel untuk Chart.js
         ));
     }
 
