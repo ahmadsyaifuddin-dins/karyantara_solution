@@ -17,16 +17,16 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Ambil query dasar yang sudah difilter
         $query = $this->buildFilterQuery($request);
 
-        // 2. Perhitungan Rekap Keuangan & Proyek (Clone agar tidak merusak pagination)
         $totalProjects  = (clone $query)->count();
         $totalNetIncome = (clone $query)->sum('net_income');
         $totalPaid      = (clone $query)->sum('paid_amount');
         $totalRemaining = $totalNetIncome - $totalPaid;
 
-        // 3. Pagination & Ordering
+        $totalLunas = (clone $query)->whereColumn('paid_amount', '>=', 'net_income')->count();
+        $totalBelumLunas = (clone $query)->whereColumn('paid_amount', '<', 'net_income')->count();
+
         $projects = $query->orderByRaw("CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END ASC")
             ->orderBy('sort_order', 'asc')
             ->latest()
@@ -34,7 +34,8 @@ class ProjectController extends Controller
             ->appends($request->query());
 
         return view('admin.projects.index', compact(
-            'projects', 'totalNetIncome', 'totalPaid', 'totalRemaining', 'totalProjects'
+            'projects', 'totalNetIncome', 'totalPaid', 'totalRemaining', 'totalProjects',
+            'totalLunas', 'totalBelumLunas' // <-- Tambahkan ini
         ));
     }
 
@@ -182,6 +183,14 @@ class ProjectController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+
+       if ($request->filled('payment_status')) {
+        if ($request->payment_status === 'lunas') {
+            $query->whereColumn('paid_amount', '>=', 'net_income');
+        } elseif ($request->payment_status === 'belum_lunas') {
+            $query->whereColumn('paid_amount', '<', 'net_income');
+        }
+    }
 
         return $query;
     }

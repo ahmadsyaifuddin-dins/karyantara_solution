@@ -13,6 +13,16 @@
                     class="inline-flex items-center gap-1.5 bg-white/10 px-2.5 py-1 rounded-full text-[11px] font-medium border border-white/10 backdrop-blur-sm">
                     <i class="fa-solid fa-briefcase text-amber-400"></i> {{ $totalProjects }} Proyek Total
                 </span>
+
+                @if ($totalPaidEarnings > 0)
+                    <span
+                        class="inline-flex items-center gap-1.5 bg-emerald-500/20 px-2.5 py-1 rounded-full text-[11px] font-bold text-emerald-200 border border-emerald-500/30 backdrop-blur-sm shadow-sm"
+                        title="Total fee yang sudah berhasil dicairkan">
+                        <i class="fa-solid fa-money-bill-wave text-emerald-400"></i> Sudah Cair: Rp
+                        {{ number_format($totalPaidEarnings, 0, ',', '.') }}
+                    </span>
+                @endif
+
                 @if ($totalUnpaidEarnings > 0)
                     <span
                         class="inline-flex items-center gap-1.5 bg-red-500/20 px-2.5 py-1 rounded-full text-[11px] font-bold text-red-200 border border-red-500/30 backdrop-blur-sm shadow-sm"

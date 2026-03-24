@@ -5,6 +5,9 @@
             'Progress' => 'Progress',
             'Revisi' => 'Revisi',
             'Selesai' => 'Selesai',
+        ]" :paymentOptions="[
+            'lunas' => 'Sudah Lunas',
+            'belum_lunas' => 'Belum Lunas',
         ]" />
 
     <div class="overflow-x-auto mt-4">

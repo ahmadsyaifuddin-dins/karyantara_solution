@@ -152,6 +152,7 @@ class DashboardController extends Controller
         // TOTAL KESELURUHAN
         $totalEarnings = $totalAppEarnings + $totalWriterEarnings;
         $totalUnpaidEarnings = $unpaidAppEarnings + $unpaidWriterEarnings; 
+        $totalPaidEarnings = $totalEarnings - $totalUnpaidEarnings;
         $totalProjects = $appProjects->count() + $writerProjects->count();
 
         // TOTAL ESTIMASI CAIR (DARI PROYEK YANG SUDAH SELESAI)
@@ -163,8 +164,8 @@ class DashboardController extends Controller
         return view('admin.earnings.index', compact(
             'appProjects', 'totalAppEarnings', 'unpaidAppEarnings', 'completedAppEarnings',
             'writerProjects', 'totalWriterEarnings', 'unpaidWriterEarnings', 'completedWriterEarnings',
-            'totalEarnings', 'totalUnpaidEarnings', 'totalProjects',
-            'totalCompletedEarnings', 'totalCompletedProjects', // Variabel Baru
+            'totalEarnings', 'totalUnpaidEarnings', 'totalPaidEarnings', 'totalProjects',
+            'totalCompletedEarnings', 'totalCompletedProjects',
             'selectedMonth', 'selectedYear', 'years'
         ));
     }

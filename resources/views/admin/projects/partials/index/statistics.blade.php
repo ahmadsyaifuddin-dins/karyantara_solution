@@ -34,13 +34,27 @@
     </div>
 
     <div
-        class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow duration-300 hover:-translate-y-1">
-        <div>
-            <p class="text-sm font-bold text-gray-400 uppercase tracking-wider">Total Sudah Terbayar</p>
+        class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow duration-300 hover:-translate-y-1 relative overflow-hidden">
+
+        <div class="relative z-10 w-full pr-4">
+            <div class="mb-2 flex gap-2">
+                <span
+                    class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md">
+                    <i class="fa-solid fa-check-double mr-1"></i> {{ $totalLunas }} Lunas
+                </span>
+                <span
+                    class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold bg-red-50 text-red-500 border border-red-200 rounded-md">
+                    <i class="fa-solid fa-hourglass-half mr-1"></i> {{ $totalBelumLunas }} Belum
+                </span>
+            </div>
+
+            <p class="text-sm font-bold text-gray-400 uppercase tracking-wider leading-tight">Total Sudah Terbayar</p>
             <h4 class="text-2xl font-black text-emerald-600 mt-1">Rp
                 {{ number_format($totalPaid, 0, ',', '.') }}</h4>
         </div>
-        <div class="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center text-xl">
+
+        <div
+            class="w-12 h-12 flex-shrink-0 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center text-xl relative z-10">
             <i class="fa-solid fa-money-bill-wave"></i>
         </div>
     </div>
