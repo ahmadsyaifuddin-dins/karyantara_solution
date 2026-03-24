@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-bold text-2xl text-[#1E293B] leading-tight">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h2 class="font-bold text-xl sm:text-2xl text-[#1E293B] leading-tight">
                 {{ __('Agenda & Hasil Rapat') }}
             </h2>
             <a href="{{ route('admin.meetings.create') }}"
-                class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-sm">
+                class="w-full sm:w-auto text-center bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-sm">
                 <i class="fa-solid fa-plus mr-1"></i> Jadwalkan Baru
             </a>
         </div>
@@ -13,20 +13,20 @@
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                     <tr class="bg-slate-50 text-[#1E293B] border-b border-gray-200">
-                        <th class="p-4 font-semibold text-sm">Tanggal & Waktu</th>
-                        <th class="p-4 font-semibold text-sm">Judul Rapat</th>
-                        <th class="p-4 font-semibold text-sm">Tipe</th>
-                        <th class="p-4 font-semibold text-sm">Status</th>
-                        <th class="p-4 font-semibold text-sm text-center">Aksi</th>
+                        <th class="p-4 font-semibold text-sm whitespace-nowrap w-48">Tanggal & Waktu</th>
+                        <th class="p-4 font-semibold text-sm min-w-[250px]">Judul Rapat</th>
+                        <th class="p-4 font-semibold text-sm whitespace-nowrap">Tipe</th>
+                        <th class="p-4 font-semibold text-sm whitespace-nowrap">Status</th>
+                        <th class="p-4 font-semibold text-sm text-center whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse ($meetings as $meeting)
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="p-4 text-sm">
+                            <td class="p-4 text-sm whitespace-nowrap">
                                 <div class="font-medium text-[#1E293B]">{{ $meeting->start_time->format('d M Y') }}
                                 </div>
                                 <div class="text-gray-500">{{ $meeting->start_time->format('H:i') }} -
@@ -39,13 +39,13 @@
                                     {{ Str::limit($meeting->location, 30) }}
                                 </div>
                             </td>
-                            <td class="p-4 text-sm">
+                            <td class="p-4 text-sm whitespace-nowrap">
                                 <span
-                                    class="px-2 py-1 bg-gray-100 text-[#1E293B] rounded-md text-xs font-medium border border-gray-200">
+                                    class="px-2.5 py-1 bg-gray-100 text-[#1E293B] rounded-md text-xs font-semibold border border-gray-200">
                                     {{ $meeting->type }}
                                 </span>
                             </td>
-                            <td class="p-4">
+                            <td class="p-4 whitespace-nowrap">
                                 @php
                                     $statusColors = [
                                         'Scheduled' => 'bg-blue-100 text-blue-700 border-blue-200',
@@ -60,14 +60,15 @@
                                     {{ $meeting->status }}
                                 </span>
                             </td>
-                            <td class="p-4 flex items-center justify-center gap-2">
+                            <td class="p-4 flex items-center justify-center gap-2 whitespace-nowrap">
                                 <a href="{{ route('admin.meetings.show', $meeting->id) }}"
-                                    class="p-2 text-[#1E293B] hover:bg-slate-100 rounded-md transition"
+                                    class="p-2 text-[#1E293B] hover:bg-slate-100 rounded-md transition border border-transparent hover:border-slate-200"
                                     title="Lihat Detail & Notulensi">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
                                 <a href="{{ route('admin.meetings.edit', $meeting->id) }}"
-                                    class="p-2 text-amber-600 hover:bg-amber-50 rounded-md transition" title="Edit">
+                                    class="p-2 text-amber-600 hover:bg-amber-50 rounded-md transition border border-transparent hover:border-amber-200"
+                                    title="Edit">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                                 <form action="{{ route('admin.meetings.destroy', $meeting->id) }}" method="POST"
@@ -75,7 +76,8 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="p-2 text-red-500 hover:bg-red-50 rounded-md transition" title="Hapus">
+                                        class="p-2 text-red-500 hover:bg-red-50 rounded-md transition border border-transparent hover:border-red-200"
+                                        title="Hapus">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </form>
