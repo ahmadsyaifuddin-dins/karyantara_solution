@@ -19,7 +19,7 @@ class Project extends Model
         'is_programmer_paid',
         'writer_id',   
         'is_writer_paid',
-        'is_shared',
+        // 'is_shared',
         'skripsi_package',
         'client_type',
         'client_name',

@@ -86,7 +86,6 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-        $this->authorizeAccess($project);
         return view('admin.projects.show', compact('project'));
     }
 
@@ -98,17 +97,16 @@ class ProjectController extends Controller
 
     public function exportPdf()
     {
-        $projects = Project::where('is_shared', 1)
-            ->orWhere('admin_id', auth()->id())
-            ->orderByRaw("CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END ASC")
+        // Hapus query is_shared dan admin_id
+        $projects = Project::orderByRaw("CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END ASC")
             ->orderBy('sort_order', 'asc')
             ->latest()
             ->get();
 
         $pdf = Pdf::loadView('admin.projects.pdf.export', compact('projects'))
             ->setOptions([
-                'chroot'  => base_path(),              // Izinkan baca folder laravel (akses image/css lokal)
-                'tempDir' => storage_path('app')       // Hindari folder /tmp server yang sering diblokir
+                'chroot'  => base_path(),
+                'tempDir' => storage_path('app')
             ])
             ->setPaper('A4', 'portrait');
 
@@ -119,8 +117,6 @@ class ProjectController extends Controller
 
     public function exportInvoice(Project $project)
     {
-        $this->authorizeAccess($project);
-
         $pdf = Pdf::loadView('admin.projects.pdf.invoice', compact('project'))
             ->setOptions([
                 'chroot'  => base_path(),              // Izinkan baca folder laravel
@@ -135,10 +131,8 @@ class ProjectController extends Controller
 
     public function priorityBoard()
     {
+        // Hapus query is_shared dan admin_id
         $projects = Project::where('status', '!=', 'Selesai')
-            ->where(function ($q) {
-                $q->where('is_shared', 1)->orWhere('admin_id', auth()->id());
-            })
             ->orderBy('sort_order', 'asc')
             ->latest()
             ->get();
@@ -167,9 +161,7 @@ class ProjectController extends Controller
      */
     private function buildFilterQuery(Request $request): Builder
     {
-        $query = Project::query()->where(function ($q) {
-            $q->where('is_shared', 1)->orWhere('admin_id', auth()->id());
-        });
+        $query = Project::query();
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -184,13 +176,13 @@ class ProjectController extends Controller
             $query->where('status', $request->status);
         }
 
-       if ($request->filled('payment_status')) {
-        if ($request->payment_status === 'lunas') {
-            $query->whereColumn('paid_amount', '>=', 'net_income');
-        } elseif ($request->payment_status === 'belum_lunas') {
-            $query->whereColumn('paid_amount', '<', 'net_income');
+        if ($request->filled('payment_status')) {
+            if ($request->payment_status === 'lunas') {
+                $query->whereColumn('paid_amount', '>=', 'net_income');
+            } elseif ($request->payment_status === 'belum_lunas') {
+                $query->whereColumn('paid_amount', '<', 'net_income');
+            }
         }
-    }
 
         return $query;
     }
@@ -241,15 +233,5 @@ class ProjectController extends Controller
         }
 
         return $data;
-    }
-
-    /**
-     * Cek otorisasi agar tidak ada duplikasi kode di show() dan exportInvoice()
-     */
-    private function authorizeAccess(Project $project): void
-    {
-        if (!$project->is_shared && $project->admin_id !== auth()->id()) {
-            abort(403, 'Akses Ditolak: Anda tidak memiliki akses ke data proyek private ini.');
-        }
     }
 }

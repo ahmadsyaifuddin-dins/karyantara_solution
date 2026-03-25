@@ -216,4 +216,16 @@ class FrontController extends Controller
         // Agar sistem tidak menambah (+1) views_count di portfolio lagi.
         return false; 
     }
+
+
+    public function studentRules(Request $request)
+    {
+        // Catat viewer secara otomatis (menggunakan helper yang sudah ada)
+        $this->recordPageView('rules_mahasiswa', $request);
+        
+        // Buat judul tab browser
+        $title = 'Rules & Panduan Pengerjaan Skripsi | Karyantara Solution';
+
+        return view('public.student-rules', compact('title'));
+    }
 }

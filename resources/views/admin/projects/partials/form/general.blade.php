@@ -13,23 +13,9 @@
         </div>
     </div>
 
-    <div class="col-span-1 md:col-span-2">
-        <x-forms.label value="Visibilitas Pengelolaan" required="true" />
-        <div class="flex gap-6 mt-2">
-            <label class="flex items-center gap-2 cursor-pointer">
-                <x-forms.radio name="is_shared" value="1" :checked="old('is_shared', $project->is_shared ?? 1) == 1" />
-                <span class="text-sm font-medium">Kelola Bersama (Semua Admin)</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-                <x-forms.radio name="is_shared" value="0" :checked="old('is_shared', $project->is_shared ?? 1) == 0" />
-                <span class="text-sm font-medium">Private (Hanya Saya)</span>
-            </label>
-        </div>
-    </div>
-
     <div>
         <x-forms.label value="Nama Klien" required="true" />
-        <x-forms.input type="text" name="client_name" value="{{ old('client_name', $project->client_name) }}"
+        <x-forms.input type="text" name="client_name" value="{{ old('client_name', $project->client_name ?? '') }}"
             required />
     </div>
 

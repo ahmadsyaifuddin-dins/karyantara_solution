@@ -138,10 +138,7 @@
                                     @endif
                                 @endif
 
-                                @if (!$item->is_shared)
-                                    <span class="text-red-400 ml-1" title="Private Project"><i
-                                            class="fa-solid fa-lock text-xs"></i></span>
-                                @endif
+                                {{-- KODE KONDISI ICON GEMBOK PRIVATE TELAH DIHAPUS DARI SINI --}}
                             </div>
 
                             <div class="font-bold text-[#1E293B] flex items-center gap-2 mt-1">

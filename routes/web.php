@@ -25,6 +25,8 @@ Route::get('/kontak', function () {
 Route::get('/tentang-kami', [FrontController::class, 'about'])->name('about');
 Route::get('/terms', [FrontController::class, 'terms'])->name('terms');
 
+Route::get('/panduan/skripsi/x7y9-rules-karyantara', [FrontController::class, 'studentRules'])->name('rules.mahasiswa');
+
 // Arahkan route testimonial publik ke FrontController
 Route::get('/testimonial', [FrontController::class, 'testimonial'])->name('testimonial');
 

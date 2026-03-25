@@ -14,7 +14,6 @@ class StoreProjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'is_shared' => ['required', 'boolean'],
             'skripsi_package' => ['nullable', 'in:aplikasi,naskah,keduanya,sempro_naskah,sempro_bab3,sempro_keduanya,sidang_aplikasi,sidang_naskah,sidang_keduanya,sidang_bab4'],
             'programmer_id' => ['nullable', 'exists:users,id'],
             'writer_id' => ['nullable', 'exists:users,id'],

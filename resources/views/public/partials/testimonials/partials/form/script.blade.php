@@ -10,10 +10,10 @@
             showReferenceModal: false,
 
             get displayName() {
-                return this.name || 'Freya Jayawardana';
+                return this.name || 'Nama Kamu';
             },
             get displayTitle() {
-                return this.title || 'Member JKT48';
+                return this.title || 'Client Karyantara';
             },
             get displayReview() {
                 return this.review ||
@@ -23,7 +23,7 @@
                 if (this.imagePreview) return this.imagePreview;
                 if (this.name)
                     return `https://ui-avatars.com/api/?name=${encodeURIComponent(this.name)}&background=1E293B&color=fff`;
-                return '{{ asset('dummy/testimoni/freya.jpg') }}';
+                return '{{ asset('dummy/testimoni/karyantara_logo.jpg') }}';
             },
 
             handleImageSelect(event) {
