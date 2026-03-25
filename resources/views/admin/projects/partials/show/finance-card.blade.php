@@ -65,4 +65,34 @@
             </div>
         </div>
     @endif
+
+    @if ($project->client_type === 'umum' && !empty($project->custom_team))
+        <div class="bg-white rounded-2xl shadow-sm border border-indigo-100 overflow-hidden">
+            <div class="bg-indigo-50 px-5 py-4 border-b border-indigo-100">
+                <h4 class="font-bold text-[#1E293B]"><i class="fa-solid fa-users-gear text-indigo-500 mr-2"></i> Alokasi
+                    Fee Tim</h4>
+            </div>
+            <div class="p-0">
+                <ul class="divide-y divide-gray-100">
+                    @foreach ($project->custom_team as $member)
+                        @php $teamUser = \App\Models\User::find($member['user_id']); @endphp
+                        @if ($teamUser)
+                            <li class="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                                <div>
+                                    <p class="font-bold text-sm text-[#1E293B]">{{ $teamUser->name }}</p>
+                                    <p
+                                        class="text-[11px] font-semibold text-indigo-600 mt-0.5 uppercase tracking-wider">
+                                        {{ $member['role'] }}</p>
+                                </div>
+                                <span
+                                    class="font-black text-gray-800 text-sm bg-gray-100 px-2 py-1 rounded border border-gray-200">
+                                    Rp {{ number_format($member['fee'], 0, ',', '.') }}
+                                </span>
+                            </li>
+                        @endif
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
 </div>

@@ -40,6 +40,12 @@ class UpdateProjectRequest extends FormRequest
             'net_income' => ['nullable', 'numeric', 'min:0'],
             'paid_amount' => ['required', 'numeric', 'min:0'],
             'payment_method' => ['required', 'in:cash,transfer'],
+
+            // Validasi Tim Kustom (Klien Umum)
+            'custom_team' => ['nullable', 'array'],
+            'custom_team.*.user_id' => ['required_with:custom_team', 'exists:users,id'],
+            'custom_team.*.role' => ['required_with:custom_team', 'string', 'max:255'],
+            'custom_team.*.fee' => ['required_with:custom_team', 'numeric', 'min:0'],
         ];
     }
 }

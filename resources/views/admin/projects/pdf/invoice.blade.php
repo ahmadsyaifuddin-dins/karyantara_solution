@@ -203,7 +203,6 @@
 
                 @if ($project->skripsi_package)
                     <div style="border-top: 1px dashed #cbd5e1; margin: 4px 0; padding-top: 4px;">
-
                         @if ($project->programmer_id)
                             <div style="margin-bottom: 2px;">
                                 <span style="font-size: 10px; color: #3b82f6;">Dev. Aplikasi:</span><br>
@@ -212,7 +211,6 @@
                                     style="font-size: 9px; color: #93c5fd;">(DEV-{{ $project->programmer_id }})</span>
                             </div>
                         @endif
-
                         @if ($project->writer_id)
                             <div>
                                 <span style="font-size: 10px; color: #d97706;">Penyusun Naskah:</span><br>
@@ -220,7 +218,23 @@
                                 <span style="font-size: 9px; color: #fcd34d;">(WRT-{{ $project->writer_id }})</span>
                             </div>
                         @endif
+                    </div>
+                @endif
 
+                @if ($project->client_type === 'umum' && !empty($project->custom_team))
+                    <div style="border-top: 1px dashed #cbd5e1; margin: 4px 0; padding-top: 4px;">
+                        <span style="font-size: 10px; font-weight: bold; color: #4f46e5;">Tim Proyek Terlibat:</span>
+                        <ul style="margin: 2px 0 0 0; padding-left: 15px; font-size: 10px;">
+                            @foreach ($project->custom_team as $member)
+                                @php $teamUser = \App\Models\User::find($member['user_id']); @endphp
+                                @if ($teamUser)
+                                    <li style="margin-bottom: 2px;">
+                                        <strong>{{ $teamUser->name }}</strong>
+                                        <span style="color: #6366f1;">({{ $member['role'] }})</span>
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
                     </div>
                 @endif
 

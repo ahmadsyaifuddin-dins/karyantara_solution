@@ -94,7 +94,7 @@
                 @endif
 
                 <div class="pt-4 border-t border-gray-100">
-                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-3">Tim Karyantara</p>
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-3">Tim Karyantara Solution</p>
 
                     <div class="flex flex-col gap-3">
                         <div class="flex items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
@@ -107,7 +107,7 @@
                                     class="text-[10px] text-slate-500 font-bold uppercase tracking-wider leading-none mb-1">
                                     Admin Pengelola</p>
                                 <p class="font-bold text-[#1E293B] text-sm">
-                                    {{ $project->admin->name ?? 'Tim Karyantara' }}</p>
+                                    {{ $project->admin->name ?? 'Tim Karyantara Solution' }}</p>
                             </div>
                         </div>
 
@@ -141,6 +141,28 @@
                                         {{ $project->writer->name ?? 'Unknown' }}</p>
                                 </div>
                             </div>
+                        @endif
+
+                        @if ($project->client_type === 'umum' && !empty($project->custom_team))
+                            @foreach ($project->custom_team as $member)
+                                @php $teamUser = \App\Models\User::find($member['user_id']); @endphp
+                                @if ($teamUser)
+                                    <div
+                                        class="flex items-center bg-indigo-50 p-2.5 rounded-lg border border-indigo-100">
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-indigo-200 flex items-center justify-center mr-3 shrink-0">
+                                            <i class="fa-solid fa-user-gear text-indigo-600 text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p
+                                                class="text-[10px] text-indigo-600 font-bold uppercase tracking-wider leading-none mb-1">
+                                                {{ $member['role'] }}</p>
+                                            <p class="font-bold text-indigo-800 text-sm">
+                                                {{ $teamUser->name }}</p>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
                         @endif
                     </div>
                 </div>

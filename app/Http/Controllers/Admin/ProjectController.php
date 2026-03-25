@@ -205,21 +205,23 @@ class ProjectController extends Controller
             $data['app_price'] = $data['app_price'] ?? 0;
             $data['writer_price'] = $data['writer_price'] ?? 0;
 
-            // Cek kebutuhan tim (Tambahkan paket sidang)
+            // Cek kebutuhan tim
             $needsProgrammer = in_array($pkg, ['aplikasi', 'keduanya', 'sempro_keduanya', 'sidang_aplikasi', 'sidang_keduanya']);
             $needsWriter = in_array($pkg, ['naskah', 'keduanya', 'sempro_naskah', 'sempro_bab3', 'sempro_keduanya', 'sidang_naskah', 'sidang_keduanya', 'sidang_bab4']);
 
-            // Assign ID Penanggung Jawab
             $data['programmer_id'] = $needsProgrammer ? $request->programmer_id : null;
             $data['writer_id'] = $needsWriter ? $request->writer_id : null;
 
-            // Pastikan harga 0 jika paket tidak butuh role tersebut
             if (!$needsProgrammer) $data['app_price'] = 0;
             if (!$needsWriter) $data['writer_price'] = 0;
 
             $data['net_income'] = $data['app_price'] + $data['writer_price'];
             
+            // Kosongkan tim dinamis karena ini proyek mahasiswa
+            $data['custom_team'] = null; 
+
         } else {
+            // PROYEK UMUM / CORPORATE
             $data = array_merge($data, [
                 'skripsi_package' => null,
                 'programmer_id'   => null,
@@ -232,6 +234,9 @@ class ProjectController extends Controller
                 'app_price'       => 0,
                 'writer_price'    => 0,
                 'net_income'      => $data['net_income'] ?? 0,
+                
+                // Ambil data tim dinamis dari request
+                'custom_team'     => $request->custom_team ?? null, 
             ]);
         }
 

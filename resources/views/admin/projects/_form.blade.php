@@ -1,7 +1,30 @@
 <div x-data="{
     clientType: '{{ old('client_type', $project->client_type ?? 'mahasiswa') }}',
-    package: '{{ old('skripsi_package', $project->skripsi_package ?? '') }}'
+    package: '{{ old('skripsi_package', $project->skripsi_package ?? '') }}',
+    customTeam: {{ json_encode(old('custom_team', $project->custom_team ?? [])) }},
+
+    addTeamMember() {
+        this.customTeam.push({ user_id: '', role: '', fee: 0 });
+    },
+    removeTeamMember(index) {
+        this.customTeam.splice(index, 1);
+    }
 }">
+
+    @if ($errors->any())
+        <div class="bg-red-50 border-l-4 border-red-500 p-5 mb-6 rounded-r-xl shadow-sm animate-pulse">
+            <div class="flex items-center mb-3">
+                <i class="fa-solid fa-triangle-exclamation text-red-500 text-xl mr-2"></i>
+                <h3 class="text-red-800 font-extrabold text-lg">Waduh! Ada {{ $errors->count() }} isian yang kurang
+                    tepat:</h3>
+            </div>
+            <ul class="list-disc list-inside text-sm text-red-600 ml-2 space-y-1.5 font-medium">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     @include('admin.projects.partials.form.general')
 
@@ -16,6 +39,8 @@
         @include('admin.projects.partials.form.academic')
     </div>
 
+    @include('admin.projects.partials.form.custom-team')
+
     <div class="mb-6">
         <x-forms.label value="Deskripsi Pekerjaan (Fitur yang dibuat)" required="true" />
         <x-forms.textarea name="project_description" rows="3"
@@ -27,7 +52,7 @@
     <div class="mb-8">
         <x-forms.label value="Catatan Revisi" />
         <x-forms.textarea name="revision_notes" rows="2"
-            placeholder="Contoh: Dosen minta tambah fitur cetak laporan...">{{ old('revision_notes', $project->revision_notes ?? '') }}</x-forms.textarea>
+            placeholder="Contoh: Klien minta tambah fitur laporan PDF...">{{ old('revision_notes', $project->revision_notes ?? '') }}</x-forms.textarea>
     </div>
 
     <div class="flex justify-end gap-3 border-t border-gray-200 pt-6">

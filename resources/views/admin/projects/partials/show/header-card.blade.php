@@ -82,7 +82,7 @@
             Status: {{ $project->status }}
         </span>
 
-        <div class="flex flex-col items-end gap-2 text-xs">
+        <div class="flex flex-col items-end gap-2 text-xs w-full">
             <div class="flex items-center gap-2 text-gray-500 font-medium">
                 <span>Admin Pengelola:</span>
                 <span
@@ -114,6 +114,26 @@
                         <i class="fa-solid fa-file-word mr-1.5 text-amber-500"></i>
                         {{ $project->writer->name ?? 'Unknown' }}
                     </span>
+                </div>
+            @endif
+
+            @if ($project->client_type === 'umum' && !empty($project->custom_team))
+                <div class="mt-2 pt-2 border-t border-gray-100 w-full flex flex-col items-end gap-1.5">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Tim Kustom
+                        Terlibat:</span>
+                    @foreach ($project->custom_team as $member)
+                        @php $teamUser = \App\Models\User::find($member['user_id']); @endphp
+                        @if ($teamUser)
+                            <div class="flex items-center gap-2 text-indigo-600/80 font-medium">
+                                <span class="text-xs">{{ $member['role'] }}:</span>
+                                <span
+                                    class="text-indigo-700 font-bold bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded flex items-center shadow-sm">
+                                    <i class="fa-solid fa-user-gear mr-1.5 text-indigo-500"></i>
+                                    {{ $teamUser->name }}
+                                </span>
+                            </div>
+                        @endif
+                    @endforeach
                 </div>
             @endif
         </div>

@@ -9,6 +9,10 @@ class Project extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'custom_team' => 'array', 
+    ];
+
     protected $fillable = [
         'admin_id',
         'programmer_id',
@@ -33,6 +37,7 @@ class Project extends Model
         'net_income',
         'paid_amount',
         'payment_method',
+        'custom_team',
     ];
 
    /**
