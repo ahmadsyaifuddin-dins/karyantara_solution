@@ -89,9 +89,6 @@
                     class="text-[#1E293B] font-bold bg-slate-100 border border-slate-200 px-2 py-0.5 rounded flex items-center">
                     <i class="fa-solid fa-headset mr-1.5 text-blue-500"></i>
                     {{ $project->admin->name ?? 'Unknown' }}
-                    @if (!$project->is_shared)
-                        <i class="fa-solid fa-lock ml-1.5 text-red-500" title="Private"></i>
-                    @endif
                 </span>
             </div>
 

@@ -20,7 +20,7 @@ class ProjectObserver
         $sisa_pembayaran = $project->net_income - $project->paid_amount;
 
         return [
-            '=ROW()-1',                                   // A: 0 (NOMOR URUT OTOMATIS)
+            '=ROW()-1',                                   // A: 0 
             $project->id,                                 // B: 1
             $project->client_type,                        // C: 2
             $project->client_name,                        // D: 3
@@ -31,11 +31,11 @@ class ProjectObserver
             $project->dospem_2 ?? '-',                    // I: 8
             $project->skripsi_title ?? '-',               // J: 9
             $project->project_description ?? '-',         // K: 10
-            $project->programmer ? $project->programmer->name : '-', // L: 11 (PERBAIKAN BUG NAMA)
-            $project->writer ? $project->writer->name : '-',         // M: 12 (PERBAIKAN BUG NAMA)
+            $project->programmer ? $project->programmer->name : '-', // L: 11 
+            $project->writer ? $project->writer->name : '-',         // M: 12 
             $project->status,                             // N: 13
             $project->revision_notes ?? '-',              // O: 14
-            $project->net_income,                         // P: 15 (HARGA SEKARANG DI P)
+            $project->net_income,                         // P: 15 
             $project->paid_amount,                        // Q: 16
             $sisa_pembayaran,                             // R: 17
             $project->payment_method,                     // S: 18
@@ -48,10 +48,8 @@ class ProjectObserver
         $autoSync = Setting::where('key', 'auto_sync_sheet')->value('value');
         if ($autoSync !== '1') return;
 
-        if ($project->is_shared) {
-            // Jangkauan diubah jadi A:T
-            $this->googleSheetService->appendData('Sheet1!A:T', [$this->mapProjectData($project)]);
-        }
+        // Langsung insert karena semua project sekarang disinkronkan
+        $this->googleSheetService->appendData('Sheet1!A:T', [$this->mapProjectData($project)]);
     }
 
     public function updated(Project $project): void
@@ -59,11 +57,8 @@ class ProjectObserver
         $autoSync = Setting::where('key', 'auto_sync_sheet')->value('value');
         if ($autoSync !== '1') return;
 
-        if ($project->is_shared) {
-            $this->googleSheetService->updateDataById('Sheet1', $project->id, [$this->mapProjectData($project)]);
-        } else {
-            $this->googleSheetService->clearRowById('Sheet1', $project->id);
-        }
+        // Langsung update berdasarkan ID karena semua project sekarang disinkronkan
+        $this->googleSheetService->updateDataById('Sheet1', $project->id, [$this->mapProjectData($project)]);
     }
 
     public function deleted(Project $project): void
