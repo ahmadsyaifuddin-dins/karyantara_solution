@@ -10,16 +10,12 @@ use Illuminate\Support\Facades\Log;
 class GoogleSheetService
 {
     protected $client;
-
     protected $service;
-
     protected $spreadsheetId;
 
     public function __construct()
     {
         $this->client = new Client;
-
-        // Pastikan path ini sesuai dengan lokasi credentials.json Anda
         $this->client->setAuthConfig(storage_path('app/google/credentials.json'));
         $this->client->addScope(Sheets::SPREADSHEETS);
 
@@ -27,19 +23,67 @@ class GoogleSheetService
         $this->spreadsheetId = env('GOOGLE_SHEET_ID');
     }
 
-    // Fungsi untuk menambah baris baru (Create)
+    // FUNGSI HELPER BARU: Mewarnai 1 baris secara spesifik
+    private function applyRowColor($sheetName, $rowIndex, $isLunas)
+    {
+        try {
+            $sheet = $this->service->spreadsheets->get($this->spreadsheetId);
+            $sheetId = 0;
+            foreach ($sheet->getSheets() as $s) {
+                if ($s->getProperties()->getTitle() == $sheetName) {
+                    $sheetId = $s->getProperties()->getSheetId();
+                    break;
+                }
+            }
+
+            if ($isLunas) {
+                // Sesuai Request: Warna Hijau Murni (#00FF00)
+                $bgColor = ['red' => 0, 'green' => 1, 'blue' => 0];
+            } else {
+                // Putih Bersih
+                $bgColor = ['red' => 1, 'green' => 1, 'blue' => 1];
+            }
+
+            $request = new \Google\Service\Sheets\Request([
+                'repeatCell' => [
+                    // endColumnIndex dinaikkan ke 20 untuk mencakup tambahan kolom 'NO'
+                    'range' => ['sheetId' => $sheetId, 'startRowIndex' => $rowIndex - 1, 'endRowIndex' => $rowIndex, 'startColumnIndex' => 0, 'endColumnIndex' => 20],
+                    'cell' => ['userEnteredFormat' => ['backgroundColor' => $bgColor]],
+                    'fields' => 'userEnteredFormat.backgroundColor'
+                ]
+            ]);
+
+            $batchUpdateRequest = new \Google\Service\Sheets\BatchUpdateSpreadsheetRequest(['requests' => [$request]]);
+            $this->service->spreadsheets->batchUpdate($this->spreadsheetId, $batchUpdateRequest);
+
+        } catch (\Exception $e) {
+            Log::error('Gagal update warna baris: '.$e->getMessage());
+        }
+    }
+
     public function appendData($range, $values)
     {
         try {
             $body = new ValueRange(['values' => $values]);
             $params = ['valueInputOption' => 'USER_ENTERED'];
 
-            return $this->service->spreadsheets_values->append(
-                $this->spreadsheetId,
-                $range,
-                $body,
-                $params
-            );
+            $response = $this->service->spreadsheets_values->append($this->spreadsheetId, $range, $body, $params);
+
+            // LOGIKA PINTAR: Ngitung kolom dari belakang agar kebal pergeseran
+            $updatedRange = $response->getUpdates()->getUpdatedRange();
+            if (preg_match('/!A(\d+)/', $updatedRange, $matches)) {
+                $rowIndex = (int)$matches[1];
+                
+                $c = count($values[0]);
+                $totalHarga = isset($values[0][$c - 5]) ? (float)$values[0][$c - 5] : 0;
+                $sisaTagihan = isset($values[0][$c - 3]) ? (float)$values[0][$c - 3] : 0;
+                $isLunas = ($totalHarga > 0 && $sisaTagihan <= 0);
+                
+                $sheetName = explode('!', $range)[0];
+                $this->applyRowColor($sheetName, $rowIndex, $isLunas);
+            }
+
+            return $response;
         } catch (\Exception $e) {
             Log::error('Gagal tambah data ke Google Sheet: '.$e->getMessage());
         }
@@ -48,11 +92,11 @@ class GoogleSheetService
     public function updateDataById($sheetName, $id, $values)
     {
         try {
-            $response = $this->service->spreadsheets_values->get($this->spreadsheetId, $sheetName.'!A:A');
+            $response = $this->service->spreadsheets_values->get($this->spreadsheetId, $sheetName.'!B:B'); // Cek ID di Kolom B jika ada 'NO' di A. Jika ID tetap di A, ganti ke !A:A
             $rows = $response->getValues();
             $rowIndex = -1;
 
-            if (! empty($rows)) {
+            if (!empty($rows)) {
                 foreach ($rows as $index => $row) {
                     if (isset($row[0]) && $row[0] == $id) {
                         $rowIndex = $index + 1;
@@ -62,46 +106,50 @@ class GoogleSheetService
             }
 
             if ($rowIndex !== -1) {
-                // Update ke S menjadi T
-                $updateRange = $sheetName . '!A' . $rowIndex . ':T' . $rowIndex;
+                // Update ke rentang A sampai T (Karena ada 20 kolom)
+                $updateRange = $sheetName.'!A'.$rowIndex.':T'.$rowIndex;
                 $body = new \Google\Service\Sheets\ValueRange(['values' => $values]);
                 $params = ['valueInputOption' => 'USER_ENTERED'];
 
-                return $this->service->spreadsheets_values->update($this->spreadsheetId, $updateRange, $body, $params);
+                $response = $this->service->spreadsheets_values->update($this->spreadsheetId, $updateRange, $body, $params);
+
+                $c = count($values[0]);
+                $totalHarga = isset($values[0][$c - 5]) ? (float)$values[0][$c - 5] : 0;
+                $sisaTagihan = isset($values[0][$c - 3]) ? (float)$values[0][$c - 3] : 0;
+                $isLunas = ($totalHarga > 0 && $sisaTagihan <= 0);
+                
+                $this->applyRowColor($sheetName, $rowIndex, $isLunas);
+
+                return $response;
             } else {
-                $this->appendData($sheetName . '!A:T', $values);
+                $this->appendData($sheetName.'!A:T', $values);
             }
 
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Gagal update data ke Google Sheet: '.$e->getMessage());
+            Log::error('Gagal update data ke Google Sheet: '.$e->getMessage());
         }
     }
 
-    // FUNGSI BARU: Untuk menghapus/mengosongkan baris jika proyek jadi Private
     public function clearRowById($sheetName, $id)
     {
         try {
-            $response = $this->service->spreadsheets_values->get($this->spreadsheetId, $sheetName.'!A:A');
+            $response = $this->service->spreadsheets_values->get($this->spreadsheetId, $sheetName.'!B:B'); 
             $rows = $response->getValues();
 
-            if (! empty($rows)) {
+            if (!empty($rows)) {
                 foreach ($rows as $index => $row) {
                     if (isset($row[0]) && $row[0] == $id) {
                         $rowIndex = $index + 1;
-                        $clearRange = $sheetName . '!A' . $rowIndex . ':T' . $rowIndex;
+                        $clearRange = $sheetName.'!A'.$rowIndex.':T'.$rowIndex;
 
-                        // Hapus teks di baris tersebut
-                        $this->service->spreadsheets_values->clear(
-                            $this->spreadsheetId,
-                            $clearRange,
-                            new \Google\Service\Sheets\ClearValuesRequest
-                        );
+                        $this->service->spreadsheets_values->clear($this->spreadsheetId, $clearRange, new \Google\Service\Sheets\ClearValuesRequest());
+                        $this->applyRowColor($sheetName, $rowIndex, false);
                         break;
                     }
                 }
             }
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Gagal hapus baris private di Google Sheet: '.$e->getMessage());
+            Log::error('Gagal hapus baris private: '.$e->getMessage());
         }
     }
 
@@ -117,30 +165,19 @@ class GoogleSheetService
                 }
             }
 
-            // Bersihkan A1 sampai S1000
-            $clearRange = $sheetName . '!A1:T1000';
-            $this->service->spreadsheets_values->clear($this->spreadsheetId, $clearRange, new \Google\Service\Sheets\ClearValuesRequest);
+            $clearRange = $sheetName.'!A1:T1000';
+            $this->service->spreadsheets_values->clear($this->spreadsheetId, $clearRange, new \Google\Service\Sheets\ClearValuesRequest());
 
-            $updateRange = $sheetName . '!A1';
+            $updateRange = $sheetName.'!A1';
             $body = new \Google\Service\Sheets\ValueRange(['values' => $values]);
             $params = ['valueInputOption' => 'USER_ENTERED'];
             $this->service->spreadsheets_values->update($this->spreadsheetId, $updateRange, $body, $params);
 
-            $summaryValues = [
-                ['TOTAL PENDAPATAN', 'TOTAL TERBAYARKAN', 'TOTAL SISA TAGIHAN'],
-                ['=SUM(P2:P)', '=SUM(Q2:Q)', '=SUM(R2:R)']
-            ];
-            $summaryBody = new \Google\Service\Sheets\ValueRange(['values' => $summaryValues]);
-            // Taruh di kolom V, W, X baris 1 & 2
-            $this->service->spreadsheets_values->update($this->spreadsheetId, $sheetName . '!V1:X2', $summaryBody, ['valueInputOption' => 'USER_ENTERED']);
-
-
             $requests = [];
 
-            // A. Format Header Utama & Header Summary
+            // A. Format Header (0 sampai 20)
             $requests[] = new \Google\Service\Sheets\Request([
                 'repeatCell' => [
-                    // UPDATE 5: endColumnIndex jadi 20 (Untuk Kolom A-T)
                     'range' => ['sheetId' => $sheetId, 'startRowIndex' => 0, 'endRowIndex' => 1, 'startColumnIndex' => 0, 'endColumnIndex' => 20],
                     'cell' => [
                         'userEnteredFormat' => [
@@ -152,68 +189,36 @@ class GoogleSheetService
                 ],
             ]);
 
-            // Format Header Kotak Rekap (V1 - X1)
-            $requests[] = new \Google\Service\Sheets\Request([
-                'repeatCell' => [
-                    'range' => ['sheetId' => $sheetId, 'startRowIndex' => 0, 'endRowIndex' => 1, 'startColumnIndex' => 21, 'endColumnIndex' => 24],
-                    'cell' => [
-                        'userEnteredFormat' => [
-                            'backgroundColor' => ['red' => 245 / 255, 'green' => 158 / 255, 'blue' => 11 / 255], // Warna Amber
-                            'textFormat' => ['foregroundColor' => ['red' => 1, 'green' => 1, 'blue' => 1], 'bold' => true],
-                        ],
-                    ],
-                    'fields' => 'userEnteredFormat(backgroundColor,textFormat)',
-                ],
-            ]);
-
-            // B. Format Mata Uang (Kolom P=15, Q=16, R=17) DAN Kotak Rekap (V2-X2)
-            $requests[] = new \Google\Service\Sheets\Request([
-                'repeatCell' => [
-                    'range' => ['sheetId' => $sheetId, 'startRowIndex' => 1, 'startColumnIndex' => 15, 'endColumnIndex' => 18],
-                    'cell' => ['userEnteredFormat' => ['numberFormat' => ['type' => 'CURRENCY', 'pattern' => 'Rp #,##0']]],
-                    'fields' => 'userEnteredFormat.numberFormat',
-                ],
-            ]);
-            $requests[] = new \Google\Service\Sheets\Request([
-                'repeatCell' => [
-                    'range' => ['sheetId' => $sheetId, 'startRowIndex' => 1, 'endRowIndex' => 2, 'startColumnIndex' => 21, 'endColumnIndex' => 24],
-                    'cell' => [
-                        'userEnteredFormat' => [
-                            'numberFormat' => ['type' => 'CURRENCY', 'pattern' => 'Rp #,##0'],
-                            'textFormat' => ['bold' => true] // Bold angkanya
-                        ]
-                    ],
-                    'fields' => 'userEnteredFormat(numberFormat,textFormat)',
-                ],
-            ]);
-
-            // C. Logic Warna Hijau
+            // B. Auto-Coloring Logic Pintar
             foreach ($values as $index => $row) {
                 if ($index === 0) continue;
 
-                // Index 15 = Total Harga, Index 17 = Sisa Tagihan
-                $totalHarga = isset($row[15]) ? (float) $row[15] : 0;
-                $sisaTagihan = isset($row[17]) ? (float) $row[17] : 0;
+                $c = count($row);
+                $totalHarga = isset($row[$c - 5]) ? (float)$row[$c - 5] : 0;
+                $sisaTagihan = isset($row[$c - 3]) ? (float)$row[$c - 3] : 0;
 
                 if ($totalHarga > 0 && $sisaTagihan <= 0) {
-                    $requests[] = new \Google\Service\Sheets\Request([
-                        'repeatCell' => [
-                            // UPDATE 6: endColumnIndex jadi 20
-                            'range' => ['sheetId' => $sheetId, 'startRowIndex' => $index, 'endRowIndex' => $index + 1, 'startColumnIndex' => 0, 'endColumnIndex' => 20],
-                            'cell' => ['userEnteredFormat' => ['backgroundColor' => ['red' => 212 / 255, 'green' => 237 / 255, 'blue' => 218 / 255]]],
-                            'fields' => 'userEnteredFormat.backgroundColor',
-                        ],
-                    ]);
+                    $bgColor = ['red' => 0, 'green' => 1, 'blue' => 0]; // #00FF00
+                } else {
+                    $bgColor = ['red' => 1, 'green' => 1, 'blue' => 1]; // Putih
                 }
+
+                $requests[] = new \Google\Service\Sheets\Request([
+                    'repeatCell' => [
+                        'range' => ['sheetId' => $sheetId, 'startRowIndex' => $index, 'endRowIndex' => $index + 1, 'startColumnIndex' => 0, 'endColumnIndex' => 20],
+                        'cell' => ['userEnteredFormat' => ['backgroundColor' => $bgColor]],
+                        'fields' => 'userEnteredFormat.backgroundColor',
+                    ],
+                ]);
             }
 
-            if (! empty($requests)) {
+            if (!empty($requests)) {
                 $batchUpdateRequest = new \Google\Service\Sheets\BatchUpdateSpreadsheetRequest(['requests' => $requests]);
                 $this->service->spreadsheets->batchUpdate($this->spreadsheetId, $batchUpdateRequest);
             }
 
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Gagal sync massal ke Google Sheet: '.$e->getMessage());
+            Log::error('Gagal sync massal: '.$e->getMessage());
         }
     }
 }
