@@ -97,7 +97,6 @@ class ProjectController extends Controller
 
     public function exportPdf()
     {
-        // Hapus query is_shared dan admin_id
         $projects = Project::orderByRaw("CASE WHEN status = 'Selesai' THEN 1 ELSE 0 END ASC")
             ->orderBy('sort_order', 'asc')
             ->latest()
@@ -131,7 +130,6 @@ class ProjectController extends Controller
 
     public function priorityBoard()
     {
-        // Hapus query is_shared dan admin_id
         $projects = Project::where('status', '!=', 'Selesai')
             ->orderBy('sort_order', 'asc')
             ->latest()
