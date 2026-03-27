@@ -328,5 +328,38 @@ document.addEventListener('alpine:init', () => {
             localStorage.setItem('karyantara_music_playing', 'false');
         }
     }));
+
+    Alpine.data('countdownTimer', (endDate) => ({
+        days: '00',
+        hours: '00',
+        minutes: '00',
+        seconds: '00',
+        isExpired: false,
+        timer: null,
+
+        init() {
+            this.calculateTime();
+            // Update setiap detik
+            this.timer = setInterval(() => this.calculateTime(), 1000);
+        },
+
+        calculateTime() {
+            const now = new Date().getTime();
+            const target = new Date(endDate).getTime();
+            const distance = target - now;
+
+            if (distance < 0) {
+                this.isExpired = true;
+                clearInterval(this.timer);
+                return;
+            }
+
+            // Kalkulasi waktu
+            this.days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            this.hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            this.minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            this.seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+        }
+    }));
 });
 

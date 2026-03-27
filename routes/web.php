@@ -85,7 +85,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings/{setting}/toggle', [SettingController::class, 'toggle'])->name('settings.toggle');
-
+    Route::post('/settings/update-data', [SettingController::class, 'updateData'])->name('settings.updateData');
+    
     Route::get('/ikhtiar', function () {
         return view('pages.admin.ikhtiar.index'); // Sesuaikan dengan path view kamu
     })->name('ikhtiar');

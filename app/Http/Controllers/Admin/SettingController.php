@@ -28,4 +28,18 @@ class SettingController extends Controller
             'value' => $newValue,
         ]);
     }
+
+    public function updateData(Request $request)
+    {
+        $data = $request->except('_token');
+        
+        foreach ($data as $key => $value) {
+            Setting::updateOrCreate(
+                ['key' => $key],
+                ['value' => $value]
+            );
+        }
+
+        return back()->with('success', 'Pengaturan Timer berhasil disimpan!');
+    }
 }
