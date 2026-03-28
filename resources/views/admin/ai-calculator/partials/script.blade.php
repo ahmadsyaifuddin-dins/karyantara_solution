@@ -16,11 +16,17 @@
                     this.isLoading = true;
                     this.result = null;
 
-                    // JURUS DOM: Tarik data dari input hidden milik x-forms.currency
+                    // Ambil harga barang
                     const priceInput = document.querySelector('input[name="target_price"]');
                     if (priceInput) {
-                        // Jika nilainya 0 (kosong), kita ubah jadi string kosong biar AI menebak
                         this.form.target_price = priceInput.value == '0' ? '' : priceInput.value;
+                    }
+
+                    // Ambil saldo tabungan pribadi
+                    const balanceInput = document.querySelector('input[name="current_balance"]');
+                    if (balanceInput) {
+                        this.form.current_balance = balanceInput.value == '0' ? '0' : balanceInput
+                        .value;
                     }
 
                     fetch('{{ route('admin.ai-calculator.calculate') }}', {

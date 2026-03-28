@@ -11,6 +11,15 @@
 
             <div>
                 <x-forms.label>
+                    Total Saldo Rekening Saat Ini <span class="text-xs text-gray-400 font-normal">- SeaBank, dll (Udah
+                        gabungan fee & cicilan)</span>
+                </x-forms.label>
+
+                <x-forms.currency name="current_balance" placeholder="Cth: 6.751.000" />
+            </div>
+
+            <div>
+                <x-forms.label>
                     Estimasi Harga <span class="text-xs text-gray-400 font-normal">- Kosongkan jika ingin AI
                         menebak</span>
                 </x-forms.label>

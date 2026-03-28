@@ -78,45 +78,55 @@ class AiCalculatorController extends Controller
         $request->validate([
             'target_item' => 'required|string|max:255',
             'target_price' => 'nullable|numeric|min:0',
+            'current_balance' => 'nullable|numeric|min:0',
             'model' => 'required|string',
         ]);
 
-        // Ambil data keuangan PRIBADI
+        // 1. Ambil data keuangan PRIBADI (dari Sistem Karyantara)
         $finances = $this->calculatePersonalEarnings(Auth::id());
-        $totalNetIncome = $finances['income'];
-        $totalPaid = $finances['paid'];
-        $totalPiutang = $finances['piutang'];
+        $totalPiutang = $finances['piutang']; // Kita cuma butuh Piutangnya saja
         
+        // 2. Data dari Form
         $item = $request->target_item;
         $price = $request->target_price;
         $priceText = $price ? 'Rp ' . number_format($price, 0, ',', '.') : 'Tolong estimasikan harganya';
-
-        // 2. Racik System Prompt (Karakteristik AI)
+        
+        // Saldo Realita (SeaBank, BCA, dll)
+        $currentBalance = $request->current_balance ?: 0;
+        
+        // --- LOGIKA MATEMATIKA REALITA ---
+        // Jika form saldo diisi, jadikan itu sebagai SATU-SATUNYA acuan uang tunai.
+        // Jika dikosongkan (0), baru kita pakai backup dari sistem Karyantara (cair).
+        $totalLiquidCash = $currentBalance > 0 ? $currentBalance : $finances['paid']; 
+        
+        // Total Estimasi = Uang Real di Rekening + Uang Nyangkut di Klien
+        $totalEstimatedAssets = $totalLiquidCash + $totalPiutang; 
+        
+        // 3. Racik System Prompt
         $systemPrompt = "Anda adalah 'Asisten Finansial & Tech Advisor' eksklusif untuk staf di Karyantara Solution. 
-Tugas Anda adalah memberikan saran logis dan realistis mengenai rencana belanja barang pribadi menggunakan uang komisi/fee dari project.
+Tugas Anda adalah memberikan saran logis dan realistis mengenai rencana belanja barang pribadi.
 Gunakan bahasa Indonesia yang profesional, modern, namun tetap santai (ala tech startup).
 PENTING TENTANG FORMAT OUTPUT (WAJIB MARKDOWN):
-1. WAJIB gunakan Markdown Table (Tabel) untuk menyajikan rincian angka, perbandingan harga, atau cashflow agar rapi.
+1. WAJIB gunakan Markdown Table (Tabel) untuk menyajikan rincian cashflow dan perhitungan matematis.
 2. Gunakan Bullet Points (-) untuk kelebihan/kekurangan barang.
-3. Gunakan Bold (**) untuk penekanan angka atau kesimpulan penting.
-4. JANGAN gunakan format persamaan matematika/LaTeX (seperti \frac, \text). Gunakan teks biasa untuk hitungan.
-Jangan berikan pengantar basa-basi, langsung ke analisis.";
+3. JANGAN gunakan format persamaan matematika/LaTeX (seperti \frac, \text). Gunakan teks biasa saja.
+4. Perhatikan baik-baik 'Total Uang Tunai di Rekening' sebelum menyimpulkan defisit.";
 
-        // 3. Racik User Prompt (Konteks & Pertanyaan) - Fokus ke Dompet Pribadi
-        $userPrompt = "Berikut adalah status keuangan PRIBADI saya (dari komisi project) saat ini:
-- Total Fee Keseluruhan: Rp " . number_format($totalNetIncome, 0, ',', '.') . "
-- Fee Sudah Cair (Uang di Tangan): Rp " . number_format($totalPaid, 0, ',', '.') . "
-- Piutang Fee (Belum Cair): Rp " . number_format($totalPiutang, 0, ',', '.') . "
+        // 4. Racik User Prompt - SESUAI REALITA DOMPET
+        $userPrompt = "Berikut adalah status keuangan REAL saya saat ini:
+1. Uang Tunai di Rekening (Realita): Rp " . number_format($totalLiquidCash, 0, ',', '.') . " (Ini sudah termasuk gabungan fee yang cair dan uang cicilan masuk).
+2. Piutang Fee Project (Belum Cair/Belum Lunas): Rp " . number_format($totalPiutang, 0, ',', '.') . "
+--- TOTAL ASET ESTIMASI (Rekening + Piutang): Rp " . number_format($totalEstimatedAssets, 0, ',', '.') . " ---
 
 Saya berencana membeli: **{$item}**.
 Estimasi Harga: **{$priceText}**.
 
-Tolong berikan:
-1. Analisis *Cashflow* Pribadi: Apakah aman membelinya sekarang menggunakan 'Uang di Tangan', atau harus menunggu 'Piutang' cair? (Berikan perhitungan rasionya).
-2. Review Barang: Apakah barang ini *worth it* untuk menunjang pekerjaan saya di bidang IT/Software Development?
-3. Rekomendasi Pembelian: Saran beli di mana (contoh: Tokopedia, Shopee, atau toko offline) beserta tipsnya.";
+Tolong berikan laporan dengan susunan berikut:
+1. Tabel Analisis Cashflow Pribadi: Hitung apakah 'Uang Tunai di Rekening' cukup untuk membeli barang tersebut? Jika kurang, hitung defisitnya. Lalu hitung sisa kekayaan saya JIKA memakai skema menunggu 'Piutang' cair sepenuhnya.
+2. Review Barang & Spesifikasi: Apakah barang ini *worth it* untuk menunjang pekerjaan saya di bidang IT?
+3. Rekomendasi Tempat Pembelian & Tips.";
 
-        // 4. Tembak ke API Groq
+        // 5. Tembak ke API Groq
         $aiResponse = $this->groqService->generateFinancialAdvice(
             $request->model,
             $systemPrompt,
@@ -130,15 +140,15 @@ Tolong berikan:
             ], 500);
         }
 
-        // 5. Simpan ke Database sebagai Histori
+        // 6. Simpan ke Database sebagai Histori
         $history = AiCalculationHistory::create([
             'admin_id' => Auth::id(),
             'target_item' => $item,
             'target_price' => $price,
             'financial_snapshot' => [
-                'omzet_pribadi' => $totalNetIncome,
-                'cair_pribadi' => $totalPaid,
-                'piutang_pribadi' => $totalPiutang,
+                'saldo_real_rekening' => $totalLiquidCash,
+                'piutang_sistem' => $totalPiutang,
+                'total_estimasi_aset' => $totalEstimatedAssets,
             ],
             'ai_advice' => $aiResponse,
             'model_used' => $request->model,
