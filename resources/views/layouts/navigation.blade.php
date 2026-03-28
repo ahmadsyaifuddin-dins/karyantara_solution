@@ -51,11 +51,17 @@
             </a>
 
             <a href="{{ route('admin.ai-calculator.index') }}"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.ai-calculator.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
-                <i class="fa-solid fa-robot w-5 text-center text-lg"></i>
-                <span>Kalkulator AI</span>
+                class="electric-menu flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 {{ request()->routeIs('admin.ai-calculator.*') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-[0_0_15px_rgba(245,158,11,0.6)]' : 'bg-[#1E293B]/50 text-amber-400 hover:text-white hover:bg-slate-800' }} group">
+
+                <i
+                    class="fa-solid fa-robot w-5 text-center text-lg relative z-10 group-hover:animate-ping duration-75"></i>
+
+                <span class="relative z-10 font-semibold tracking-wide">Kalkulator AI</span>
+
                 <span
-                    class="ml-auto bg-amber-500 text-[#1E293B] text-[10px] font-extrabold px-2 py-0.5 rounded-full animate-pulse">NEW</span>
+                    class="ml-auto bg-amber-500 text-[#1E293B] text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-pulse relative z-10">
+                    <i class="fa-solid fa-bolt text-[#1E293B] mr-0.5"></i> AI
+                </span>
             </a>
         </div>
 
