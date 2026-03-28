@@ -12,43 +12,74 @@
 <div class="space-y-4">
     @if ($timerActive === '1' && $timerDatetime)
         <div x-data="countdownTimer('{{ $timerDatetime }}')" x-show="!isExpired" x-transition.duration.500ms
-            class="bg-[#1E293B] rounded-2xl shadow-lg border border-slate-700 overflow-hidden relative w-full">
-            <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-amber-500 rounded-full opacity-10 blur-2xl">
-            </div>
+            :class="isCritical ?
+                'bg-red-700 border-red-900 animate-[panic_0.3s_ease-in-out_infinite] shadow-[0_0_25px_rgba(220,38,38,0.5)]' :
+                'bg-[#1E293B] border-slate-700 shadow-lg'"
+            class="rounded-2xl border overflow-hidden relative w-full transition-colors duration-500">
 
-            <div class="px-5 py-4 flex flex-col md:flex-row items-center justify-between gap-5">
-                <div class="flex items-center gap-4 z-10">
-                    <div class="bg-amber-500/20 p-3 rounded-xl border border-amber-500/30">
-                        <i class="fa-solid fa-bell text-amber-500 text-2xl animate-[ring_2s_ease-in-out_infinite]"></i>
+            <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full opacity-20 blur-2xl"
+                :class="isCritical ? 'bg-black' : 'bg-amber-500'"></div>
+
+            <div class="px-5 py-4 flex flex-col md:flex-row items-center justify-between gap-5 relative z-10">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 rounded-xl border transition-colors duration-500"
+                        :class="isCritical ? 'bg-red-900/50 border-red-400/50' : 'bg-amber-500/20 border-amber-500/30'">
+                        <i class="fa-solid fa-bell text-2xl transition-colors duration-500"
+                            :class="isCritical ? 'text-white animate-ping' :
+                                'text-amber-500 animate-[ring_2s_ease-in-out_infinite]'"></i>
                     </div>
                     <div>
                         <h4 class="text-white font-bold text-lg md:text-xl">{{ $timerTitle }}</h4>
-                        <p class="text-slate-400 text-sm">Pastikan progres mahasiswa aman sebelum batas waktu ini.</p>
+                        <p class="text-sm transition-colors duration-500"
+                            :class="isCritical ? 'text-red-200 font-bold' : 'text-slate-400'">
+                            <span x-show="isCritical"><i class="fa-solid fa-triangle-exclamation mr-1"></i> WAKTU HAMPIR
+                                HABIS! SEGERA CEK PROGRES!</span>
+                            <span x-show="!isCritical">Pastikan progres mahasiswa aman sebelum batas waktu ini.</span>
+                        </p>
                     </div>
                 </div>
 
-                <div class="flex gap-2 text-center z-10">
-                    <div class="bg-slate-800/80 border border-slate-600 rounded-xl px-3 py-2 min-w-[65px] shadow-inner">
-                        <span class="text-amber-500 font-extrabold text-2xl" x-text="days">00</span>
-                        <p class="text-slate-400 text-[10px] uppercase font-semibold tracking-wider">Hari</p>
+                <div class="flex gap-2 text-center">
+                    <div class="border rounded-xl px-3 py-2 min-w-[65px] shadow-inner transition-colors duration-500"
+                        :class="isCritical ? 'bg-red-950/80 border-red-500' : 'bg-slate-800/80 border-slate-600'">
+                        <span class="font-extrabold text-2xl transition-colors duration-500"
+                            :class="isCritical ? 'text-white' : 'text-amber-500'" x-text="days">00</span>
+                        <p class="text-[10px] uppercase font-semibold tracking-wider transition-colors duration-500"
+                            :class="isCritical ? 'text-red-300' : 'text-slate-400'">Hari</p>
                     </div>
-                    <div class="text-slate-500 font-bold text-xl py-2">:</div>
-                    <div class="bg-slate-800/80 border border-slate-600 rounded-xl px-3 py-2 min-w-[65px] shadow-inner">
-                        <span class="text-amber-500 font-extrabold text-2xl" x-text="hours">00</span>
-                        <p class="text-slate-400 text-[10px] uppercase font-semibold tracking-wider">Jam</p>
+                    <div class="font-bold text-xl py-2 transition-colors duration-500"
+                        :class="isCritical ? 'text-red-400' : 'text-slate-500'">:</div>
+
+                    <div class="border rounded-xl px-3 py-2 min-w-[65px] shadow-inner transition-colors duration-500"
+                        :class="isCritical ? 'bg-red-950/80 border-red-500' : 'bg-slate-800/80 border-slate-600'">
+                        <span class="font-extrabold text-2xl transition-colors duration-500"
+                            :class="isCritical ? 'text-white' : 'text-amber-500'" x-text="hours">00</span>
+                        <p class="text-[10px] uppercase font-semibold tracking-wider transition-colors duration-500"
+                            :class="isCritical ? 'text-red-300' : 'text-slate-400'">Jam</p>
                     </div>
-                    <div class="text-slate-500 font-bold text-xl py-2">:</div>
-                    <div class="bg-slate-800/80 border border-slate-600 rounded-xl px-3 py-2 min-w-[65px] shadow-inner">
-                        <span class="text-amber-500 font-extrabold text-2xl" x-text="minutes">00</span>
-                        <p class="text-slate-400 text-[10px] uppercase font-semibold tracking-wider">Menit</p>
+                    <div class="font-bold text-xl py-2 transition-colors duration-500"
+                        :class="isCritical ? 'text-red-400' : 'text-slate-500'">:</div>
+
+                    <div class="border rounded-xl px-3 py-2 min-w-[65px] shadow-inner transition-colors duration-500"
+                        :class="isCritical ? 'bg-red-950/80 border-red-500' : 'bg-slate-800/80 border-slate-600'">
+                        <span class="font-extrabold text-2xl transition-colors duration-500"
+                            :class="isCritical ? 'text-white' : 'text-amber-500'" x-text="minutes">00</span>
+                        <p class="text-[10px] uppercase font-semibold tracking-wider transition-colors duration-500"
+                            :class="isCritical ? 'text-red-300' : 'text-slate-400'">Menit</p>
                     </div>
-                    <div class="text-slate-500 font-bold text-xl py-2">:</div>
-                    <div class="bg-slate-800/80 border border-slate-600 rounded-xl px-3 py-2 min-w-[65px] shadow-inner">
-                        <span class="text-red-400 font-extrabold text-2xl" x-text="seconds">00</span>
-                        <p class="text-slate-400 text-[10px] uppercase font-semibold tracking-wider">Detik</p>
+                    <div class="font-bold text-xl py-2 transition-colors duration-500"
+                        :class="isCritical ? 'text-red-400' : 'text-slate-500'">:</div>
+
+                    <div class="border rounded-xl px-3 py-2 min-w-[65px] shadow-inner transition-colors duration-500"
+                        :class="isCritical ? 'bg-red-950/80 border-red-500' : 'bg-slate-800/80 border-slate-600'">
+                        <span class="font-extrabold text-2xl transition-colors duration-500"
+                            :class="isCritical ? 'text-white' : 'text-red-400'" x-text="seconds">00</span>
+                        <p class="text-[10px] uppercase font-semibold tracking-wider transition-colors duration-500"
+                            :class="isCritical ? 'text-red-300' : 'text-slate-400'">Detik</p>
                     </div>
                 </div>
             </div>
+
             <style>
                 @keyframes ring {
                     0% {
@@ -74,6 +105,29 @@
                     50%,
                     100% {
                         transform: rotate(0);
+                    }
+                }
+
+                /* Animasi brutal meledak / panik */
+                @keyframes panic {
+                    0% {
+                        transform: translate(1px, 1px) rotate(0deg);
+                    }
+
+                    25% {
+                        transform: translate(-2px, -1px) rotate(-1deg);
+                    }
+
+                    50% {
+                        transform: translate(1px, 2px) rotate(1deg);
+                    }
+
+                    75% {
+                        transform: translate(-1px, -2px) rotate(0deg);
+                    }
+
+                    100% {
+                        transform: translate(2px, 1px) rotate(-1deg);
                     }
                 }
             </style>

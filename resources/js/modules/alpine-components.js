@@ -335,11 +335,11 @@ document.addEventListener('alpine:init', () => {
         minutes: '00',
         seconds: '00',
         isExpired: false,
+        isCritical: false, // <-- Tambahkan state ini
         timer: null,
 
         init() {
             this.calculateTime();
-            // Update setiap detik
             this.timer = setInterval(() => this.calculateTime(), 1000);
         },
 
@@ -350,11 +350,15 @@ document.addEventListener('alpine:init', () => {
 
             if (distance < 0) {
                 this.isExpired = true;
+                this.isCritical = false;
                 clearInterval(this.timer);
                 return;
             }
 
-            // Kalkulasi waktu
+            // Ubah di sini: Hitung apakah sisa waktu <= 4 hari (4 hari * 24 jam * 60 menit * 60 detik * 1000 ms)
+            // Logika psikologis: 3 hari 23 jam tetap tertulis 3 hari di UI, jadi kita peringatkan dari H-4!
+            this.isCritical = distance <= (4 * 24 * 60 * 60 * 1000);
+
             this.days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
             this.hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
             this.minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
