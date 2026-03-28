@@ -334,11 +334,23 @@ document.addEventListener('alpine:init', () => {
         hours: '00',
         minutes: '00',
         seconds: '00',
-        isExpired: false,
-        isCritical: false, // <-- Tambahkan state ini
+        isExpired: false, 
+        isCritical: false, 
+        isExploding: false, 
         timer: null,
 
         init() {
+            const now = new Date().getTime();
+            const target = new Date(endDate).getTime();
+            
+            // CEK AWAL: Jika saat halaman di-refresh waktu ternyata sudah habis,
+            // langsung set expired agar card disembunyikan tanpa animasi meledak.
+            if (target - now <= 0) {
+                this.isExpired = true;
+                return; // Berhenti di sini, jangan jalankan interval
+            }
+
+            // Jika masih ada sisa waktu, baru mulai hitung mundur
             this.calculateTime();
             this.timer = setInterval(() => this.calculateTime(), 1000);
         },
@@ -348,21 +360,46 @@ document.addEventListener('alpine:init', () => {
             const target = new Date(endDate).getTime();
             const distance = target - now;
 
-            if (distance < 0) {
-                this.isExpired = true;
-                this.isCritical = false;
-                clearInterval(this.timer);
+            if (distance <= 0) {
+                clearInterval(this.timer); 
+                this.days = this.hours = this.minutes = this.seconds = '00';
+
+                // Pemicu ledakan (hanya dipanggil jika user sedang "menunggu" detiknya habis)
+                if (!this.isExploding && !this.isExpired) {
+                    this.triggerExplosion();
+                }
                 return;
             }
 
-            // Ubah di sini: Hitung apakah sisa waktu <= 4 hari (4 hari * 24 jam * 60 menit * 60 detik * 1000 ms)
-            // Logika psikologis: 3 hari 23 jam tetap tertulis 3 hari di UI, jadi kita peringatkan dari H-4!
+            // H-4 warning (bergetar dan merah)
             this.isCritical = distance <= (4 * 24 * 60 * 60 * 1000);
 
             this.days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
             this.hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
             this.minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
             this.seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+        },
+
+        triggerExplosion() {
+            this.isCritical = false; 
+            this.isExploding = true; 
+
+            this.playExplosionSound();
+
+            setTimeout(() => {
+                this.isExpired = true; // Hilangkan total setelah animasi ledakan selesai
+                this.isExploding = false;
+            }, 1500); 
+        },
+
+        playExplosionSound() {
+            try {
+                const audio = new Audio('/sounds/explosion.mp3'); 
+                audio.volume = 0.3; 
+                audio.play();
+            } catch (e) {
+                console.log('Audio autoplay diblokir browser:', e);
+            }
         }
     }));
 });
