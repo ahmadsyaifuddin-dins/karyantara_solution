@@ -13,6 +13,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ValidationController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AiCalculatorController;
+use App\Services\GroqApiService;
 
 // HALAMAN PUBLIK (Guest)
 Route::get('/', [FrontController::class, 'home'])->name('home');
@@ -69,6 +71,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('projects/priority-board', [ProjectController::class, 'priorityBoard'])->name('projects.priority');
     Route::post('projects/update-priority', [ProjectController::class, 'updatePriority'])->name('projects.update-priority');
     Route::resource('projects', ProjectController::class);
+
+    Route::get('/ai-calculator', [AiCalculatorController::class, 'index'])->name('ai-calculator.index');
+    Route::post('/ai-calculator/calculate', [AiCalculatorController::class, 'calculate'])->name('ai-calculator.calculate');
+    Route::get('/ai-calculator/history/{id}', [AiCalculatorController::class, 'showHistory'])->name('ai-calculator.history.show');
 
     Route::get('/visitors', [PageViewController::class, 'index'])->name('visitors.index');
 
