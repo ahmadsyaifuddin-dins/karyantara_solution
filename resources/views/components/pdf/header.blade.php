@@ -20,7 +20,7 @@
                 style="margin: 0; font-size: 10px; font-weight: normal; color: #475569; font-family: Helvetica, Arial, sans-serif;">
                 Anjir Muara, Barito Kuala - Banjarmasin, Kalimantan Selatan<br>
                 Email: karyantarasolution@gmail.com | WhatsApp: 0851-2423-7625 <br>
-                Website: karyantara-solution.kesug.com
+                Website: karyantara-solution.com
             </p>
         </td>
 

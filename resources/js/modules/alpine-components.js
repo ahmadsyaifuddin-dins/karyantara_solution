@@ -402,5 +402,86 @@ document.addEventListener('alpine:init', () => {
             }
         }
     }));
+
+    Alpine.data('pricingCalculator', (pdfUrl) => ({
+        clientName: '',
+        paket: 'revisi_app',
+        sumberApp: 'internal',
+        kesulitan: 'standar',
+        copyText: 'Salin Format WA',
+        
+        paketList: [
+            { id: 'revisi_app', nama: 'Revisi App Saja', desc: 'Perbaikan/Lanjut aplikasi sempro.' },
+            { id: 'bab_45', nama: 'Naskah Bab 4-5', desc: 'Pembuatan naskah lanjutan Bab 4 & 5.' },
+            { id: 'bab_4', nama: 'Khusus Bab 4', desc: 'Fokus pengerjaan Bab 4 / Blackbox.' },
+            { id: 'all_in', nama: 'Sidang All-in', desc: 'Paket lengkap Revisi App + Bab 4-5.' }
+        ],
+
+        get hasilHitung() {
+            let min = 0; let max = 0;
+            
+            // 1. Base Price
+            if (this.paket === 'revisi_app') { min = 600000; max = 700000; }
+            else if (this.paket === 'bab_45') { min = 750000; max = 800000; }
+            else if (this.paket === 'bab_4') { min = 550000; max = 550000; }
+            else if (this.paket === 'all_in') { min = 850000; max = 1000000; }
+
+            // 2. Modifier Sumber App (Berlaku untuk SEMUA paket sekarang! Kang Naskah aman)
+            if (this.sumberApp === 'eksternal') {
+                min += 150000; 
+                max += 250000;
+            }
+
+            // 3. Modifier Kesulitan
+            if (this.kesulitan === 'menengah') {
+                min += 100000; max += 150000;
+            } else if (this.kesulitan === 'sulit') {
+                min += 200000;
+                max = (this.paket === 'revisi_app' && this.sumberApp === 'internal') ? 1000000 : max + 350000;
+            }
+            return { min: min, max: max };
+        },
+
+        formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
+        },
+
+        copyToClipboard() {
+            const text = `Halo${this.clientName ? ' ' + this.clientName : ''}, untuk estimasi biaya layanan *${this.paketList.find(p => p.id === this.paket).nama}* dengan spesifikasi yang didiskusikan berada di kisaran *${this.formatRupiah(this.hasilHitung.min)}* hingga *${this.formatRupiah(this.hasilHitung.max)}*.\n\n*Harga fix akan kami tentukan setelah mengecek detail sistem/revisiannya. Terima kasih! - Karyantara Solution`;
+            navigator.clipboard.writeText(text).then(() => {
+                this.copyText = 'Berhasil Disalin!';
+                setTimeout(() => this.copyText = 'Salin Format WA', 2000);
+            });
+        },
+
+        cetakPDF() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = pdfUrl; // Menggunakan URL yang dipassing dari Blade
+            form.target = '_blank';
+
+            const fields = {
+                '_token': document.querySelector('meta[name="csrf-token"]').content,
+                'client_name': this.clientName,
+                'paket_nama': this.paketList.find(p => p.id === this.paket).nama,
+                'sumber_app': this.sumberApp,
+                'kesulitan': this.kesulitan,
+                'min_price': this.hasilHitung.min,
+                'max_price': this.hasilHitung.max,
+            };
+
+            for (const key in fields) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = fields[key];
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+    }));
 });
 

@@ -63,6 +63,12 @@
                     <i class="fa-solid fa-bolt text-[#1E293B] mr-0.5"></i> AI
                 </span>
             </a>
+
+            <a href="{{ route('admin.pricing-calculator') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.pricing-calculator') ? 'bg-amber-500 text-[#1E293B] font-bold shadow-md' : 'text-gray-300 hover:bg-gray-800 hover:text-white hover:translate-x-1' }}">
+                <i class="fa-solid fa-calculator w-5 text-center text-lg"></i>
+                <span>Estimasi Harga</span>
+            </a>
         </div>
 
         <div class="pt-4 border-t border-gray-700/50 space-y-2">

@@ -199,7 +199,7 @@
             <div class="mt-8 text-center text-[10px] text-gray-400">
                 <p>Waktu Pemindaian: {{ \Carbon\Carbon::now()->timezone('Asia/Makassar')->format('d M Y, H:i') }} WITA
                 </p>
-                <p class="mt-1 font-semibold">&copy; {{ date('Y') }} Karyantara Solution</p>
+                <p class="mt-1 font-semibold">&copy; 2026-{{ date('Y') }} Karyantara Solution</p>
             </div>
         </div>
     </div>

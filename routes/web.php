@@ -14,6 +14,7 @@ use App\Http\Controllers\ValidationController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AiCalculatorController;
+use App\Http\Controllers\Admin\PricingController;
 use App\Services\GroqApiService;
 
 // HALAMAN PUBLIK (Guest)
@@ -99,6 +100,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     
     Route::get('meetings/{meeting}/print', [MeetingController::class, 'print'])->name('meetings.print');
     Route::resource('meetings', MeetingController::class);
+
+    // Kalkulator Harga Layanan (Internal Admin)
+    Route::get('/pricing-calculator', [PricingController::class, 'index'])->name('pricing-calculator');
+    Route::post('/pricing-calculator/pdf', [PricingController::class, 'generatePdf'])->name('pricing-calculator.pdf');
 });
 
 // PROFILE BAWAAN BREEZE
