@@ -4,13 +4,28 @@
     title: '{{ old('title', $meeting->title ?? '') }}',
     type: '{{ old('type', $meeting->type ?? '') }}',
     templates: {
-        'Internal Board': ['Evaluasi Kinerja & Finansial', 'Perencanaan Strategi Q3', 'Diskusi Visi Karyantara Solution', 'Review Operasional Bulanan'],
+        'Internal Board': ['Evaluasi Kinerja & Finansial', 'Perencanaan Strategi Q3', 'Diskusi Karyantara Solution', 'Review Operasional Bulanan'],
         'Client Meeting': ['Kick-off Project [Nama Klien]', 'Requirement Gathering (Kebutuhan Sistem)', 'Presentasi Mockup UI/UX', 'Handover Project [Nama Aplikasi]'],
         'Project Sync': ['Weekly Standup Sync', 'Review Progress Development', 'Diskusi Kendala Arsitektur Database', 'Sprint Planning & Pembagian Tugas'],
         'Evaluation': ['Retrospective Pasca Rilis Proyek', 'Evaluasi Kinerja Vendor/Tim', 'Post-Mortem Analisis Bug/Server']
     }
 }">
     <div class="space-y-4">
+
+        <div>
+            <x-forms.label for="type" required>Jenis Rapat</x-forms.label>
+            <x-forms.dropdown name="type" id="type" x-model="type" class="mt-1" required>
+                <option value="" disabled {{ !isset($meeting) ? 'selected' : '' }}>Pilih Jenis...</option>
+                @foreach (['Internal Board', 'Client Meeting', 'Project Sync', 'Evaluation'] as $typeOption)
+                    <option value="{{ $typeOption }}"
+                        {{ old('type', $meeting->type ?? '') == $typeOption ? 'selected' : '' }}>{{ $typeOption }}
+                    </option>
+                @endforeach
+            </x-forms.dropdown>
+            @error('type')
+                <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
+            @enderror
+        </div>
 
         <div>
             <x-forms.label for="title" required>Judul Rapat</x-forms.label>
@@ -31,21 +46,6 @@
                     </template>
                 </div>
             </div>
-        </div>
-
-        <div>
-            <x-forms.label for="type" required>Jenis Rapat</x-forms.label>
-            <x-forms.dropdown name="type" id="type" x-model="type" class="mt-1" required>
-                <option value="" disabled {{ !isset($meeting) ? 'selected' : '' }}>Pilih Jenis...</option>
-                @foreach (['Internal Board', 'Client Meeting', 'Project Sync', 'Evaluation'] as $typeOption)
-                    <option value="{{ $typeOption }}"
-                        {{ old('type', $meeting->type ?? '') == $typeOption ? 'selected' : '' }}>{{ $typeOption }}
-                    </option>
-                @endforeach
-            </x-forms.dropdown>
-            @error('type')
-                <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
-            @enderror
         </div>
 
         <div>
