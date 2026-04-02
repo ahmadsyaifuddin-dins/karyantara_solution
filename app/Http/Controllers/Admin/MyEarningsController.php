@@ -82,7 +82,7 @@ class MyEarningsController extends Controller
     public function exportPdf(Request $request)
     {
         $userId = auth()->id();
-        $selectedMonth = $request->input('month', date('m'));
+        $selectedMonth = $request->input('month', 'all');
         $selectedYear = $request->input('year', date('Y'));
 
         // Gunakan service agar PDF juga dapat data Corporate dengan mudah
@@ -107,7 +107,7 @@ class MyEarningsController extends Controller
 
     public function exportExcel(Request $request)
     {
-        $selectedMonth = $request->input('month', date('m'));
+        $selectedMonth = $request->input('month', 'all');
         $selectedYear = $request->input('year', date('Y'));
         $fileName = 'Rekap_Pendapatan_' . auth()->user()->name . '_' . $selectedMonth . '_' . $selectedYear . '.xlsx';
         
