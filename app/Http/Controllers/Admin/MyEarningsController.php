@@ -22,7 +22,7 @@ class MyEarningsController extends Controller
     public function index(Request $request)
     {
         $userId = auth()->id();
-        $selectedMonth = $request->input('month', date('m'));
+        $selectedMonth = $request->input('month', 'all');
         $selectedYear = $request->input('year', date('Y'));
 
         // Panggil Service (Kalkulasi Otomatis!)
