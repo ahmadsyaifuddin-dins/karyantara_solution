@@ -14,6 +14,7 @@ use App\Http\Controllers\ValidationController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AiCalculatorController;
+use App\Http\Controllers\Admin\MyEarningsController;
 use App\Http\Controllers\Admin\PricingController;
 use App\Services\GroqApiService;
 
@@ -52,11 +53,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Dashboard Admin
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/my-earnings', [DashboardController::class, 'myEarnings'])->name('earnings.index');
-    Route::patch('/my-earnings/{project}/toggle-paid', [DashboardController::class, 'toggleEarningStatus'])->name('earnings.toggle-paid');
 
-    Route::get('/my-earnings/export/pdf', [DashboardController::class, 'exportEarningsPdf'])->name('earnings.export.pdf');
-    Route::get('/my-earnings/export/excel', [DashboardController::class, 'exportEarningsExcel'])->name('earnings.export.excel');
+   Route::get('/my-earnings', [MyEarningsController::class, 'index'])->name('earnings.index');
+Route::patch('/my-earnings/{project}/toggle-paid', [MyEarningsController::class, 'toggleEarningStatus'])->name('earnings.toggle-paid');
+Route::get('/my-earnings/export/pdf', [MyEarningsController::class, 'exportPdf'])->name('earnings.export.pdf');
+Route::get('/my-earnings/export/excel', [MyEarningsController::class, 'exportExcel'])->name('earnings.export.excel');
 
     Route::resource('admins', AdminController::class)->except(['show']);
     Route::resource('portfolios', PortfolioController::class);

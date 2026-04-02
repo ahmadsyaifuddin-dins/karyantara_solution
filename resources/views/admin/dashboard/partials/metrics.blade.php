@@ -2,44 +2,72 @@
     <h3 class="text-lg font-extrabold text-[#1E293B] mb-4 flex items-center">
         <i class="fa-solid fa-wallet text-emerald-500 mr-2"></i> Dompet Pendapatan Saya
     </h3>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
         <div
-            class="bg-gradient-to-br from-[#1E293B] to-slate-800 rounded-2xl p-6 shadow-md text-white relative overflow-hidden group hover:shadow-lg transition-all">
+            class="bg-gradient-to-br from-[#1E293B] to-slate-800 rounded-2xl p-6 shadow-md text-white relative overflow-hidden group hover:shadow-lg transition-all border border-amber-500/30">
             <i
-                class="fa-solid fa-sack-dollar absolute -right-4 -bottom-4 text-7xl text-white/10 group-hover:scale-110 transition-transform"></i>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total Pendapatan Saya</p>
-            <h3 class="text-3xl font-black mt-1">Rp {{ number_format($myTotalEarnings ?? 0, 0, ',', '.') }}</h3>
+                class="fa-solid fa-sack-dollar absolute -right-4 -bottom-4 text-7xl text-amber-500/10 group-hover:scale-110 transition-transform"></i>
+            <p class="text-xs font-bold text-amber-500 uppercase tracking-wider mb-1">Total Pendapatan Saya</p>
+            <h3 class="text-2xl font-black mt-1">Rp {{ number_format($myTotalEarnings ?? 0, 0, ',', '.') }}</h3>
             <div class="mt-4 flex items-center gap-2 text-xs font-medium text-slate-300">
                 <span class="bg-white/10 px-2 py-1 rounded">Total Menangani <b>{{ $myTotalProjects ?? 0 }}</b>
                     Proyek</span>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 border border-blue-100 shadow-sm hover:border-blue-300 transition-colors">
-            <div class="flex items-center justify-between mb-3">
-                <p class="text-xs font-extrabold text-blue-600 uppercase tracking-wider">Sebagai Developer Aplikasi</p>
-                <i class="fa-solid fa-code text-blue-200 text-2xl"></i>
+        <div
+            class="bg-white rounded-2xl p-6 border border-blue-100 shadow-sm hover:border-blue-300 transition-colors relative overflow-hidden group">
+            <div
+                class="absolute -right-6 -top-6 w-24 h-24 bg-blue-50/50 rounded-full blur-xl group-hover:bg-blue-100/50 transition duration-500 pointer-events-none">
             </div>
-            <h3 class="text-2xl font-black text-[#1E293B]">Rp {{ number_format($myAppEarnings ?? 0, 0, ',', '.') }}</h3>
-            <p class="text-xs font-bold text-gray-500 mt-3 flex items-center gap-1">
-                <i class="fa-solid fa-laptop-code text-blue-400"></i> Menyelesaikan {{ $myAppProjectsCount ?? 0 }}
-                Aplikasi
+            <div class="flex items-center justify-between mb-3 relative z-10">
+                <p class="text-[10px] font-extrabold text-blue-600 uppercase tracking-wider leading-tight">Dev
+                    Aplikasi<br><span class="text-gray-400">MAHASISWA</span></p>
+                <i class="fa-solid fa-graduation-cap text-blue-200 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-black text-[#1E293B] relative z-10">Rp
+                {{ number_format($myAppEarnings ?? 0, 0, ',', '.') }}</h3>
+            <p class="text-[10px] font-bold text-gray-500 mt-3 flex items-center gap-1 relative z-10">
+                <i class="fa-solid fa-laptop-code text-blue-400"></i> {{ $myAppProjectsCount ?? 0 }} Aplikasi Skripsi
             </p>
         </div>
 
         <div
-            class="bg-white rounded-2xl p-6 border border-amber-100 shadow-sm hover:border-amber-300 transition-colors">
-            <div class="flex items-center justify-between mb-3">
-                <p class="text-xs font-extrabold text-amber-600 uppercase tracking-wider">Sebagai Penulis Naskah</p>
-                <i class="fa-solid fa-file-word text-amber-200 text-2xl"></i>
+            class="bg-white rounded-2xl p-6 border border-indigo-100 shadow-sm hover:border-indigo-300 transition-colors relative overflow-hidden group">
+            <div
+                class="absolute -right-6 -top-6 w-24 h-24 bg-indigo-50/50 rounded-full blur-xl group-hover:bg-indigo-100/50 transition duration-500 pointer-events-none">
             </div>
-            <h3 class="text-2xl font-black text-[#1E293B]">Rp {{ number_format($myWriterEarnings ?? 0, 0, ',', '.') }}
-            </h3>
-            <p class="text-xs font-bold text-gray-500 mt-3 flex items-center gap-1">
-                <i class="fa-solid fa-book-open text-amber-400"></i> Menyelesaikan {{ $myWriterProjectsCount ?? 0 }}
-                Naskah
+            <div class="flex items-center justify-between mb-3 relative z-10">
+                <p class="text-[10px] font-extrabold text-indigo-600 uppercase tracking-wider leading-tight">Penulis
+                    Naskah<br><span class="text-gray-400">SKRIPSI / PAPER</span></p>
+                <i class="fa-solid fa-pen-nib text-indigo-200 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-black text-[#1E293B] relative z-10">Rp
+                {{ number_format($myWriterEarnings ?? 0, 0, ',', '.') }}</h3>
+            <p class="text-[10px] font-bold text-gray-500 mt-3 flex items-center gap-1 relative z-10">
+                <i class="fa-solid fa-book-open text-indigo-400"></i> {{ $myWriterProjectsCount ?? 0 }} Naskah
             </p>
         </div>
+
+        <div
+            class="bg-white rounded-2xl p-6 border border-amber-200 shadow-sm hover:border-amber-400 transition-colors relative overflow-hidden group">
+            <div
+                class="absolute -right-6 -top-6 w-24 h-24 bg-amber-50/50 rounded-full blur-xl group-hover:bg-amber-100/50 transition duration-500 pointer-events-none">
+            </div>
+            <div class="flex items-center justify-between mb-3 relative z-10">
+                <p class="text-[10px] font-extrabold text-amber-600 uppercase tracking-wider leading-tight">Dev
+                    Aplikasi<br><span class="text-gray-400">CORPORATE</span></p>
+                <i class="fa-solid fa-building text-amber-200 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-black text-[#1E293B] relative z-10">Rp
+                {{ number_format($myUmumEarnings ?? 0, 0, ',', '.') }}</h3>
+            <p class="text-[10px] font-bold text-gray-500 mt-3 flex items-center gap-1 relative z-10">
+                <i class="fa-solid fa-handshake text-amber-400"></i> {{ $myUmumProjectsCount ?? 0 }} Proyek Perusahaan
+            </p>
+        </div>
+
     </div>
 </div>
 
