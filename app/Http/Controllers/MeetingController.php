@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Meeting;
 use App\Http\Requests\MeetingRequest;
-use Illuminate\Http\Request;
+use App\Mail\MeetingInvitation;
+use App\Models\Meeting;
+use App\Models\User;
+use App\Services\GoogleCalendarService;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class MeetingController extends Controller
 {
@@ -14,20 +18,32 @@ class MeetingController extends Controller
         // 1. Eksekusi pengecekan & update status otomatis (On-the-fly)
         Meeting::updateAutomatedStatuses();
 
-        // 2. Baru ambil data yang sudah up-to-date untuk ditampilkan
+        // 2. HITUNG STATISTIK BIAYA (Baru)
+        $stats = [
+            'total_all'   => Meeting::sum('consumption_cost'),
+            'total_year'  => Meeting::whereYear('start_time', now()->year)->sum('consumption_cost'),
+            'total_month' => Meeting::whereMonth('start_time', now()->month)
+                                    ->whereYear('start_time', now()->year)
+                                    ->sum('consumption_cost'),
+            'total_today' => Meeting::whereDate('start_time', now()->today())->sum('consumption_cost'),
+        ];
+
+        // 3. Ambil data meetings
         $meetings = Meeting::with('creator')
-                    ->orderBy('start_time', 'desc')
-                    ->paginate(10);
-                    
-        return view('admin.meetings.index', compact('meetings'));
+            ->orderBy('start_time', 'desc')
+            ->paginate(10);
+
+        // Kirim $stats ke view
+        return view('admin.meetings.index', compact('meetings', 'stats'));
     }
 
     public function create()
     {
-        return view('admin.meetings.create');
+        $users = User::all();
+        return view('admin.meetings.create', compact('users'));
     }
 
-    public function store(MeetingRequest $request)
+    public function store(MeetingRequest $request, GoogleCalendarService $calendarService)
     {
         $validated = $request->validated();
         $validated['created_by'] = auth()->id();
@@ -35,38 +51,49 @@ class MeetingController extends Controller
         // 1. Logika Oldschool Upload Foto
         if ($request->doc_type === 'upload' && $request->hasFile('documentation_file')) {
             $file = $request->file('documentation_file');
-            
-            // Buat nama unik agar tidak bentrok
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            
-            // Pindahkan file ke public/uploads/meetings
+            $fileName = time().'_'.$file->getClientOriginalName();
             $file->move(public_path('uploads/meetings'), $fileName);
-            
+
             $validated['documentation_file'] = $fileName;
-            $validated['documentation_link'] = null; // Kosongkan link jika pilih upload
-        } 
+            $validated['documentation_link'] = null;
+        }
         // 2. Jika pilih Link G-Drive
         elseif ($request->doc_type === 'link') {
             $validated['documentation_file'] = null;
         }
 
-        // Buang doc_type dari array karena tidak ada di tabel database
         unset($validated['doc_type']);
 
-        Meeting::create($validated);
+        // Simpan ke database
+        $meeting = Meeting::create($validated);
+
+        // PROSES GOOGLE CALENDAR & EMAIL ICS
+        try {
+            // 1. Buat Event di Kalender Karyantara
+            $eventId = $calendarService->createEvent($meeting);
+            $meeting->update(['google_event_id' => $eventId]);
+
+           // 2. Kirim Email Undangan Berisi File .ICS ke Karyawan
+            $karyawanEmails = $meeting->attendee_emails ?? []; // Tarik dari database!
+
+            foreach ($karyawanEmails as $email) {
+                Mail::to($email)->send(new MeetingInvitation($meeting, $email));
+            }
+
+        } catch (\Exception $e) {
+            Log::error('GAGAL SYNC GOOGLE CALENDAR ATAU EMAIL: '.$e->getMessage());
+
+            return redirect()->route('admin.meetings.index')
+                ->with('success', 'Agenda tersimpan di database, TAPI gagal sync ke Kalender/Email. Cek laravel.log.');
+        }
 
         return redirect()->route('admin.meetings.index')
-                         ->with('success', 'Agenda rapat berhasil dijadwalkan!');
+            ->with('success', 'Agenda rapat berhasil dijadwalkan, disinkronkan, & Undangan terkirim!');
     }
 
     public function show(Meeting $meeting)
     {
-        // 1. Eksekusi pengecekan & update status otomatis
         Meeting::updateAutomatedStatuses();
-
-        // 2. REFRESH OBJECT MODEL (Sangat Krusial!)
-        // Karena data di DB barusan mungkin berubah oleh fungsi di atas,
-        // kita harus me-refresh data $meeting yang sedang dibuka agar tampilannya ikut berubah.
         $meeting->refresh();
 
         return view('admin.meetings.show', compact('meeting'));
@@ -77,42 +104,36 @@ class MeetingController extends Controller
         return view('admin.meetings.print', compact('meeting'));
     }
 
-    public function edit(Meeting $meeting)
+   public function edit(Meeting $meeting)
     {
-        return view('admin.meetings.edit', compact('meeting'));
+        $users = User::all();
+        return view('admin.meetings.edit', compact('meeting', 'users'));
     }
 
-    public function update(MeetingRequest $request, Meeting $meeting)
+    public function update(MeetingRequest $request, Meeting $meeting, GoogleCalendarService $calendarService)
     {
         $validated = $request->validated();
 
-        // 1. Jika User Memilih Mode Upload Foto
         if ($request->doc_type === 'upload') {
-            $validated['documentation_link'] = null; // Reset link
+            $validated['documentation_link'] = null;
 
             if ($request->hasFile('documentation_file')) {
-                // Hapus gambar lama dari folder public jika ada
                 if ($meeting->documentation_file) {
-                    $oldPath = public_path('uploads/meetings/' . $meeting->documentation_file);
+                    $oldPath = public_path('uploads/meetings/'.$meeting->documentation_file);
                     if (File::exists($oldPath)) {
                         File::delete($oldPath);
                     }
                 }
-
-                // Upload gambar baru
                 $file = $request->file('documentation_file');
-                $fileName = time() . '_' . $file->getClientOriginalName();
+                $fileName = time().'_'.$file->getClientOriginalName();
                 $file->move(public_path('uploads/meetings'), $fileName);
                 $validated['documentation_file'] = $fileName;
             }
-        } 
-        // 2. Jika User Memilih Mode Link G-Drive
-        elseif ($request->doc_type === 'link') {
-            $validated['documentation_file'] = null; // Kosongkan nama file di DB
+        } elseif ($request->doc_type === 'link') {
+            $validated['documentation_file'] = null;
 
-            // Eksekusi mati: Hapus file fisik lama jika dulunya pakai upload foto
             if ($meeting->documentation_file) {
-                $oldPath = public_path('uploads/meetings/' . $meeting->documentation_file);
+                $oldPath = public_path('uploads/meetings/'.$meeting->documentation_file);
                 if (File::exists($oldPath)) {
                     File::delete($oldPath);
                 }
@@ -123,23 +144,60 @@ class MeetingController extends Controller
 
         $meeting->update($validated);
 
+        // UPDATE KE GOOGLE CALENDAR
+        try {
+            if ($meeting->google_event_id) {
+                $calendarService->updateEvent($meeting);
+            } else {
+                $eventId = $calendarService->createEvent($meeting);
+                $meeting->update(['google_event_id' => $eventId]);
+            }
+
+            // Opsional: Jika Anda ingin kirim ulang email kalau jadwal direvisi,
+            // Anda bisa meletakkan logika Mail::to(...)->send(...) di sini juga.
+
+        } catch (\Exception $e) {
+            Log::error('GAGAL UPDATE GOOGLE CALENDAR: '.$e->getMessage());
+
+            return redirect()->route('admin.meetings.index')
+                ->with('success', 'Data rapat berhasil diperbarui, TAPI gagal sync ke Kalender. Cek laravel.log.');
+        }
+
         return redirect()->route('admin.meetings.index')
-                         ->with('success', 'Data rapat & notulensi berhasil diperbarui!');
+            ->with('success', 'Data rapat berhasil diperbarui & disinkronkan ke Kalender!');
     }
 
-    public function destroy(Meeting $meeting)
+    public function destroy(Meeting $meeting, GoogleCalendarService $calendarService)
     {
-        // Jangan lupa: Hapus gambar fisiknya dari folder sebelum datanya lenyap dari DB
+        // 1. Hapus gambar fisik
         if ($meeting->documentation_file) {
-            $oldPath = public_path('uploads/meetings/' . $meeting->documentation_file);
+            $oldPath = public_path('uploads/meetings/'.$meeting->documentation_file);
             if (File::exists($oldPath)) {
                 File::delete($oldPath);
             }
         }
 
+        // 2. Hapus event di Google Calendar
+        try {
+            if ($meeting->google_event_id) {
+                $calendarService->deleteEvent($meeting->google_event_id);
+            }
+        } catch (\Exception $e) {
+            Log::error('GAGAL HAPUS GOOGLE CALENDAR: '.$e->getMessage());
+
+            // JANGAN DI-RETURN DI SINI!
+            // Kita simpan pesan peringatan saja di session, lalu biarkan kodenya jalan ke bawah untuk menghapus DB.
+            session()->flash('warning', 'Agenda dihapus dari database, TAPI gagal dihapus di Kalender (mungkin sudah terhapus manual).');
+        }
+
+        // 3. Hapus data di Database secara mutlak (Pasti Tereksekusi!)
         $meeting->delete();
 
-        return redirect()->route('admin.meetings.index')
-                         ->with('success', 'Agenda rapat berhasil dihapus!');
+        // Jika tidak ada error (pesan warning tidak terset), tampilkan pesan sukses biasa
+        if (! session()->has('warning')) {
+            session()->flash('success', 'Agenda rapat dan event di kalender berhasil dihapus!');
+        }
+
+        return redirect()->route('admin.meetings.index');
     }
 }

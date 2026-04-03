@@ -19,6 +19,33 @@
         @enderror
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <x-forms.label for="position" value="Jabatan / Pangkat" />
+            <x-forms.input id="position" name="position" type="text"
+                value="{{ old('position', $admin->position ?? '') }}" placeholder="Contoh: Backend Developer, CEO"
+                class="mt-1" />
+            @error('position')
+                <span class="text-sm text-red-500">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <div>
+            <x-forms.label for="department" value="Divisi" />
+            <x-forms.dropdown name="department" id="department" class="mt-1">
+                <option value="">-- Pilih Divisi --</option>
+                @foreach (['Board of Directors', 'Engineering', 'Product & Design', 'Finance & HR'] as $dept)
+                    <option value="{{ $dept }}"
+                        {{ old('department', $admin->department ?? '') == $dept ? 'selected' : '' }}>
+                        {{ $dept }}
+                    </option>
+                @endforeach
+            </x-forms.dropdown>
+            @error('department')
+                <span class="text-sm text-red-500">{{ $message }}</span>
+            @enderror
+        </div>
+    </div>
     <div>
         <x-forms.label for="password" value="Password" :required="!isset($admin)" />
         <x-forms.input id="password" name="password" type="password" autocomplete="new-password" :required="!isset($admin)" />

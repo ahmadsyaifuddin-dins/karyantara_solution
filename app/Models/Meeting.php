@@ -23,12 +23,16 @@ class Meeting extends Model
         'end_time',
         'location',
         'maps_link',
+        'consumption_cost',
+        'payment_method',
         'status',
         'minutes_of_meeting',
         'action_items',
         'created_by',
         'documentation_file',
         'documentation_link',
+        'google_event_id',
+        'attendee_emails',
     ];
 
     /**
@@ -42,7 +46,8 @@ class Meeting extends Model
             // Laravel 11 menggunakan method casts()
             'start_time' => 'datetime',
             'end_time' => 'datetime',
-            'action_items' => 'array', // Otomatis convert JSON dari/ke Array
+            'action_items' => 'array',
+            'attendee_emails' => 'array',
         ];
     }
 

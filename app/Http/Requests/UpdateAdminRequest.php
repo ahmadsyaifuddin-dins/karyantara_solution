@@ -21,7 +21,9 @@ class UpdateAdminRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($adminId)],
-            'password' => ['nullable', 'confirmed', Password::defaults()], // Nullable agar password tidak wajib diisi saat edit
+            'password' => ['nullable', 'confirmed', Password::defaults()],
+            'position' => ['nullable', 'string', 'max:255'],
+            'department' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

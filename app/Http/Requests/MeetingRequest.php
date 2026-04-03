@@ -33,10 +33,13 @@ class MeetingRequest extends FormRequest
             'status' => 'required|in:Scheduled,Ongoing,Completed,Canceled',
             'minutes_of_meeting' => 'nullable|string',
             'doc_type' => 'nullable|in:upload,link',
-'documentation_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-'documentation_link' => 'nullable|url',
-            // action_items kita set nullable, nanti diatur via UI apakah dikirim sebagai array
+            'documentation_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'documentation_link' => 'nullable|url',
             'action_items' => 'nullable|array', 
+            'attendee_emails.*' => 'email',
+
+            'consumption_cost' => 'nullable|numeric|min:0', 
+            'payment_method' => 'nullable|string|in:Company Budget,Personal,Split Bill',
         ];
     }
 

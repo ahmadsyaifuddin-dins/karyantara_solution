@@ -38,6 +38,9 @@
                                     Nama</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-semibold text-[#1E293B] uppercase tracking-wider">
+                                    Posisi & Divisi</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-semibold text-[#1E293B] uppercase tracking-wider">
                                     Email</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-semibold text-[#1E293B] uppercase tracking-wider">
@@ -67,6 +70,23 @@
                                             </div>
                                         </div>
                                     </td>
+
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if ($item->position || $item->department)
+                                            <div>
+                                                <span
+                                                    class="inline-flex px-2 py-0.5 text-[11px] font-bold rounded-full border {{ $item->department === 'Board of Directors' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200' }}">
+                                                    {{ $item->position ?? 'Posisi Belum Diatur' }}
+                                                </span>
+                                            </div>
+                                            <div class="text-[11px] text-gray-500 mt-1 font-medium">
+                                                {{ $item->department ?? '-' }}
+                                            </div>
+                                        @else
+                                            <span class="text-xs text-gray-400 italic">Belum diatur</span>
+                                        @endif
+                                    </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         {{ $item->email }}
                                     </td>
@@ -79,8 +99,9 @@
                                                 class="fa-solid fa-pen-to-square"></i> Edit</a>
 
                                         @if ($item->id !== Auth::id())
-                                            <form action="{{ route('admin.admins.destroy', $item->id) }}" method="POST"
-                                                class="inline-block form-delete" data-name="{{ $item->name }}">
+                                            <form action="{{ route('admin.admins.destroy', $item->id) }}"
+                                                method="POST" class="inline-block form-delete"
+                                                data-name="{{ $item->name }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"

@@ -10,8 +10,8 @@
         'Evaluation': ['Retrospective Pasca Rilis Proyek', 'Evaluasi Kinerja Vendor/Tim', 'Post-Mortem Analisis Bug/Server']
     }
 }">
-    <div class="space-y-4">
 
+    <div class="space-y-4">
         <div>
             <x-forms.label for="type" required>Jenis Rapat</x-forms.label>
             <x-forms.dropdown name="type" id="type" x-model="type" class="mt-1" required>
@@ -111,13 +111,55 @@
             </x-forms.dropdown>
         </div>
 
-        <div>
-            <x-forms.label for="minutes_of_meeting">Notulensi / Hasil Pembahasan</x-forms.label>
-            <x-forms.textarea name="minutes_of_meeting" id="minutes_of_meeting" rows="4"
-                placeholder="Tuliskan hasil rapat di sini..."
-                class="mt-1">{{ old('minutes_of_meeting', $meeting->minutes_of_meeting ?? '') }}</x-forms.textarea>
-        </div>
+        <div class="p-4 border border-gray-200 rounded-lg bg-white shadow-sm" x-data="{
+            paymentMethod: '{{ old('payment_method', $meeting->payment_method ?? 'Split Bill') }}'
+        }">
+            <div class="mb-3">
+                <x-forms.label for="consumption_cost">Biaya Rapat Ini (Opsional)</x-forms.label>
+                <x-forms.currency name="consumption_cost" class="mt-1"
+                    value="{{ old('consumption_cost', $meeting->consumption_cost ?? '') }}" />
+                <p class="text-[10px] text-gray-500 mt-1">Isi total tagihan meskipun bayar patungan/pribadi untuk
+                    pelacakan biaya kafe.</p>
+            </div>
 
+            <div class="mt-4 pt-3 border-t border-gray-100">
+                <x-forms.label>Sumber Dana / Metode Bayar</x-forms.label>
+                <div class="grid grid-cols-1 gap-2 mt-2">
+
+                    <label
+                        class="flex items-center gap-3 p-2 border rounded-md cursor-pointer transition-all has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
+                        <input type="radio" name="payment_method" value="Company Budget" x-model="paymentMethod"
+                            class="text-amber-600 focus:ring-amber-500">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-bold text-[#1E293B]">Kas Perusahaan</span>
+                            <span class="text-[10px] text-gray-500 italic">Dibayar/Reimburse oleh Karyantara
+                                Solution</span>
+                        </div>
+                    </label>
+
+                    <label
+                        class="flex items-center gap-3 p-2 border rounded-md cursor-pointer transition-all has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
+                        <input type="radio" name="payment_method" value="Personal" x-model="paymentMethod"
+                            class="text-amber-600 focus:ring-amber-500">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-bold text-[#1E293B]">Dana Pribadi (Personal)</span>
+                            <span class="text-[10px] text-gray-500 italic">Ditanggung salah satu orang (Nraktir)</span>
+                        </div>
+                    </label>
+
+                    <label
+                        class="flex items-center gap-3 p-2 border rounded-md cursor-pointer transition-all has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50">
+                        <input type="radio" name="payment_method" value="Split Bill" x-model="paymentMethod"
+                            class="text-amber-600 focus:ring-amber-500">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-bold text-[#1E293B]">Split Bill (Patungan)</span>
+                            <span class="text-[10px] text-gray-500 italic">Bayar pesanan masing-masing</span>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+        </div>
         <div class="p-4 border border-gray-200 rounded-lg bg-gray-50" x-data="{
             docType: '{{ old('doc_type', isset($meeting) && $meeting->documentation_file ? 'upload' : (isset($meeting) && $meeting->documentation_link ? 'link' : '')) }}'
         }">
@@ -153,10 +195,12 @@
                 @enderror
             </div>
         </div>
+
     </div>
 </div>
+@include('admin.meetings.partials.attendees-checkbox')
 
-<div class="mt-8 border-t border-gray-200 pt-6" x-data="{
+<div class="mt-10 border-t border-gray-200 pt-6" x-data="{
     items: {{ json_encode(old('action_items', $meeting->action_items ?? [])) }},
     addItem() { this.items.push({ task: '', pic: '', deadline: '' }) },
     removeItem(index) { this.items.splice(index, 1) }
