@@ -1,11 +1,11 @@
-@props(['name', 'currentImage' => null])
+@props(['name', 'currentImage' => null, 'path' => 'uploads/'])
 
 <div class="flex flex-col gap-2">
     @if ($currentImage)
         <div class="mb-2">
             <p class="text-xs text-gray-500 mb-1">Gambar saat ini:</p>
-            <img src="{{ asset('uploads/testimonials/' . $currentImage) }}" alt="Preview"
-                class="h-16 w-16 object-cover rounded-full border border-gray-300">
+            <img src="{{ asset($path . $currentImage) }}" alt="Preview"
+                class="h-20 w-32 object-cover rounded-md border border-gray-300">
         </div>
     @endif
     <input type="file" name="{{ $name }}" accept="image/*" {!! $attributes->merge([

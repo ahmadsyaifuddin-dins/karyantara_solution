@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <form action="{{ route('admin.meetings.store') }}" method="POST" class="p-6">
+        <form action="{{ route('admin.meetings.store') }}" method="POST" class="p-6" enctype="multipart/form-data">
             @csrf
 
             @include('admin.meetings.partials.form')

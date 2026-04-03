@@ -126,6 +126,54 @@
             </div>
         </div>
 
+        @if ($meeting->documentation_file || $meeting->documentation_link)
+            <div class="mb-10" style="page-break-inside: avoid;">
+                <h3 class="text-lg font-bold text-[#1E293B] border-b-2 border-amber-500 inline-block pb-1 mb-4">
+                    Dokumentasi Rapat</h3>
+
+                <div
+                    class="bg-gray-50 p-5 rounded-lg border border-gray-200 print:bg-transparent print:border-none print:p-0">
+
+                    {{-- Tampilan Jika Gambar Di-upload --}}
+                    @if ($meeting->documentation_file)
+                        <div class="rounded-lg overflow-hidden border border-gray-300 inline-block bg-white shadow-sm">
+                            <a href="{{ asset('uploads/meetings/' . $meeting->documentation_file) }}" target="_blank"
+                                title="Klik untuk memperbesar">
+                                <img src="{{ asset('uploads/meetings/' . $meeting->documentation_file) }}"
+                                    alt="Dokumentasi Rapat"
+                                    class="max-h-[400px] w-auto object-contain hover:opacity-90 transition-opacity">
+                            </a>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 print:hidden"><i
+                                class="fa-solid fa-magnifying-glass-plus mr-1"></i> Klik gambar untuk melihat ukuran
+                            penuh</p>
+
+                        {{-- Tampilan Jika Link G-Drive --}}
+                    @elseif ($meeting->documentation_link)
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 print:hidden shrink-0">
+                                <i class="fa-brands fa-google-drive text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-[#1E293B] mb-1">File Dokumentasi & Lampiran</p>
+
+                                <a href="{{ $meeting->documentation_link }}" target="_blank"
+                                    class="text-amber-600 hover:text-amber-700 font-medium text-sm inline-flex items-center gap-1 print:hidden bg-amber-50 px-3 py-1.5 rounded-md border border-amber-200 transition-colors">
+                                    Buka Folder Drive <i
+                                        class="fa-solid fa-arrow-up-right-from-square text-xs ml-1"></i>
+                                </a>
+
+                                <p
+                                    class="hidden print:block text-sm text-blue-600 break-all underline decoration-dotted">
+                                    {{ $meeting->documentation_link }}</p>
+                            </div>
+                        </div>
+                    @endif
+
+                </div>
+            </div>
+        @endif
         <div>
             <h3 class="text-lg font-bold text-[#1E293B] border-b-2 border-amber-500 inline-block pb-1 mb-4">Action Items
                 (Tindak Lanjut)</h3>
@@ -182,7 +230,7 @@
             @endif
         </div>
 
-        <div class="hidden print:grid grid-cols-2 gap-8 mt-20 text-center">
+        <div class="hidden print:grid grid-cols-2 gap-8 mt-20 text-center" style="page-break-inside: avoid;">
             <div>
                 <p class="mb-20 text-[#1E293B]">Dibuat Oleh,</p>
                 <p class="font-bold text-[#1E293B] underline">

@@ -6,7 +6,8 @@
     </x-slot>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <form action="{{ route('admin.meetings.update', $meeting->id) }}" method="POST" class="p-6">
+        <form action="{{ route('admin.meetings.update', $meeting->id) }}" method="POST" class="p-6"
+            enctype="multipart/form-data">
             @csrf
             @method('PUT')
 

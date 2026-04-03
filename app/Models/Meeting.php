@@ -27,6 +27,8 @@ class Meeting extends Model
         'minutes_of_meeting',
         'action_items',
         'created_by',
+        'documentation_file',
+        'documentation_link',
     ];
 
     /**
@@ -50,5 +52,27 @@ class Meeting extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Fungsi On-The-Fly untuk update status otomatis
+     */
+    public static function updateAutomatedStatuses()
+    {
+        $now = now(); // Ini sudah otomatis mengikuti Asia/Makassar (WITA) berkat .env Anda
+
+        // 1. Ubah ke "Ongoing"
+        // Syarat: Status masih Scheduled, waktu mulai sudah lewat/sama, TAPI waktu selesai belum lewat.
+        self::where('status', 'Scheduled')
+            ->where('start_time', '<=', $now)
+            ->where('end_time', '>', $now)
+            ->update(['status' => 'Ongoing']);
+
+        // 2. Ubah ke "Completed"
+        // Syarat: Status Scheduled atau Ongoing, dan waktu selesainya sudah terlewati.
+        // (Status 'Canceled' tidak dimasukkan ke sini, jadi akan diabaikan selamanya)
+        self::whereIn('status', ['Scheduled', 'Ongoing'])
+            ->where('end_time', '<=', $now)
+            ->update(['status' => 'Completed']);
     }
 }

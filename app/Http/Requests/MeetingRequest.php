@@ -32,6 +32,9 @@ class MeetingRequest extends FormRequest
             'maps_link' => 'nullable|url|max:255',
             'status' => 'required|in:Scheduled,Ongoing,Completed,Canceled',
             'minutes_of_meeting' => 'nullable|string',
+            'doc_type' => 'nullable|in:upload,link',
+'documentation_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+'documentation_link' => 'nullable|url',
             // action_items kita set nullable, nanti diatur via UI apakah dikirim sebagai array
             'action_items' => 'nullable|array', 
         ];

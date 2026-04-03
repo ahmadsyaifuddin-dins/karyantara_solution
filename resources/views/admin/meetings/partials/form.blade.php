@@ -117,6 +117,42 @@
                 placeholder="Tuliskan hasil rapat di sini..."
                 class="mt-1">{{ old('minutes_of_meeting', $meeting->minutes_of_meeting ?? '') }}</x-forms.textarea>
         </div>
+
+        <div class="p-4 border border-gray-200 rounded-lg bg-gray-50" x-data="{
+            docType: '{{ old('doc_type', isset($meeting) && $meeting->documentation_file ? 'upload' : (isset($meeting) && $meeting->documentation_link ? 'link' : '')) }}'
+        }">
+            <x-forms.label>Dokumentasi Rapat (Opsional)</x-forms.label>
+
+            <div class="flex gap-4 mt-2 mb-4">
+                <label class="flex items-center gap-2 text-sm text-[#1E293B] cursor-pointer">
+                    <input type="radio" name="doc_type" value="upload" x-model="docType"
+                        class="text-[#1E293B] focus:ring-[#1E293B]">
+                    Upload Foto
+                </label>
+                <label class="flex items-center gap-2 text-sm text-[#1E293B] cursor-pointer">
+                    <input type="radio" name="doc_type" value="link" x-model="docType"
+                        class="text-[#1E293B] focus:ring-[#1E293B]">
+                    Link G-Drive
+                </label>
+            </div>
+
+            <div x-show="docType === 'upload'" x-transition x-cloak>
+                <x-forms.upload-gambar name="documentation_file" :current-image="$meeting->documentation_file ?? null" path="uploads/meetings/" />
+                <p class="text-[10px] text-gray-500 mt-1">Format: JPG, PNG. Maksimal 2MB.</p>
+                @error('documentation_file')
+                    <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div x-show="docType === 'link'" x-transition x-cloak>
+                <x-forms.input type="url" name="documentation_link"
+                    value="{{ old('documentation_link', $meeting->documentation_link ?? '') }}"
+                    placeholder="https://drive.google.com/drive/folders/..." />
+                @error('documentation_link')
+                    <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
     </div>
 </div>
 
