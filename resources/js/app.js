@@ -7,6 +7,7 @@ window.Alpine = Alpine;
 // 2. Import modul-modul kustom kita
 import './modules/sweetalert';
 import './modules/alpine-components';
+import './modules/ai-textarea';
 
 // 3. Jalankan Alpine
 Alpine.start();

@@ -50,8 +50,8 @@
 
         <div>
             <x-forms.label for="agenda_summary" required>Ringkasan Agenda</x-forms.label>
-            <x-forms.textarea name="agenda_summary" id="agenda_summary" rows="3" class="mt-1"
-                required>{{ old('agenda_summary', $meeting->agenda_summary ?? '') }}</x-forms.textarea>
+            <x-forms.textarea-ai name="agenda_summary" id="agenda_summary" rows="3" class="mt-1" required
+                aiUrl="{{ route('admin.ai.enhance') }}">{{ old('agenda_summary', $meeting->agenda_summary ?? '') }}</x-forms.textarea-ai>
             @error('agenda_summary')
                 <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
             @enderror

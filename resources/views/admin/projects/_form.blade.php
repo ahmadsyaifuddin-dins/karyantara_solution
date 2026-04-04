@@ -43,16 +43,17 @@
 
     <div class="mb-6">
         <x-forms.label value="Deskripsi Pekerjaan (Fitur yang dibuat)" required="true" />
-        <x-forms.textarea name="project_description" rows="3"
-            required>{{ old('project_description', $project->project_description ?? '') }}</x-forms.textarea>
+        <x-forms.textarea-ai name="project_description" rows="3" required
+            aiUrl="{{ route('admin.ai.enhance') }}">{{ old('project_description', $project->project_description ?? '') }}</x-forms.textarea-ai>
     </div>
 
     @include('admin.projects.partials.form.finance')
 
     <div class="mb-8">
         <x-forms.label value="Catatan Revisi" />
-        <x-forms.textarea name="revision_notes" rows="2"
-            placeholder="Contoh: Klien minta tambah fitur laporan PDF...">{{ old('revision_notes', $project->revision_notes ?? '') }}</x-forms.textarea>
+        <x-forms.textarea-ai name="revision_notes" rows="2"
+            placeholder="Contoh: Klien minta tambah fitur laporan PDF..."
+            aiUrl="{{ route('admin.ai.enhance') }}">{{ old('revision_notes', $project->revision_notes ?? '') }}</x-forms.textarea-ai>
     </div>
 
     <div class="flex justify-end gap-3 border-t border-gray-200 pt-6">

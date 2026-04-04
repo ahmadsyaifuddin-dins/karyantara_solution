@@ -1,0 +1,31 @@
+use Illuminate\Support\Facades\Http;
+
+// ROUTE TESTING GROQ MODELS
+Route::get('/test-groq-models', function () {
+    try {
+        $response = Http::withToken(env('GROQ_API_KEY'))
+            ->get('https://api.groq.com/openai/v1/models');
+
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Ini daftar model yang tersedia untuk API Key kamu:',
+                'data' => $response->json('data')
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal nge-hit API Groq',
+            'status' => $response->status(),
+            'error_detail' => $response->body()
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error di sistem kita',
+            'error_detail' => $e->getMessage()
+        ]);
+    }
+});

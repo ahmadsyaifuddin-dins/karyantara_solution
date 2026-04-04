@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AiCalculatorController;
 use App\Http\Controllers\Admin\MyEarningsController;
 use App\Http\Controllers\Admin\PricingController;
+use App\Http\Controllers\Admin\TextEnhancementController;
 use App\Services\GroqApiService;
 
 // HALAMAN PUBLIK (Guest)
@@ -54,10 +55,14 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // Dashboard Admin
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-   Route::get('/my-earnings', [MyEarningsController::class, 'index'])->name('earnings.index');
-Route::patch('/my-earnings/{project}/toggle-paid', [MyEarningsController::class, 'toggleEarningStatus'])->name('earnings.toggle-paid');
-Route::get('/my-earnings/export/pdf', [MyEarningsController::class, 'exportPdf'])->name('earnings.export.pdf');
-Route::get('/my-earnings/export/excel', [MyEarningsController::class, 'exportExcel'])->name('earnings.export.excel');
+    Route::post('/ai/enhance-text', [TextEnhancementController::class, 'enhance'])
+        ->middleware('throttle:30,1') // Lindungi API Groq dari spam (maks 30 hit/menit)
+        ->name('ai.enhance');
+
+    Route::get('/my-earnings', [MyEarningsController::class, 'index'])->name('earnings.index');
+    Route::patch('/my-earnings/{project}/toggle-paid', [MyEarningsController::class, 'toggleEarningStatus'])->name('earnings.toggle-paid');
+    Route::get('/my-earnings/export/pdf', [MyEarningsController::class, 'exportPdf'])->name('earnings.export.pdf');
+    Route::get('/my-earnings/export/excel', [MyEarningsController::class, 'exportExcel'])->name('earnings.export.excel');
 
     Route::resource('admins', AdminController::class)->except(['show']);
     Route::resource('portfolios', PortfolioController::class);
@@ -114,5 +119,4 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/music', [ProfileController::class, 'updateMusic'])->name('profile.music.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
 require __DIR__.'/auth.php';
