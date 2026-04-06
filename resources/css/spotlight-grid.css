@@ -1,0 +1,19 @@
+@layer utilities {
+    /* Membuat pola blueprint/grid transparan */
+    .bg-grid-pattern {
+        background-image: 
+            linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 48px 48px; /* Ukuran kotak grid */
+    }
+
+    /* Efek melayang halus untuk kartu Glassmorphism */
+    @keyframes floating {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    
+    .animate-floating {
+        animation: floating 6s ease-in-out infinite;
+    }
+}

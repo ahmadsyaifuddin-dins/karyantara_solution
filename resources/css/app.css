@@ -1,4 +1,14 @@
 @import './electric-menu.css';
+@import './spotlight-grid.css';
+
+/* Import file font Archive dari dalam folder resources */
+@font-face {
+    font-family: 'Archive';
+    src: url('./fonts/Archive.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
