@@ -63,7 +63,7 @@
                                                 </button>
                                             </div>
 
-                                            <div class="mt-3 flex -space-x-2 overflow-hidden"
+                                            <div class="mt-3 flex -space-x-2 pl-1 py-1"
                                                 x-show="child.users && child.users.length > 0">
                                                 <template x-for="user in child.users" :key="user.id">
                                                     <div :title="user.name"

@@ -8,12 +8,31 @@ use Illuminate\Http\Request;
 
 class PositionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Menampilkan daftar jabatan, sekalian load relasi 'parent' (atasannya)
-        $positions = Position::with('parent')->orderBy('department', 'ASC')->paginate(10);
+        $search = $request->input('search');
+        $department = $request->input('department');
+
+        // Gunakan withCount('users') agar jumlah user dihitung di level database, bukan di looping Blade!
+        $query = Position::with('parent')->withCount('users');
+
+        // Fitur Pencarian berdasarkan nama jabatan
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        // Fitur Filter berdasarkan divisi (department)
+        if ($department) {
+            $query->where('department', $department);
+        }
+
+        // Jangan lupa withQueryString() agar saat pindah halaman (pagination), filternya tidak hilang
+        $positions = $query->orderBy('department', 'ASC')->paginate(10)->withQueryString();
         
-        return view('admin.positions.index', compact('positions'));
+        // Ambil daftar divisi unik untuk dropdown filter
+        $departments = Position::whereNotNull('department')->distinct()->pluck('department');
+
+        return view('admin.positions.index', compact('positions', 'departments'));
     }
 
     public function create()

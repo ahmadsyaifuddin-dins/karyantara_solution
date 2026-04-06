@@ -26,40 +26,46 @@ document.addEventListener('alpine:init', () => {
 
             const query = this.searchQuery.toLowerCase();
             
+            // FUNGSI BARU: Mengecek apakah ada user/personil yang namanya cocok
+            const hasMatchingUser = (item) => {
+                return item.users && item.users.some(user => (user.name || '').toLowerCase().includes(query));
+            };
+            
             return this.struktur.map(pucuk => {
-                // 1. Cek kecocokan di Level 1 (C-Suite)
+                // 1. Cek Level 1 (Nama Jabatan, Divisi, atau NAMA ORANGNYA)
                 const matchPucuk = (pucuk.name || '').toLowerCase().includes(query) || 
-                                   (pucuk.department || '').toLowerCase().includes(query);
+                                   (pucuk.department || '').toLowerCase().includes(query) ||
+                                   hasMatchingUser(pucuk);
                 
-                // 2. Filter Level 2 beserta pengecekan Level 3 di dalamnya
+                // 2. Filter Level 2
                 const filteredBawahan = (pucuk.children || []).map(child => {
+                    // Cek nama jabatan, divisi, atau NAMA ORANGNYA di Level 2
                     const matchChild = (child.name || '').toLowerCase().includes(query) || 
-                                       (child.department || '').toLowerCase().includes(query);
+                                       (child.department || '').toLowerCase().includes(query) ||
+                                       hasMatchingUser(child);
                     
                     // Filter Level 3
                     const filteredGrandBawahan = (child.children || []).filter(gc => 
                         (gc.name || '').toLowerCase().includes(query) || 
-                        (gc.department || '').toLowerCase().includes(query)
+                        (gc.department || '').toLowerCase().includes(query) ||
+                        hasMatchingUser(gc) // Cek nama orang di Level 3 (Frontend, Backend, dll)
                     );
 
-                    // Jika child cocok ATAU ada grandchild yang cocok, kembalikan child ini
                     if (matchChild || filteredGrandBawahan.length > 0) {
                         return { 
                             ...child, 
-                            // Jika child yang dicari cocok, tampilkan semua grandchild. 
-                            // Tapi jika cuma grandchild yang cocok, tampilkan grandchild yang difilter saja.
                             children: matchChild && filteredGrandBawahan.length === 0 ? child.children : filteredGrandBawahan 
                         };
                     }
                     return null;
                 }).filter(item => item !== null);
 
-                // Auto-open parent jika ada bawahan yang cocok dengan pencarian
+                // Auto-open parent
                 if (filteredBawahan.length > 0 && query !== '') {
                     pucuk.isOpen = true;
                 }
 
-                // 3. Gabungkan hasil. Tampilkan Level 1 jika cocok ATAU jika ada bawahannya yang cocok
+                // 3. Gabungkan hasil
                 if (matchPucuk || filteredBawahan.length > 0) {
                     return { 
                         ...pucuk, 
