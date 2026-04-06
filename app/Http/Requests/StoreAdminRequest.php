@@ -18,8 +18,8 @@ class StoreAdminRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::defaults()],
-            'position' => ['nullable', 'string', 'max:255'],
-            'department' => ['nullable', 'string', 'max:255'],
+            'role' => ['required', 'string', 'max:255'],
+            'position_id' => ['nullable', 'exists:positions,id'],
         ];
     }
 }

@@ -8,6 +8,7 @@ window.Alpine = Alpine;
 import './modules/sweetalert';
 import './modules/alpine-components';
 import './modules/ai-textarea';
+import './modules/org-chart';
 
 // 3. Jalankan Alpine
 Alpine.start();

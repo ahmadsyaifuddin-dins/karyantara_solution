@@ -1,5 +1,10 @@
+
 @import './electric-menu.css';
 @import './spotlight-grid.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Import file font Archive dari dalam folder resources */
 @font-face {
@@ -10,8 +15,6 @@
     font-display: swap;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
 
 [x-cloak] { display: none !important; }

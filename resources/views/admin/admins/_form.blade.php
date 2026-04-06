@@ -21,27 +21,32 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <x-forms.label for="position" value="Jabatan / Pangkat" />
-            <x-forms.input id="position" name="position" type="text"
-                value="{{ old('position', $admin->position ?? '') }}" placeholder="Contoh: Backend Developer, CEO"
-                class="mt-1" />
-            @error('position')
+            <x-forms.label for="role" value="Hak Akses (Role)" :required="true" />
+            <x-forms.dropdown name="role" id="role" class="mt-1" required>
+                <option value="admin" {{ old('role', $admin->role ?? 'admin') == 'admin' ? 'selected' : '' }}>Admin
+                    Biasa</option>
+                <option value="super_admin" {{ old('role', $admin->role ?? '') == 'super_admin' ? 'selected' : '' }}>
+                    Super Admin</option>
+            </x-forms.dropdown>
+            <p class="text-xs text-gray-400 mt-1">Super Admin memiliki akses penuh ke sistem.</p>
+            @error('role')
                 <span class="text-sm text-red-500">{{ $message }}</span>
             @enderror
         </div>
 
         <div>
-            <x-forms.label for="department" value="Divisi" />
-            <x-forms.dropdown name="department" id="department" class="mt-1">
-                <option value="">-- Pilih Divisi --</option>
-                @foreach (['Board of Directors', 'Engineering', 'Product & Design', 'Finance & HR'] as $dept)
-                    <option value="{{ $dept }}"
-                        {{ old('department', $admin->department ?? '') == $dept ? 'selected' : '' }}>
-                        {{ $dept }}
+            <x-forms.label for="position_id" value="Jabatan/Posisi" />
+            <x-forms.dropdown name="position_id" id="position_id" class="mt-1">
+                <option value="">-- Pilih Jabatan --</option>
+                @foreach ($positions as $pos)
+                    <option value="{{ $pos->id }}"
+                        {{ old('position_id', $admin->position_id ?? '') == $pos->id ? 'selected' : '' }}>
+                        {{ $pos->name }} {{ $pos->department ? '(' . $pos->department . ')' : '' }}
                     </option>
                 @endforeach
             </x-forms.dropdown>
-            @error('department')
+            <p class="text-xs text-gray-400 mt-1">Biarkan kosong jika belum ada jabatan.</p>
+            @error('position_id')
                 <span class="text-sm text-red-500">{{ $message }}</span>
             @enderror
         </div>

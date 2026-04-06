@@ -15,15 +15,14 @@ class UpdateAdminRequest extends FormRequest
 
     public function rules(): array
     {
-        // Ambil ID user yang sedang diedit dari route
         $adminId = $this->route('admin')->id;
 
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($adminId)],
             'password' => ['nullable', 'confirmed', Password::defaults()],
-            'position' => ['nullable', 'string', 'max:255'],
-            'department' => ['nullable', 'string', 'max:255'],
+            'role' => ['required', 'string', 'max:255'],
+            'position_id' => ['nullable', 'exists:positions,id'],
         ];
     }
 }

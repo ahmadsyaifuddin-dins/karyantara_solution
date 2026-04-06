@@ -11,7 +11,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8">
+    <div class="py-1">
         <div class="max-w-7xl mx-auto">
 
             @if (session('success'))
@@ -35,64 +35,101 @@
                             <tr>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-semibold text-[#1E293B] uppercase tracking-wider">
-                                    Nama</th>
+                                    Nama & Hak Akses
+                                </th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-semibold text-[#1E293B] uppercase tracking-wider">
-                                    Posisi & Divisi</th>
+                                    Jabatan & Divisi
+                                </th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-semibold text-[#1E293B] uppercase tracking-wider">
-                                    Email</th>
+                                    Email
+                                </th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-semibold text-[#1E293B] uppercase tracking-wider">
-                                    Tanggal Bergabung</th>
+                                    Tanggal Bergabung
+                                </th>
                                 <th
                                     class="px-6 py-3 text-right text-xs font-semibold text-[#1E293B] uppercase tracking-wider">
-                                    Aksi</th>
+                                    Aksi
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($admins as $item)
                                 <tr class="hover:bg-gray-50 transition">
+
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div
-                                                class="flex-shrink-0 h-10 w-10 bg-amber-500 rounded-full flex items-center justify-center text-[#1E293B] font-bold">
+                                                class="flex-shrink-0 h-10 w-10 {{ $item->role === 'super_admin' ? 'bg-amber-500 text-[#1E293B]' : 'bg-[#1E293B] text-white' }} rounded-full flex items-center justify-center font-bold">
                                                 {{ strtoupper(substr($item->name, 0, 1)) }}
                                             </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-bold text-gray-900">{{ $item->name }}</div>
-                                                @if ($item->id === Auth::id())
-                                                    <span
-                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-1">
-                                                        Anda
-                                                    </span>
-                                                @endif
+                                            <div class="ml-4 flex flex-col items-start">
+                                                <div class="text-sm font-bold text-gray-900 flex items-center gap-2">
+                                                    {{ $item->name }}
+                                                    @if ($item->id === Auth::id())
+                                                        <span
+                                                            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">
+                                                            ANDA
+                                                        </span>
+                                                    @endif
+                                                </div>
+
+                                                <div class="mt-1">
+                                                    @if ($item->role === 'super_admin')
+                                                        <span
+                                                            class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                                                            <i class="fa-solid fa-crown"></i> Super Admin
+                                                        </span>
+                                                    @else
+                                                        <span
+                                                            class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                                                            <i class="fa-solid fa-user-shield"></i> Admin
+                                                        </span>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
 
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        @if ($item->position || $item->department)
+                                        @if ($item->position)
                                             <div>
+                                                @php
+                                                    // Membersihkan class agar bisa dipakai sebagai warna border/text/bg
+                                                    $bgClass = $item->position->color_bg ?? 'bg-blue-50';
+                                                    $textClass = $item->position->color_text ?? 'text-blue-700';
+                                                @endphp
                                                 <span
-                                                    class="inline-flex px-2 py-0.5 text-[11px] font-bold rounded-full border {{ $item->department === 'Board of Directors' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200' }}">
-                                                    {{ $item->position ?? 'Posisi Belum Diatur' }}
+                                                    class="inline-flex px-2 py-0.5 text-[11px] font-bold rounded-md border border-gray-200 {{ $bgClass }} {{ $textClass }} bg-opacity-10">
+                                                    @if ($item->position->icon)
+                                                        <i class="{{ $item->position->icon }} mr-1.5"></i>
+                                                    @endif
+                                                    {{ $item->position->name }}
                                                 </span>
                                             </div>
-                                            <div class="text-[11px] text-gray-500 mt-1 font-medium">
-                                                {{ $item->department ?? '-' }}
+                                            <div
+                                                class="text-[11px] text-gray-500 mt-1 font-medium flex items-center gap-1">
+                                                <i class="fa-solid fa-sitemap text-gray-300"></i>
+                                                {{ $item->position->department ?? 'Tidak ada divisi' }}
                                             </div>
                                         @else
-                                            <span class="text-xs text-gray-400 italic">Belum diatur</span>
+                                            <span
+                                                class="inline-flex px-2 py-1 text-xs font-medium bg-gray-100 text-gray-500 rounded-md border border-gray-200">
+                                                Belum diatur
+                                            </span>
                                         @endif
                                     </td>
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         {{ $item->email }}
                                     </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         {{ $item->created_at->format('d M Y') }}
                                     </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <a href="{{ route('admin.admins.edit', $item->id) }}"
                                             class="text-blue-600 hover:text-blue-900 mr-4 transition"><i

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AiCalculatorController;
 use App\Http\Controllers\Admin\MyEarningsController;
+use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\PricingController;
 use App\Http\Controllers\Admin\TextEnhancementController;
 use App\Services\GroqApiService;
@@ -65,6 +66,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/my-earnings/export/excel', [MyEarningsController::class, 'exportExcel'])->name('earnings.export.excel');
 
     Route::resource('admins', AdminController::class)->except(['show']);
+    Route::resource('positions', PositionController::class)->except(['show']);
     Route::resource('portfolios', PortfolioController::class);
 
     Route::patch('testimonials/{testimonial}/toggle-status', [AdminTestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
@@ -101,9 +103,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('/settings/update-data', [SettingController::class, 'updateData'])->name('settings.updateData');
     
     Route::get('/ikhtiar', function () {
-        return view('pages.admin.ikhtiar.index'); // Sesuaikan dengan path view kamu
+        return view('pages.admin.ikhtiar.index');
     })->name('ikhtiar');
-    
+
+    Route::get('/struktur-organisasi', [PositionController::class, 'orgChart'])->name('struktur');
+
     Route::get('meetings/{meeting}/print', [MeetingController::class, 'print'])->name('meetings.print');
     Route::resource('meetings', MeetingController::class);
 
