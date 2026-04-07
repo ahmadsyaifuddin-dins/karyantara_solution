@@ -22,12 +22,24 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Mendaftarkan Observer ke Model Project
         Project::observe(ProjectObserver::class);
 
-        // GOD MODE: Super Admin bisa bypass semua permission
+        // 2. GATE KHUSUS UNTUK BYPASS PENYAKIT CACHE HOSTING
         Gate::before(function ($user, $ability) {
-            return $user->hasRole('super_admin') ? true : null;
+            
+            // A. God Mode untuk Super Admin
+            if ($user->hasRole('super_admin')) {
+                return true;
+            }
+
+            try {
+                if ($user->hasPermissionTo($ability)) {
+                    return true; // Buka gerbang jika punya izin!
+                }
+            } catch (\Exception $e) {
+            }
+
+            return null; 
         });
     }
 }
