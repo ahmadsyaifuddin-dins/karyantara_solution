@@ -57,12 +57,16 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($admins as $item)
+                                @php
+                                    // Ambil nama role pertama dari tabel spatie
+                                    $roleName = $item->roles->pluck('name')->first();
+                                @endphp
                                 <tr class="hover:bg-gray-50 transition">
 
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div
-                                                class="flex-shrink-0 h-10 w-10 {{ $item->role === 'super_admin' ? 'bg-amber-500 text-[#1E293B]' : 'bg-[#1E293B] text-white' }} rounded-full flex items-center justify-center font-bold">
+                                                class="flex-shrink-0 h-10 w-10 {{ $roleName === 'super_admin' ? 'bg-amber-500 text-[#1E293B]' : 'bg-[#1E293B] text-white' }} rounded-full flex items-center justify-center font-bold">
                                                 {{ strtoupper(substr($item->name, 0, 1)) }}
                                             </div>
                                             <div class="ml-4 flex flex-col items-start">
@@ -77,15 +81,21 @@
                                                 </div>
 
                                                 <div class="mt-1">
-                                                    @if ($item->role === 'super_admin')
+                                                    @if ($roleName === 'super_admin')
                                                         <span
                                                             class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600">
                                                             <i class="fa-solid fa-crown"></i> Super Admin
                                                         </span>
-                                                    @else
+                                                    @elseif ($roleName)
                                                         <span
                                                             class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                                                            <i class="fa-solid fa-user-shield"></i> Admin
+                                                            <i class="fa-solid fa-user-shield"></i>
+                                                            {{ ucwords(str_replace('_', ' ', $roleName)) }}
+                                                        </span>
+                                                    @else
+                                                        <span
+                                                            class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                                            <i class="fa-solid fa-user-xmark"></i> Belum ada role
                                                         </span>
                                                     @endif
                                                 </div>

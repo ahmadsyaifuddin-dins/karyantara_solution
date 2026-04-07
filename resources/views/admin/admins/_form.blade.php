@@ -23,12 +23,18 @@
         <div>
             <x-forms.label for="role" value="Hak Akses (Role)" :required="true" />
             <x-forms.dropdown name="role" id="role" class="mt-1" required>
-                <option value="admin" {{ old('role', $admin->role ?? 'admin') == 'admin' ? 'selected' : '' }}>Admin
-                    Biasa</option>
-                <option value="super_admin" {{ old('role', $admin->role ?? '') == 'super_admin' ? 'selected' : '' }}>
-                    Super Admin</option>
+                <option value="">-- Pilih Hak Akses --</option>
+
+                {{-- Looping Data Role Spatie Secara Dinamis --}}
+                @foreach ($roles as $r)
+                    <option value="{{ $r->name }}"
+                        {{ old('role', $userRole ?? ($admin->role ?? '')) == $r->name ? 'selected' : '' }}>
+                        {{ ucwords(str_replace('_', ' ', $r->name)) }}
+                    </option>
+                @endforeach
+
             </x-forms.dropdown>
-            <p class="text-xs text-gray-400 mt-1">Super Admin memiliki akses penuh ke sistem.</p>
+            <p class="text-xs text-gray-400 mt-1">Menentukan fitur & menu apa saja yang bisa diakses.</p>
             @error('role')
                 <span class="text-sm text-red-500">{{ $message }}</span>
             @enderror
@@ -51,6 +57,7 @@
             @enderror
         </div>
     </div>
+
     <div>
         <x-forms.label for="password" value="Password" :required="!isset($admin)" />
         <x-forms.input id="password" name="password" type="password" autocomplete="new-password" :required="!isset($admin)" />

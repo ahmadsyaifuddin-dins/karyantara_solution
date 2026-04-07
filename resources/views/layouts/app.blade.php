@@ -49,8 +49,9 @@
 
             <header
                 class="bg-white shadow-sm sticky top-0 z-30 flex items-center justify-between px-4 py-3 sm:px-6 lg:px-8 lg:justify-end">
+                {{-- Ubah class lg:hidden menjadi md:hidden pada tombol ini --}}
                 <button @click="sidebarOpen = !sidebarOpen"
-                    class="lg:hidden text-gray-500 focus:outline-none hover:text-[#1E293B] transition">
+                    class="md:hidden text-gray-500 focus:outline-none hover:text-[#1E293B] transition">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
 

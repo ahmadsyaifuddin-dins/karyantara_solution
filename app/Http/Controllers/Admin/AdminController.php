@@ -5,44 +5,61 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAdminRequest;
 use App\Http\Requests\UpdateAdminRequest;
+use App\Models\Position;
 use App\Models\User;
-use App\Models\Position; // IMPORT MODEL POSITION
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
     public function index()
     {
-        // Gunakan Eager Loading (with) agar tidak N+1 Query saat menampilkan nama jabatan
-        $admins = User::with('position')->latest()->paginate(10);
+        // Load 'position' dan 'roles' (Spatie) agar terhindar dari N+1 Query
+        $admins = User::with(['position', 'roles'])->latest()->paginate(10);
 
         return view('admin.admins.index', compact('admins'));
     }
 
     public function create()
     {
-        // Ambil semua data posisi untuk dropdown form
         $positions = Position::orderBy('name', 'ASC')->get();
-        return view('admin.admins.create', compact('positions'));
+
+        // Ambil semua Role dinamis dari tabel Spatie
+        $roles = Role::orderBy('name', 'ASC')->get();
+
+        return view('admin.admins.create', compact('positions', 'roles'));
     }
 
     public function store(StoreAdminRequest $request)
     {
         $data = $request->validated();
-
         $data['password'] = Hash::make($data['password']);
 
-        User::create($data);
+        // Simpan nama role dari form
+        $roleName = $data['role'];
+
+        // Create User
+        $user = User::create($data);
+
+        // Berikan Hak Akses (Role) menggunakan fungsi Spatie
+        if ($roleName) {
+            $user->assignRole($roleName);
+        }
 
         return redirect()->route('admin.admins.index')->with('success', 'Akun admin berhasil ditambahkan.');
     }
 
     public function edit(User $admin)
     {
-        // Ambil semua data posisi untuk dropdown form
         $positions = Position::orderBy('name', 'ASC')->get();
-        return view('admin.admins.edit', compact('admin', 'positions'));
+        $roles = Role::orderBy('name', 'ASC')->get();
+
+        // Ambil role Spatie yang saat ini dipakai oleh user
+        // (Bisa juga pakai array jika 1 user punya banyak role, tapi umumnya 1 user 1 role)
+        $userRole = $admin->roles->pluck('name')->first();
+
+        return view('admin.admins.edit', compact('admin', 'positions', 'roles', 'userRole'));
     }
 
     public function update(UpdateAdminRequest $request, User $admin)
@@ -55,7 +72,14 @@ class AdminController extends Controller
             unset($data['password']);
         }
 
+        $roleName = $data['role'] ?? null;
+
         $admin->update($data);
+
+        // Update (Sinkronisasi) Hak Akses Role Spatie
+        if ($roleName) {
+            $admin->syncRoles([$roleName]);
+        }
 
         return redirect()->route('admin.admins.index')->with('success', 'Data admin berhasil diperbarui.');
     }

@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, HasRoles, Notifiable;
 
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',       
+        'role', // Biarkan dulu sebagai legacy backup
         'position_id',
         'autoplay_music',
     ];
@@ -32,15 +33,14 @@ class User extends Authenticatable
         ];
     }
 
-    // Relasi ke tabel Positions
     public function position()
     {
         return $this->belongsTo(Position::class);
     }
-    
-    // Helper function untuk cek role (Opsional tapi sangat berguna nantinya)
+
     public function isSuperAdmin()
     {
-        return $this->role === 'super_admin';
+        // Ubah logika pengecekan menggunakan bawaan Spatie
+        return $this->hasRole('super_admin');
     }
 }
