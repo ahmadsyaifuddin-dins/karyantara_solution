@@ -3,7 +3,12 @@
         <td style="width: 40%; text-align: center; vertical-align: bottom;">
             @isset($project)
                 <p style="margin-bottom: 5px; font-size: 11px; color: transparent;">Tanggal</p>
-                <p style="margin-bottom: 35px; font-size: 11px;">Menyetujui,<br><strong>Klien / Pemesan</strong></p>
+                <p style="margin-bottom: 5px; font-size: 11px;">Menyetujui,<br><strong>Klien / Pemesan</strong></p>
+
+                <div style="margin: 10px 0;">
+                    <img src="data:image/svg+xml;base64,{{ $qrCodeClient }}" alt="QR Klien">
+                </div>
+
                 <p
                     style="margin: 0; font-size: 11px; text-decoration: underline; font-weight: bold; text-transform: uppercase;">
                     {{ $project->client_name }}
@@ -19,9 +24,8 @@
         <td style="width: 40%; text-align: center; vertical-align: bottom;">
             @php
                 $adminName = Auth::user()->name;
-                $adminRole = 'Pimpinan Operasional'; // Default jika bukan kalian berdua
+                $adminRole = 'Pimpinan Operasional'; // Default
 
-                // Logika Pengecekan Jabatan Berdasarkan Nama
                 if ($adminName === 'Ahmad Syaifuddin') {
                     $adminRole = 'Co-Founder & Chief Technology Officer';
                 } elseif ($adminName === 'Abdan Mustaqim Wardana') {
@@ -31,7 +35,11 @@
 
             <p style="margin-bottom: 5px; font-size: 11px;">Banjarmasin,
                 {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}</p>
-            <p style="margin-bottom: 35px; font-size: 11px;">Mengetahui,<br><strong>{{ $adminRole }}</strong></p>
+            <p style="margin-bottom: 5px; font-size: 11px;">Mengetahui,<br><strong>{{ $adminRole }}</strong></p>
+
+            <div style="margin: 10px 0;">
+                <img src="data:image/svg+xml;base64,{{ $qrCodeAdmin }}" alt="QR Admin">
+            </div>
 
             <p
                 style="margin: 0; font-size: 11px; text-decoration: underline; font-weight: bold; text-transform: uppercase;">

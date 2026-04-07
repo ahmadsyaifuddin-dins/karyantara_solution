@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ProjectController extends Controller
 {
@@ -116,10 +117,22 @@ class ProjectController extends Controller
 
     public function exportInvoice(Project $project)
     {
-        $pdf = Pdf::loadView('admin.projects.pdf.invoice', compact('project'))
+        // 1. Generate Base URL Validasi
+        $hash = substr(md5($project->id . config('app.key')), 0, 8);
+        
+        // 2. Buat URL dengan query string berbeda untuk Klien & Admin
+        $urlClient = route('validate.invoice', ['id' => $project->id, 'hash' => $hash, 'scan_type' => 'client']);
+        $urlAdmin  = route('validate.invoice', ['id' => $project->id, 'hash' => $hash, 'scan_type' => 'admin']);
+
+        // 3. Render masing-masing QR Code
+        $qrCodeClient = base64_encode(QrCode::format('svg')->size(75)->margin(1)->generate($urlClient));
+        $qrCodeAdmin  = base64_encode(QrCode::format('svg')->size(75)->margin(1)->generate($urlAdmin));
+
+        // 4. Passing kedua QR Code ke View PDF
+        $pdf = Pdf::loadView('admin.projects.pdf.invoice', compact('project', 'qrCodeClient', 'qrCodeAdmin'))
             ->setOptions([
-                'chroot'  => base_path(),              // Izinkan baca folder laravel
-                'tempDir' => storage_path('app')       // Hindari folder /tmp server yang sering diblokir
+                'chroot'  => base_path(),              
+                'tempDir' => storage_path('app')       
             ])
             ->setPaper('A4', 'portrait');
 

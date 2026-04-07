@@ -9,24 +9,36 @@ class ValidationController extends Controller
 {
     public function invoice($id, $hash)
     {
-        // 1. Buat ulang hash rahasia berdasarkan ID (entah itu ID Project atau ID EST-) dan APP_KEY
         $expectedHash = substr(md5($id.config('app.key')), 0, 8);
 
-        // 2. Jika hash di URL tidak sama persis, langsung tendang!
         if ($hash !== $expectedHash) {
             abort(403, 'AKSES DITOLAK: Tautan validasi tidak sah, kedaluwarsa, atau telah dimanipulasi.');
         }
 
-        // 3. Hash aman! Sekarang cek apakah ini dari Kalkulator Estimasi
         if (str_starts_with($id, 'EST-')) {
-            // Langsung return view validasi estimasi, TANPA query ke database
             return view('validation.estimate', compact('id'));
         }
 
-        // 4. Jika bukan 'EST-', berarti ini dokumen project asli. Cari datanya di DB!
-        $project = Project::findOrFail($id);
+        $project = Project::with('admin')->findOrFail($id);
+        
+        // 1. Tangkap parameter dari URL (default ke 'admin' jika kosong)
+        $scanType = request()->query('scan_type', 'admin');
 
-        return view('validation.invoice', compact('project'));
+        // 2. Logika Pengecekan Eksekutif
+        $isExecutive = false;
+        $executiveRole = null;
+
+        if ($project->admin) {
+            if ($project->admin->name === 'Ahmad Syaifuddin') {
+                $isExecutive = true;
+                $executiveRole = 'Co-Founder & Chief Technology Officer';
+            } elseif ($project->admin->name === 'Abdan Mustaqim Wardana') {
+                $isExecutive = true;
+                $executiveRole = 'Co-Founder & Chief Executive Officer';
+            }
+        }
+
+        return view('validation.invoice', compact('project', 'isExecutive', 'executiveRole', 'scanType'));
     }
 
     public function rekap($date, $hash)
