@@ -55,14 +55,14 @@
                 <x-input-label for="position" value="Jabatan (Tidak bisa diubah)" />
                 <x-text-input id="position" type="text"
                     class="mt-1 block w-full bg-gray-100 text-gray-500 cursor-not-allowed"
-                    value="{{ $user->position ?? 'Belum diatur' }}" disabled readonly />
+                    value="{{ $user->position?->name ?? 'Belum diatur' }}" disabled readonly />
             </div>
 
             <div class="w-1/2">
                 <x-input-label for="department" value="Divisi (Tidak bisa diubah)" />
                 <x-text-input id="department" type="text"
                     class="mt-1 block w-full bg-gray-100 text-gray-500 cursor-not-allowed"
-                    value="{{ $user->department ?? 'Belum diatur' }}" disabled readonly />
+                    value="{{ $user->position?->department ?? 'Belum diatur' }}" disabled readonly />
             </div>
         </div>
 
