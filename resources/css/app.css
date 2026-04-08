@@ -1,6 +1,6 @@
-
 @import './electric-menu.css';
 @import './spotlight-grid.css';
+@import './tom-select-custom.css';
 
 /* Import file font Archive dari dalam folder resources */
 @font-face {
@@ -14,6 +14,5 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 
 [x-cloak] { display: none !important; }

@@ -2,16 +2,13 @@
 
     <div>
         <x-forms.label for="project_id" value="Pilih Proyek / Klien" required />
-        <x-forms.dropdown name="project_id" id="project_id" required>
+        <x-forms.dropdown name="project_id" id="project_id" searchable required>
             <option value="">-- Pilih Proyek Klien --</option>
             @foreach ($projects as $project)
                 <option value="{{ $project->id }}"
-                    title="{{ $project->client_name }} - {{ $project->skripsi_title ?? 'Tanpa Judul' }}"
                     {{ old('project_id', $ticket->project_id ?? '') == $project->id ? 'selected' : '' }}>
-
                     {{ $project->client_name }} -
-                    {{ \Illuminate\Support\Str::limit($project->skripsi_title ?? 'Tanpa Judul', 45) }}
-
+                    {{ \Illuminate\Support\Str::limit($project->skripsi_title ?? 'Tanpa Judul', 50) }}
                 </option>
             @endforeach
         </x-forms.dropdown>

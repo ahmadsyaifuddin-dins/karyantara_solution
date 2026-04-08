@@ -1,0 +1,24 @@
+/* resources/css/tom-select-custom.css */
+@import 'tom-select/dist/css/tom-select.css';
+
+/* Override Style agar mirip dengan input Tailwind Karyantara */
+.ts-wrapper.single .ts-control {
+    @apply border-gray-300 focus:border-[#1E293B] focus:ring-[#1E293B] rounded-md shadow-sm w-full min-h-[42px] flex items-center px-3 text-sm text-[#1E293B] bg-white cursor-pointer transition-colors;
+}
+
+.ts-wrapper.single.focus .ts-control {
+    @apply border-[#1E293B] ring-1 ring-[#1E293B];
+}
+
+.ts-dropdown {
+    @apply bg-white border border-gray-200 rounded-lg shadow-xl mt-1 text-sm z-50 overflow-hidden;
+}
+
+.ts-dropdown .option {
+    @apply py-2.5 px-4 cursor-pointer text-gray-700 transition-colors;
+}
+
+/* Hover State */
+.ts-dropdown .option:hover, .ts-dropdown .option.active {
+    @apply bg-amber-50 text-amber-700 font-semibold;
+}
