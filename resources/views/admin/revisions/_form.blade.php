@@ -6,8 +6,12 @@
             <option value="">-- Pilih Proyek Klien --</option>
             @foreach ($projects as $project)
                 <option value="{{ $project->id }}"
+                    title="{{ $project->client_name }} - {{ $project->skripsi_title ?? 'Tanpa Judul' }}"
                     {{ old('project_id', $ticket->project_id ?? '') == $project->id ? 'selected' : '' }}>
-                    {{ $project->client_name }} - {{ $project->skripsi_title ?? 'Tanpa Judul' }}
+
+                    {{ $project->client_name }} -
+                    {{ \Illuminate\Support\Str::limit($project->skripsi_title ?? 'Tanpa Judul', 45) }}
+
                 </option>
             @endforeach
         </x-forms.dropdown>
