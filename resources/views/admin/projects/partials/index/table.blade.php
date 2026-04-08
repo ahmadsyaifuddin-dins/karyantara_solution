@@ -11,7 +11,7 @@
         ]" />
 
     <div class="overflow-x-auto mt-4">
-        <table class="min-w-full divide-y divide-gray-200 table-fixed w-[1400px]">
+        <table class="min-w-full divide-y divide-gray-200 table-fixed w-[1500px]">
             <thead class="bg-gray-50">
                 <tr>
                     <th scope="col"
@@ -26,6 +26,9 @@
                     <th scope="col"
                         class="w-32 px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         Status</th>
+                    <th scope="col"
+                        class="w-32 px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Revisi</th>
                     <th scope="col"
                         class="w-56 px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         Finansial</th>
@@ -137,8 +140,6 @@
                                         </span>
                                     @endif
                                 @endif
-
-                                {{-- KODE KONDISI ICON GEMBOK PRIVATE TELAH DIHAPUS DARI SINI --}}
                             </div>
 
                             <div class="font-bold text-[#1E293B] flex items-center gap-2 mt-1">
@@ -212,6 +213,34 @@
                             @endif
                         </td>
 
+                        <td class="px-4 py-4 text-center">
+                            @php
+                                $revisionRatio =
+                                    $item->max_revision > 0 ? $item->used_revision / $item->max_revision : 0;
+                                $revisionColor = 'text-gray-600 bg-gray-100 border-gray-200'; // Default aman
+
+                                if ($item->used_revision >= $item->max_revision) {
+                                    $revisionColor = 'text-red-700 bg-red-100 border-red-200'; // Habis/Over
+                                } elseif ($revisionRatio >= 0.8) {
+                                    $revisionColor = 'text-orange-700 bg-orange-100 border-orange-200'; // Kritis
+                                } elseif ($item->used_revision > 0) {
+                                    $revisionColor = 'text-blue-700 bg-blue-100 border-blue-200'; // Sedang berjalan
+                                }
+                            @endphp
+
+                            <div class="inline-flex flex-col items-center">
+                                <span
+                                    class="px-2.5 py-1 text-xs font-bold rounded-md border shadow-sm {{ $revisionColor }}"
+                                    title="Kuota Revisi Terpakai">
+                                    <i class="fa-solid fa-rotate-left mr-1"></i> {{ $item->used_revision }} /
+                                    {{ $item->max_revision }}
+                                </span>
+                                @if ($item->max_revision > 5)
+                                    <span class="text-[9px] text-red-500 font-bold mt-1 uppercase">+Ekstra</span>
+                                @endif
+                            </div>
+                        </td>
+
                         <td class="px-4 py-4">
                             <div class="flex justify-between text-sm mb-1">
                                 <span class="text-gray-500">Net/Harga:</span>
@@ -271,7 +300,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-10 text-center text-gray-500">
+                        <td colspan="7" class="px-6 py-10 text-center text-gray-500">
                             <div class="flex flex-col items-center justify-center">
                                 <i class="fa-regular fa-folder-open text-4xl mb-3 text-gray-300"></i>
                                 <p>Belum ada data klien / proyek.</p>

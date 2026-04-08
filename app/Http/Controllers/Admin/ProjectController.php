@@ -199,6 +199,20 @@ class ProjectController extends Controller
     }
 
     /**
+     * Menambah kuota revisi ekstra (Maksimal 7)
+     */
+    public function addExtraRevision(Request $request, Project $project)
+    {
+        if ($project->max_revision >= 7) {
+            return back()->with('error', 'Gagal: Kuota revisi sudah mencapai batas maksimal (7 kali).');
+        }
+
+        $project->increment('max_revision');
+
+        return back()->with('success', "Berhasil: Jatah revisi ekstra ditambahkan! Kuota maksimal {$project->client_name} sekarang adalah {$project->max_revision}.");
+    }
+
+    /**
      * Memformat logika harga dan penugasan yang tadinya berulang di store() & update()
      */
     private function formatProjectData(array $data, Request $request): array

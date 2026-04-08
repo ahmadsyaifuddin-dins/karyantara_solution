@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\Admin\PricingController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\RevisionTicketController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
@@ -80,6 +81,17 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         })->name('projects.sync-sheet');
 
         Route::resource('projects', ProjectController::class);
+    });
+
+    Route::middleware('can:manage_revisions')->group(function () {
+    Route::get('/revisions/board', [RevisionTicketController::class, 'board'])->name('revisions.board');
+    Route::post('/revisions/update-status', [RevisionTicketController::class, 'updateStatus'])->name('revisions.update-status');
+    Route::resource('revisions', RevisionTicketController::class)->except(['index', 'show']);
+    
+    // ROUTE BARU: Tambah Kuota Ekstra
+    Route::patch('/projects/{project}/add-revision-quota', [ProjectController::class, 'addExtraRevision'])
+        ->name('projects.add-revision-quota')
+        ->middleware('can:add_extra_quota');
     });
 
     Route::middleware('can:manage_earnings')->group(function () {

@@ -10,9 +10,13 @@ const ToastKaryantara = Swal.mixin({
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
+    // TAMBAHKAN 2 BARIS INI UNTUK OVERRIDE DEFAULT SWEETALERT
+    background: '#1E293B', 
+    color: '#ffffff',      
     customClass: {
-        popup: 'bg-[#1E293B] text-white rounded-xl shadow-2xl border border-slate-700 mt-4 mr-4',
-        title: 'text-white text-sm font-medium ml-2',
+        // Hapus class bg-[#1E293B] dan text-white dari sini karena sudah di-handle di atas
+        popup: 'rounded-xl shadow-2xl border border-slate-700 mt-4 mr-4',
+        title: 'text-sm font-medium ml-2',
         timerProgressBar: 'bg-amber-500',
     },
     didOpen: (toast) => {

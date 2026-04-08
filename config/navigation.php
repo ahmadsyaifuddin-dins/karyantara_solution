@@ -44,6 +44,13 @@ return [
                     'permission' => 'manage_projects',
                 ],
                 [
+                    'title' => 'Board Revisi',
+                    'route' => 'admin.revisions.board',
+                    'active_match' => 'admin.revisions.*',
+                    'icon' => 'fa-solid fa-clipboard-list',
+                    'permission' => 'manage_revisions',
+                ],
+                [
                     'title' => 'Pendapatan Saya',
                     'route' => 'admin.earnings.index',
                     'active_match' => 'admin.earnings.*',

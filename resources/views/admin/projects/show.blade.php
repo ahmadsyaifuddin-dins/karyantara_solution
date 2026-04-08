@@ -38,4 +38,67 @@
 
         </div>
     </div>
+
+    <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="bg-gray-50 border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+            <h3 class="font-bold text-[#1E293B] flex items-center">
+                <i class="fa-solid fa-clock-rotate-left text-amber-500 mr-2"></i> Riwayat & Tiket Revisi
+            </h3>
+            <span
+                class="px-3 py-1 bg-white border border-gray-300 rounded-full text-xs font-bold text-gray-600 shadow-sm">
+                Kuota Terpakai: <span
+                    class="{{ $project->used_revision >= $project->max_revision ? 'text-red-600' : 'text-emerald-600' }}">{{ $project->used_revision }}/{{ $project->max_revision }}</span>
+            </span>
+        </div>
+
+        <div class="p-6">
+            @if ($project->revisionTickets && $project->revisionTickets->count() > 0)
+                <div class="space-y-4">
+                    @foreach ($project->revisionTickets as $ticket)
+                        <div
+                            class="flex items-start gap-4 p-4 rounded-lg border {{ $ticket->status == 'done' ? 'bg-emerald-50 border-emerald-100' : 'bg-white border-gray-200' }}">
+                            <div class="mt-1">
+                                @if ($ticket->status == 'done')
+                                    <i class="fa-solid fa-circle-check text-emerald-500 text-xl"></i>
+                                @elseif($ticket->status == 'in_progress')
+                                    <i class="fa-solid fa-person-digging text-amber-500 text-xl"></i>
+                                @elseif($ticket->status == 'waiting')
+                                    <i class="fa-solid fa-hourglass-half text-blue-500 text-xl"></i>
+                                @elseif ($ticket->status == 'backlog')
+                                    <i class="fa-solid fa-inbox text-slate-500 text-xl"></i>
+                                @else
+                                    <i class="fa-regular fa-circle text-gray-300 text-xl"></i>
+                                @endif
+                            </div>
+
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-bold text-sm text-[#1E293B]">{{ $ticket->title }}</h4>
+                                    <span class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">
+                                        {{ str_replace('_', ' ', $ticket->status) }}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-gray-600 mb-2 whitespace-pre-line">
+                                    {{ $ticket->description ?? 'Tanpa deskripsi rinci.' }}</p>
+                                <div class="text-[10px] font-semibold text-gray-400">
+                                    Dibuat pada: {{ $ticket->created_at->format('d M Y, H:i') }} | Tipe: <span
+                                        class="uppercase text-amber-600">{{ $ticket->type }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-8">
+                    <div
+                        class="w-16 h-16 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-mug-hot text-2xl"></i>
+                    </div>
+                    <p class="text-sm text-gray-500 font-medium">Belum ada tiket revisi untuk proyek ini.<br>Semoga
+                        lancar jaya!</p>
+                </div>
+            @endif
+        </div>
+    </div>
+    </div>
 </x-app-layout>

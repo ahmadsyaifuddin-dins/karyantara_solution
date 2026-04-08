@@ -37,6 +37,8 @@ class Project extends Model
         'paid_amount',
         'payment_method',
         'custom_team',
+        'used_revision',
+'max_revision',
     ];
 
    /**
@@ -61,6 +63,11 @@ class Project extends Model
     public function writer()
     {
         return $this->belongsTo(User::class, 'writer_id');
+    }
+
+    public function revisionTickets()
+    {
+    return $this->hasMany(RevisionTicket::class)->orderBy('sort_order');
     }
 
     /**
