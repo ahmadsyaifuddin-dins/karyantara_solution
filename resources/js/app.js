@@ -10,6 +10,7 @@ import './modules/alpine-components';
 import './modules/ai-textarea';
 import './modules/org-chart';
 import './modules/tom-select';
+import './modules/role-sync';
 
 // 3. Jalankan Alpine
 Alpine.start();
