@@ -54,7 +54,7 @@
                         </p>
                     </div>
 
-                    @can('add_extra_quota')
+                    @can('add_extra_quota_revisian')
                         <template x-if="activeTicket.project?.max_revision < 7">
                             <form :action="'/admin/projects/' + activeTicket.project?.id + '/add-revision-quota'"
                                 method="POST"

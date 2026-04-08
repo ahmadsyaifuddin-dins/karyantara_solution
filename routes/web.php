@@ -91,7 +91,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // ROUTE BARU: Tambah Kuota Ekstra
     Route::patch('/projects/{project}/add-revision-quota', [ProjectController::class, 'addExtraRevision'])
         ->name('projects.add-revision-quota')
-        ->middleware('can:add_extra_quota');
+        ->middleware('can:add_extra_quota_revisian');
     });
 
     Route::middleware('can:manage_earnings')->group(function () {
