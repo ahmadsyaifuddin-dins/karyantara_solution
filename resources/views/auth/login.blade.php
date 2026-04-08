@@ -2,7 +2,7 @@
     <div class="text-center mb-8">
         <img src="{{ asset('logo/logo_transparent.jpg') }}" alt="Logo Karyantara Solution"
             class="w-24 h-auto mx-auto mb-3 drop-shadow-sm">
-        <h2 class="text-3xl font-black text-gray-800 tracking-tight uppercase">KARYANTARA SOLUTION</h2>
+        <h2 class="text-3xl font-archive font-black text-gray-800 tracking-tight uppercase">KARYANTARA SOLUTION</h2>
         <p class="text-sm text-gray-500 mt-1">IT Consultant & Software Development</p>
     </div>
 
