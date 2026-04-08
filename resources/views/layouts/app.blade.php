@@ -39,7 +39,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased bg-gray-100" x-data="{ sidebarOpen: false }">
+<body class="font-sans antialiased bg-gray-100" x-data="{ sidebarOpen: false, isFocusMode: false }">
 
     <div class="flex h-screen overflow-hidden">
 
@@ -47,9 +47,10 @@
 
         <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
 
-            <header
+            <header x-show="!isFocusMode" x-transition.opacity.duration.300ms
                 class="bg-white shadow-sm sticky top-0 z-30 flex items-center justify-between px-4 py-3 sm:px-6 lg:px-8 lg:justify-end">
-                {{-- Ubah class lg:hidden menjadi md:hidden pada tombol ini --}}
+
+                {{-- Tombol Mobile --}}
                 <button @click="sidebarOpen = !sidebarOpen"
                     class="md:hidden text-gray-500 focus:outline-none hover:text-[#1E293B] transition">
                     <i class="fa-solid fa-bars text-xl"></i>

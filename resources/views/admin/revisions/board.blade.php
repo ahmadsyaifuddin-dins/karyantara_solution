@@ -5,10 +5,21 @@
                 <i class="fa-solid fa-clipboard-list text-amber-500"></i>
                 {{ __('Kanban Board Revisi') }}
             </h2>
-            <a href="{{ route('admin.revisions.create') }}"
-                class="bg-[#1E293B] text-amber-500 hover:text-[#1E293B] px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-amber-500 transition-all duration-300 shadow-md flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i> Tambah Tiket
-            </a>
+
+            <div class="flex items-center gap-3">
+                <button @click="isFocusMode = !isFocusMode"
+                    class="bg-white border-2 border-gray-200 text-gray-600 hover:text-[#1E293B] hover:border-[#1E293B] px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 shadow-sm flex items-center gap-2 focus:outline-none"
+                    :title="isFocusMode ? 'Kembali ke Mode Normal' : 'Fokus Layar Penuh'">
+
+                    <i class="fa-solid" :class="isFocusMode ? 'fa-compress text-amber-500' : 'fa-expand'"></i>
+                    <span x-text="isFocusMode ? 'Kembali' : 'Layar Penuh'" class="hidden sm:inline"></span>
+                </button>
+
+                <a href="{{ route('admin.revisions.create') }}"
+                    class="bg-[#1E293B] text-amber-500 hover:text-[#1E293B] px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-amber-500 transition-all duration-300 shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Tambah Tiket
+                </a>
+            </div>
         </div>
     </x-slot>
 

@@ -4,7 +4,8 @@
 </div>
 
 {{-- Sidebar Utama --}}
-<aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+<aside x-show="!isFocusMode" x-transition.opacity.duration.300ms
+    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
     class="fixed inset-y-0 left-0 z-50 w-72 shrink-0 bg-[#1E293B] text-white transition-transform duration-300 ease-in-out md:relative md:translate-x-0 -translate-x-full flex flex-col shadow-xl">
 
     {{-- Logo Header --}}
