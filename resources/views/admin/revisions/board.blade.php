@@ -23,9 +23,11 @@
         </div>
     </x-slot>
 
-    <div x-data="{ ticketModalOpen: false, activeTicket: {} }" @open-ticket-modal.window="activeTicket = $event.detail; ticketModalOpen = true;">
+    <div x-data="{ ticketModalOpen: false, activeTicket: {}, searchQuery: '' }" @open-ticket-modal.window="activeTicket = $event.detail; ticketModalOpen = true;">
 
-        <div class="flex gap-6 overflow-x-auto pb-6 h-[78vh] items-start custom-scrollbar">
+        @include('admin.revisions.partials.search')
+
+        <div class="flex gap-6 overflow-x-auto pb-6 h-[70vh] items-start custom-scrollbar">
 
             @php
                 $columns = [
@@ -80,7 +82,6 @@
                         data-status="{{ $status }}">
                         @foreach ($board[$status] as $ticket)
                             @php
-                                // Menentukan aksen warna kiri (border-l) berdasarkan tipe revisi
                                 $typeBorder =
                                     $ticket->type == 'app'
                                         ? 'border-l-blue-500'
@@ -99,9 +100,24 @@
                                         : ($ticket->type == 'naskah'
                                             ? 'fa-file-word'
                                             : 'fa-layer-group');
+
+                                // Gabungkan semua string yang ingin dicari (Judul, Nama Klien, ID Tiket)
+                                // strtolower = untuk pencarian case-insensitive
+                                // addslashes = agar jika ada tanda kutip tunggal di judul skripsi, tidak membuat error sintaks Alpine
+                                $searchString = addslashes(
+                                    strtolower(
+                                        $ticket->title .
+                                            ' ' .
+                                            ($ticket->project->client_name ?? '') .
+                                            ' ' .
+                                            str_pad($ticket->id, 4, '0', STR_PAD_LEFT),
+                                    ),
+                                );
                             @endphp
 
-                            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 border-l-4 {{ $typeBorder }} cursor-grab hover:-translate-y-1 hover:shadow-md transition-all duration-200 group"
+                            <div x-show="searchQuery === '' || ('{{ $searchString }}').includes(searchQuery.toLowerCase())"
+                                x-transition.opacity.duration.300ms
+                                class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 border-l-4 {{ $typeBorder }} cursor-grab hover:-translate-y-1 hover:shadow-md transition-all duration-200 group"
                                 data-id="{{ $ticket->id }}">
 
                                 <div class="flex justify-between items-start mb-2.5">
@@ -113,7 +129,8 @@
 
                                 <h4
                                     class="font-bold text-sm text-[#1E293B] mb-1.5 leading-tight group-hover:text-amber-600 transition-colors">
-                                    {{ $ticket->title }}</h4>
+                                    {{ $ticket->title }}
+                                </h4>
                                 <p class="text-xs text-gray-500 mb-4 truncate font-medium flex items-center gap-1.5">
                                     <i class="fa-regular fa-circle-user text-gray-400"></i>
                                     {{ $ticket->project->client_name ?? 'Client Unknown' }}
