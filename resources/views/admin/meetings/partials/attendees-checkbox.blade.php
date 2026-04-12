@@ -53,8 +53,8 @@
                             <div>
                                 <span
                                     class="px-2 py-0.5 text-[10px] font-bold rounded-full border 
-                                    {{ $user->department === 'Board of Directors' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200' }}">
-                                    {{ $user->position }}
+                                    {{ $user->position->department === 'Board of Directors' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200' }}">
+                                    {{ $user->position->name }}
                                 </span>
                             </div>
                         @endif
