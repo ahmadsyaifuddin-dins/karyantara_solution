@@ -101,16 +101,21 @@
                                             ? 'fa-file-word'
                                             : 'fa-layer-group');
 
-                                // Gabungkan semua string yang ingin dicari (Judul, Nama Klien, ID Tiket)
+                                // Ambil semua nama tag untuk dimasukkan ke string pencarian
+                                $tagNames = $ticket->tags->pluck('name')->implode(' ');
+
+                                // Gabungkan semua string yang ingin dicari (Judul, Nama Klien, ID Tiket, dan TAGS)
                                 // strtolower = untuk pencarian case-insensitive
-                                // addslashes = agar jika ada tanda kutip tunggal di judul skripsi, tidak membuat error sintaks Alpine
+                                // addslashes = agar jika ada tanda kutip tunggal di judul, tidak membuat error sintaks Alpine
                                 $searchString = addslashes(
                                     strtolower(
                                         $ticket->title .
                                             ' ' .
                                             ($ticket->project->client_name ?? '') .
                                             ' ' .
-                                            str_pad($ticket->id, 4, '0', STR_PAD_LEFT),
+                                            str_pad($ticket->id, 4, '0', STR_PAD_LEFT) .
+                                            ' ' .
+                                            $tagNames,
                                     ),
                                 );
                             @endphp
@@ -131,6 +136,17 @@
                                     class="font-bold text-sm text-[#1E293B] mb-1.5 leading-tight group-hover:text-amber-600 transition-colors">
                                     {{ $ticket->title }}
                                 </h4>
+
+                                @if ($ticket->tags->isNotEmpty())
+                                    <div class="flex flex-wrap gap-1.5 mb-2.5">
+                                        @foreach ($ticket->tags as $tag)
+                                            <span
+                                                class="text-[10px] font-bold px-2 py-0.5 rounded-md border border-gray-100 shadow-sm transition-transform hover:scale-105 {{ $tag->bg_color }} {{ $tag->text_color }}">
+                                                #{{ $tag->name }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
                                 <p class="text-xs text-gray-500 mb-4 truncate font-medium flex items-center gap-1.5">
                                     <i class="fa-regular fa-circle-user text-gray-400"></i>
                                     {{ $ticket->project->client_name ?? 'Client Unknown' }}
@@ -140,7 +156,7 @@
                                     <span
                                         class="text-[11px] font-bold text-gray-400">#{{ str_pad($ticket->id, 4, '0', STR_PAD_LEFT) }}</span>
                                     <button
-                                        @click="$dispatch('open-ticket-modal', {{ json_encode($ticket->load('project')) }})"
+                                        @click="$dispatch('open-ticket-modal', {{ json_encode($ticket->load(['project', 'tags'])) }})"
                                         class="text-[11px] text-[#1E293B] hover:text-amber-600 font-bold px-2 py-1 rounded transition-colors flex items-center gap-1">
                                         Lihat Detail <i class="fa-solid fa-arrow-right"></i>
                                     </button>

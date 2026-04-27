@@ -39,7 +39,6 @@
                 display: inline-block;
                 animation: wave 2.5s ease-in-out infinite;
                 transform-origin: 70% 90%;
-                /* Poros putaran digeser ke bawah agar pas dengan base icon tangan */
             }
         </style>
 
@@ -47,16 +46,26 @@
             Selamat Datang, {{ Auth::user()->name }}!
             <i class="fa-solid fa-hand text-amber-400 animate-wave ml-3 text-[1.4rem] drop-shadow-sm cursor-default"></i>
         </h2>
-        <p class="text-sm text-gray-500 mt-1">Berikut adalah ringkasan performa Karyantara Solution dan pendapatan
-            pribadimu.</p>
+
+        <p class="text-sm text-gray-500 mt-1">
+            @role('super_admin')
+                Berikut adalah ringkasan performa Karyantara Solution dan pendapatan pribadimu.
+            @else
+                Berikut adalah ringkasan aktivitas dan operasional Karyantara Solution.
+            @endrole
+        </p>
     </x-slot>
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
 
+            {{-- Komponen Metrik (Dompet & Info Global) --}}
             @include('admin.dashboard.partials.metrics')
 
-            @include('admin.dashboard.partials.revenue-chart')
+            {{-- Grafik Pendapatan Hanya untuk super_admin --}}
+            @role('super_admin')
+                @include('admin.dashboard.partials.revenue-chart')
+            @endrole
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div

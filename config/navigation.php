@@ -123,6 +123,13 @@ return [
                     'permission' => 'manage_positions',
                 ],
                 [
+                    'title' => 'Master Tag Revisi',
+                    'route' => 'admin.tags.index',
+                    'active_match' => 'admin.tags.*',
+                    'icon' => 'fa-solid fa-tags',
+                    'permission' => 'manage_revisions',
+                ],
+                [
                     'title' => 'Kelola Admin', // Sekalian ganti nama biar jelas
                     'route' => 'admin.admins.index',
                     'active_match' => 'admin.admins.*',

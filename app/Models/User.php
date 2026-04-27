@@ -38,7 +38,7 @@ class User extends Authenticatable
         return $this->belongsTo(Position::class);
     }
 
-    public function isSuperAdmin()
+    public function issuper_admin()
     {
         // Ubah logika pengecekan menggunakan bawaan Spatie
         return $this->hasRole('super_admin');

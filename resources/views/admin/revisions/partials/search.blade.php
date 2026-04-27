@@ -6,12 +6,13 @@
         </div>
         <div>
             <h3 class="font-bold text-[#1E293B] text-sm">Filter Tiket Revisi</h3>
-            <p class="text-[11px] text-gray-500 font-medium">Cari berdasarkan Nama Klien, Judul, atau #ID</p>
+            <p class="text-[11px] text-gray-500 font-medium">Cari berdasarkan Nama Klien, Judul, Kategori Tag, atau #ID
+            </p>
         </div>
     </div>
 
     <div class="w-full sm:w-[400px]">
-        <x-forms.input-search alpineModel="searchQuery" placeholder="Ketik kata kunci di sini..."
+        <x-forms.input-search alpineModel="searchQuery" placeholder="Ketik kata kunci atau tag di sini..."
             class="bg-white border-gray-200" />
     </div>
 </div>

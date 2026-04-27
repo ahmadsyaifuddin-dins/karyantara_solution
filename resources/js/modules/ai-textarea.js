@@ -28,24 +28,18 @@ document.addEventListener('alpine:init', () => {
         async enhance() {
             if (!this.textContent.trim()) {
                 Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'warning',
-                    title: 'Teks masih kosong!',
-                    showConfirmButton: false,
-                    timer: 3000
+                    toast: true, position: 'top-end', icon: 'warning',
+                    title: 'Teks masih kosong!', showConfirmButton: false, timer: 3000
                 });
                 return;
             }
 
             this.isAiLoading = true;
             
-            // Simpan teks asli SEBELUM request (hanya jika belum ada history enhance)
             if (!this.hasEnhanced) {
                 this.originalText = this.textContent;
             }
 
-            // Siapkan AbortController untuk timeout 15 detik
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
@@ -58,23 +52,28 @@ document.addEventListener('alpine:init', () => {
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({ text: this.textContent }),
-                    signal: controller.signal // Masukkan sinyal pembatalan
+                    signal: controller.signal
                 });
 
-                clearTimeout(timeoutId); // Hapus timer jika request berhasil sebelum 15 detik
-
+                clearTimeout(timeoutId); 
                 const data = await response.json();
 
                 if (data.success) {
+                    // Update textarea
                     this.textContent = data.result;
-                    this.hasEnhanced = true; // Tampilkan tombol Undo
+                    this.hasEnhanced = true;
+
+                    // FIRE EVENT: Kirim sinyal ke Tom Select untuk menyeleksi tag
+                    if (data.suggested_tags && data.suggested_tags.length > 0) {
+                        window.dispatchEvent(new CustomEvent('ai-tags-suggested', {
+                            detail: { tags: data.suggested_tags }
+                        }));
+                    }
+
                     Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Teks berhasil dirapikan AI',
-                        showConfirmButton: false,
-                        timer: 3000,
+                        toast: true, position: 'top-end', icon: 'success',
+                        title: 'Teks dirapikan & Tag otomatis terisi! 🪄',
+                        showConfirmButton: false, timer: 3000,
                         customClass: {
                             popup: 'bg-white border-2 border-emerald-100 shadow-xl rounded-xl',
                             title: 'text-[#1E293B] text-sm font-bold'
@@ -84,19 +83,12 @@ document.addEventListener('alpine:init', () => {
                     throw new Error(data.message);
                 }
             } catch (error) {
-                // Tangkap spesifik jika error karena Timeout
                 let errorMsg = 'Gagal merapikan teks.';
-                if (error.name === 'AbortError') {
-                    errorMsg = 'Koneksi ke AI terputus/Timeout.';
-                }
+                if (error.name === 'AbortError') errorMsg = 'Koneksi ke AI terputus/Timeout.';
 
                 Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'error',
-                    title: errorMsg,
-                    showConfirmButton: false,
-                    timer: 3000
+                    toast: true, position: 'top-end', icon: 'error',
+                    title: errorMsg, showConfirmButton: false, timer: 3000
                 });
             } finally {
                 this.isAiLoading = false;

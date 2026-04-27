@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -13,23 +15,59 @@ class TextEnhancementController extends Controller
             'text' => 'required|string|max:5000',
         ]);
 
-        // Prompt santai tapi tetap jelas dan profesional
-        $prompt = "Tolong perbaiki dan rapikan tata bahasa teks berikut. Bikin gaya bahasanya santai, enak dibaca, luwes, tapi tetap sopan dan jelas maksudnya dalam konteks profesional. Jangan kaku atau terlalu formal. Jangan tambahkan basa-basi, komentar, atau tanda kutip, langsung berikan hasil perbaikannya saja:\n\n" . $request->text;
+        // Ambil semua master tag dari database
+        $tags = Tag::select('id', 'name')->get();
+        $tagsList = $tags->map(fn($t) => "- ID: {$t->id} | Nama: {$t->name}")->implode("\n");
+
+        // Prompt terstruktur yang memaksa output JSON dan mengerti konteks Skripsi IT
+        $prompt = "Tugas Anda ada dua:
+1. Perbaiki tata bahasa teks revisi klien (biasanya mahasiswa skripsi IT) berikut. Bikin santai, luwes, tapi tetap sopan dan jelas maksudnya secara profesional. Jangan tambahkan basa-basi.
+2. Analisis teks tersebut dan pilih ID tag yang PALING RELEVAN dari daftar tag Karyantara di bawah ini. Anda harus cerdas menangkap konteks tersirat!
+   - Contoh: Jika ada kata 'ui', 'tampilan', pilih tag 'UI/UX'.
+   - Contoh: Jika ada kata 'activity', 'alur', pilih tag 'UML Activity Diagram'.
+   - Contoh: Jika ada kata 'aktor', 'role', pilih tag 'Manajemen Role/User' dan 'UML Use Case'.
+   - Contoh: Jika ada kata 'cetak', 'pdf', 'laporan', pilih tag 'Export PDF/Laporan'.
+   (Pilih maksimal 4 tag, jika tidak ada kembalikan array kosong).
+
+[DAFTAR TAG KARYANTARA]
+{$tagsList}
+
+[TEKS KLIEN]
+{$request->text}
+
+PENTING: Kembalikan HANYA dalam format JSON murni dengan struktur persis seperti ini, pastikan 'suggested_tags' berisi ARRAY INTEGER dari ID tag:
+{
+    \"enhanced_text\": \"teks hasil perbaikan di sini\",
+    \"suggested_tags\": [1, 5] 
+}";
 
         try {
             $response = Http::withToken(env('GROQ_API_KEY'))
                 ->post('https://api.groq.com/openai/v1/chat/completions', [
                     'model' => 'llama-3.1-8b-instant',
                     'messages' => [
+                        ['role' => 'system', 'content' => 'You are a helpful assistant that strictly outputs valid JSON only.'],
                         ['role' => 'user', 'content' => $prompt]
                     ],
-                    'temperature' => 0.4,
+                    // Aktifkan mode JSON untuk stabilitas ekstra
+                    'response_format' => ['type' => 'json_object'],
+                    'temperature' => 0.3, // Turunkan sedikit agar AI lebih logis dan deterministik
                 ]);
 
             if ($response->successful()) {
+                // 1. Ambil raw text dari AI
+                $rawContent = $response->json('choices.0.message.content');
+                
+                // 2. Bersihkan bungkus markdown (```json dan ```) jika AI membandel
+                $cleanContent = preg_replace('/```json\s*|```/', '', $rawContent);
+                
+                // 3. Decode JSON dari AI
+                $content = json_decode($cleanContent, true);
+
                 return response()->json([
                     'success' => true,
-                    'result' => $response->json('choices.0.message.content')
+                    'result' => $content['enhanced_text'] ?? $request->text,
+                    'suggested_tags' => $content['suggested_tags'] ?? [] // Kirim array ID tag ke frontend
                 ]);
             }
 

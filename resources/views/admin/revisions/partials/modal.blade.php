@@ -36,6 +36,16 @@
                 <p class="text-gray-700 text-lg" x-text="activeTicket.title"></p>
             </div>
 
+            <template x-if="activeTicket.tags && activeTicket.tags.length > 0">
+                <div class="mb-5 flex flex-wrap gap-2">
+                    <template x-for="tag in activeTicket.tags" :key="tag.id">
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-md border border-gray-100 shadow-sm"
+                            :class="tag.bg_color + ' ' + tag.text_color">
+                            #<span x-text="tag.name"></span>
+                        </span>
+                    </template>
+                </div>
+            </template>
             <div class="mb-6">
                 <h4 class="text-sm font-bold text-[#1E293B] mb-2">Deskripsi Revisi</h4>
                 <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 text-sm text-gray-700 whitespace-pre-line"

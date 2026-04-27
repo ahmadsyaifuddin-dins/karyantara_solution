@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\RevisionTicket;
 use App\Models\Project;
+use App\Models\Tag; // Jangan lupa import model Tag
 use Illuminate\Http\Request;
 
 class RevisionTicketController extends Controller
@@ -14,8 +15,8 @@ class RevisionTicketController extends Controller
      */
     public function board()
     {
-        // Ambil tiket beserta data project (klien & nama project)
-        $tickets = RevisionTicket::with('project')->orderBy('sort_order')->get();
+        // Ambil tiket beserta data project (klien & nama project) dan tags (eager load)
+        $tickets = RevisionTicket::with(['project', 'tags'])->orderBy('sort_order')->get();
 
         // Kelompokkan berdasarkan status
         $board = [
@@ -58,7 +59,11 @@ class RevisionTicketController extends Controller
     {
         // Ambil project yang belum lunas/selesai (bisa disesuaikan filter statusnya)
         $projects = Project::orderBy('created_at', 'desc')->get();
-        return view('admin.revisions.create', compact('projects'));
+        
+        // Ambil data master tag
+        $tags = Tag::orderBy('name')->get(); 
+
+        return view('admin.revisions.create', compact('projects', 'tags'));
     }
 
     /**
@@ -71,13 +76,25 @@ class RevisionTicketController extends Controller
             'title'       => 'required|string|max:255',
             'type'        => 'required|in:app,naskah,keduanya',
             'description' => 'nullable|string',
+            'tags'        => 'nullable|array', // Validasi array dari input multiple select
+            'tags.*'      => 'exists:tags,id'  // Pastikan ID tag benar-benar ada di tabel tags
         ]);
+
+        // Ekstrak data tags dari array validated agar tidak error saat create ke tabel tickets
+        $tags = $request->tags;
+        unset($validated['tags']);
 
         // Masukkan ke kolom backlog secara default
         $validated['status'] = 'backlog';
         $validated['sort_order'] = RevisionTicket::where('status', 'backlog')->max('sort_order') + 1;
 
+        // Simpan tiket revisi
         $ticket = RevisionTicket::create($validated);
+
+        // Sync relasi tag ke pivot table (revision_ticket_tag)
+        if ($tags) {
+            $ticket->tags()->sync($tags);
+        }
 
         // OTOMATIS TAMBAH USED REVISION (+1) PADA PROJECT
         $project = Project::find($validated['project_id']);
@@ -95,9 +112,14 @@ class RevisionTicketController extends Controller
     public function edit(RevisionTicket $revision)
     {
         $projects = Project::all();
+        
+        // Ambil data master tag
+        $tags = Tag::orderBy('name')->get(); 
+
         return view('admin.revisions.edit', [
             'ticket'   => $revision,
-            'projects' => $projects
+            'projects' => $projects,
+            'tags'     => $tags
         ]);
     }
 
@@ -111,9 +133,19 @@ class RevisionTicketController extends Controller
             'title'       => 'required|string|max:255',
             'type'        => 'required|in:app,naskah,keduanya',
             'description' => 'nullable|string',
+            'tags'        => 'nullable|array',
+            'tags.*'      => 'exists:tags,id'
         ]);
 
+        // Ekstrak data tags
+        $tags = $request->tags;
+        unset($validated['tags']);
+
+        // Update data utama
         $revision->update($validated);
+
+        // Update data pivot table (jika tidak ada tag yang dikirim, sync dengan array kosong agar dihapus relasinya)
+        $revision->tags()->sync($tags ?? []);
 
         return redirect()->route('admin.revisions.board')->with('success', 'Data Tiket Revisi berhasil diperbarui.');
     }
@@ -129,6 +161,7 @@ class RevisionTicketController extends Controller
             $project->decrement('used_revision');
         }
 
+        // relasi tag di tabel pivot otomatis terhapus saat tiket ini didelete.
         $revision->delete();
         
         return redirect()->route('admin.revisions.board')->with('success', 'Tiket Revisi dihapus dan kuota klien dikembalikan (+1).');

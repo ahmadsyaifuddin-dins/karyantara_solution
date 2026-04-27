@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\RevisionTicketController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\Admin\TextEnhancementController;
 use App\Http\Controllers\FrontController;
@@ -88,7 +89,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('/revisions/update-status', [RevisionTicketController::class, 'updateStatus'])->name('revisions.update-status');
     Route::resource('revisions', RevisionTicketController::class)->except(['index', 'show']);
     
-    // ROUTE BARU: Tambah Kuota Ekstra
+    Route::resource('tags', TagController::class)->except(['show']);
+    
     Route::patch('/projects/{project}/add-revision-quota', [ProjectController::class, 'addExtraRevision'])
         ->name('projects.add-revision-quota')
         ->middleware('can:add_extra_quota_revisian');

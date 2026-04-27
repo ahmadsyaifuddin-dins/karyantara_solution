@@ -2,7 +2,8 @@
     <h3 class="font-bold text-[#1E293B]">
         <i class="fa-solid fa-fire text-amber-500 mr-2"></i> Proyek Prioritas
     </h3>
-    <a href="{{ route('admin.projects.index') ?? '#' }}" class="text-sm font-bold text-blue-600 hover:text-blue-800">Lihat Semua &rarr;</a>
+    <a href="{{ route('admin.projects.index') ?? '#' }}" class="text-sm font-bold text-blue-600 hover:text-blue-800">Lihat
+        Semua &rarr;</a>
 </div>
 
 <div class="overflow-x-auto flex-1">
@@ -12,24 +13,33 @@
                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider w-16">No</th>
                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Klien</th>
                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Harga/Net</th>
+
+                {{-- CEK ROLE: Header Tabel --}}
+                @role('super_admin')
+                    <th class="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Harga/Net</th>
+                @else
+                    <th class="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Kuota Revisi
+                    </th>
+                @endrole
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
             @forelse($priorityProjects ?? [] as $index => $project)
                 <tr class="hover:bg-gray-50 transition-colors">
-                    
+
                     <td class="px-6 py-4">
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-bold">
-                            {{ $project->sort_order ?? ($index + 1) }}
+                        <span
+                            class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-bold">
+                            {{ $project->sort_order ?? $index + 1 }}
                         </span>
                     </td>
 
                     <td class="px-6 py-4">
                         <div class="font-bold text-[#1E293B]">{{ $project->client_name }}</div>
-                        <div class="text-xs text-gray-500 mt-0.5 truncate max-w-[250px]">{{ $project->project_description }}</div>
+                        <div class="text-xs text-gray-500 mt-0.5 truncate max-w-[250px]">
+                            {{ $project->project_description }}</div>
                     </td>
-                    
+
                     <td class="px-6 py-4 whitespace-nowrap">
                         @php
                             $badgeColors = [
@@ -39,19 +49,36 @@
                                 'Selesai' => 'bg-emerald-100 text-emerald-800',
                             ];
                         @endphp
-                        <span class="px-3 py-1 text-[11px] font-bold rounded-full {{ $badgeColors[$project->status] ?? 'bg-gray-100' }}">
+                        <span
+                            class="px-3 py-1 text-[11px] font-bold rounded-full {{ $badgeColors[$project->status] ?? 'bg-gray-100' }}">
                             {{ $project->status }}
                         </span>
                     </td>
-                    
-                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                        <div class="font-bold text-[#1E293B]">Rp {{ number_format($project->net_income, 0, ',', '.') }}</div>
-                        @if ($project->is_paid_off)
-                            <span class="text-[10px] font-bold text-emerald-500"><i class="fa-solid fa-check-double mr-1"></i>Lunas</span>
-                        @else
-                            <span class="text-[10px] font-bold text-red-500">Sisa: Rp {{ number_format($project->remaining_amount, 0, ',', '.') }}</span>
-                        @endif
-                    </td>
+
+                    {{-- CEK ROLE: Isi Data Tabel --}}
+                    @role('super_admin')
+                        <td class="px-6 py-4 whitespace-nowrap text-right">
+                            <div class="font-bold text-[#1E293B]">Rp {{ number_format($project->net_income, 0, ',', '.') }}
+                            </div>
+                            @if ($project->is_paid_off)
+                                <span class="text-[10px] font-bold text-emerald-500"><i
+                                        class="fa-solid fa-check-double mr-1"></i>Lunas</span>
+                            @else
+                                <span class="text-[10px] font-bold text-red-500">Sisa: Rp
+                                    {{ number_format($project->remaining_amount, 0, ',', '.') }}</span>
+                            @endif
+                        </td>
+                    @else
+                        <td class="px-6 py-4 whitespace-nowrap text-right">
+                            <div class="font-bold text-[#1E293B] flex items-center justify-end gap-1.5">
+                                <i class="fa-solid fa-rotate-right text-amber-500 text-xs"></i>
+                                {{ $project->used_revision ?? 0 }} / {{ $project->max_revision ?? 0 }}
+                            </div>
+                            <div class="text-[10px] text-gray-400 font-medium mt-0.5 uppercase tracking-wider">Revisi
+                                Terpakai</div>
+                        </td>
+                    @endrole
+
                 </tr>
             @empty
                 <tr>

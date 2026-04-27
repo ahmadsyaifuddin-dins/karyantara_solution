@@ -34,6 +34,22 @@
     </div>
 
     <div class="md:col-span-2">
+        <x-forms.label for="tags" value="Tag Kategori (Bisa Pilih Banyak)" />
+        <select x-data="searchableDropdown" x-ref="selectNode" name="tags[]" id="tags" multiple class="w-full"
+            autocomplete="off" placeholder="Ketik atau pilih tag...">
+            @foreach ($tags as $tag)
+                <option value="{{ $tag->id }}"
+                    {{ collect(old('tags', isset($ticket) ? $ticket->tags->pluck('id')->toArray() : []))->contains($tag->id) ? 'selected' : '' }}>
+                    {{ $tag->name }}</option>
+            @endforeach
+        </select>
+        <p class="text-[11px] text-gray-500 mt-1">Gunakan tag untuk mengkategorikan jenis perbaikan (contoh: Error
+            Logic, UI/UX, Database).</p>
+        @error('tags')
+            <span class="text-sm text-red-600 mt-1 block">{{ $message }}</span>
+        @enderror
+    </div>
+    <div class="md:col-span-2">
         <x-forms.label for="title" value="Judul / Fase Revisi" required />
         <x-forms.input id="title" name="title" value="{{ old('title', $ticket->title ?? '') }}"
             placeholder="Misal: Revisi Pasca Sempro, Revisi Bab 4, dll..." required />
