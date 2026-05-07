@@ -21,25 +21,28 @@ class TextEnhancementController extends Controller
 
         // Prompt terstruktur yang memaksa output JSON dan mengerti konteks Skripsi IT
         $prompt = "Tugas Anda ada dua:
-1. Perbaiki tata bahasa teks revisi klien (biasanya mahasiswa skripsi IT) berikut. Bikin santai, luwes, tapi tetap sopan dan jelas maksudnya secara profesional. Jangan tambahkan basa-basi.
-2. Analisis teks tersebut dan pilih ID tag yang PALING RELEVAN dari daftar tag Karyantara di bawah ini. Anda harus cerdas menangkap konteks tersirat!
-   - Contoh: Jika ada kata 'ui', 'tampilan', pilih tag 'UI/UX'.
-   - Contoh: Jika ada kata 'activity', 'alur', pilih tag 'UML Activity Diagram'.
-   - Contoh: Jika ada kata 'aktor', 'role', pilih tag 'Manajemen Role/User' dan 'UML Use Case'.
-   - Contoh: Jika ada kata 'cetak', 'pdf', 'laporan', pilih tag 'Export PDF/Laporan'.
-   (Pilih maksimal 4 tag, jika tidak ada kembalikan array kosong).
-
-[DAFTAR TAG KARYANTARA]
-{$tagsList}
-
-[TEKS KLIEN]
-{$request->text}
-
-PENTING: Kembalikan HANYA dalam format JSON murni dengan struktur persis seperti ini, pastikan 'suggested_tags' berisi ARRAY INTEGER dari ID tag:
-{
-    \"enhanced_text\": \"teks hasil perbaikan di sini\",
-    \"suggested_tags\": [1, 5] 
-}";
+            1. Perbaiki tata bahasa teks revisi klien (biasanya mahasiswa skripsi IT) berikut. Bikin santai, luwes, tapi tetap sopan dan jelas maksudnya secara profesional. Jangan tambahkan basa-basi.
+               ATURAN FORMAT MUTLAK: Susun ulang dan kelompokkan semua catatan revisi menjadi format POIN-POIN ANGKA (1., 2., 3., dst). DILARANG KERAS menggunakan bullet point seperti strip (-), asterisk (*), atau titik bulat. Pastikan setiap poin mudah dibaca oleh programmer.
+            2. Analisis teks tersebut dan pilih ID tag yang PALING RELEVAN dari daftar tag Karyantara di bawah ini. Anda harus cerdas menangkap konteks tersirat!
+               - KUNCI 1: Jika klien diminta 'ganti judul' atau 'saran judul', OTOMATIS pilih tag 'Ganti Judul Skripsi', 'Naskah Bab 1', dan 'Naskah Bab 2' (karena ganti judul pasti merubah latar belakang & tinjauan pustaka).
+               - KUNCI 2: Jika ada permintaan 'notif', 'pesan wa', 'whatsapp', 'email', pilih tag 'Notif WhatsApp/Email'.
+               - KUNCI 3: Jika ada kata 'ui', 'tampilan', pilih tag 'UI/UX & Tampilan'.
+               - KUNCI 4: Jika ada kata 'activity', 'alur', pilih tag 'UML Activity Diagram' dan 'Alur Sistem (Flow)'.
+               - KUNCI 5: Jika ada kata 'aktor', 'role', pilih tag 'Manajemen Role/Aktor' dan 'UML Use Case'.
+               - KUNCI 6: Jika ada kata 'cetak', 'pdf', 'laporan', pilih tag 'Export PDF/Laporan'.
+               (Pilih maksimal 7 tag, jika tidak ada kembalikan array kosong).
+                
+            [DAFTAR TAG KARYANTARA]
+            {$tagsList}
+                
+            [TEKS KLIEN]
+            {$request->text}
+                
+            PENTING: Kembalikan HANYA dalam format JSON murni dengan struktur persis seperti ini, pastikan 'suggested_tags' berisi ARRAY INTEGER dari ID tag, dan 'enhanced_text' berisi format angka:
+            {
+                \"enhanced_text\": \"1. Teks revisi satu.\\n2. Teks revisi dua.\\n3. Teks revisi tiga.\",
+                \"suggested_tags\": [1, 5, 8, 12, 14] 
+            }";
 
         try {
             $response = Http::withToken(env('GROQ_API_KEY'))
