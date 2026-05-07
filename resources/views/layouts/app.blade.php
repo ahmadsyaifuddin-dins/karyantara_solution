@@ -36,7 +36,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <x-assets />
 </head>
 
 <body class="font-sans antialiased bg-gray-100" x-data="{ sidebarOpen: false, isFocusMode: false }">
