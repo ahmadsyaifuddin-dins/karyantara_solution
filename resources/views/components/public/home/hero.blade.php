@@ -3,13 +3,15 @@
     mouseY: 0,
     isHovered: false,
     updateMouse(event) {
-        // Kalkulasi posisi mouse relatif terhadap section ini
         const rect = this.$el.getBoundingClientRect();
         this.mouseX = event.clientX - rect.left;
         this.mouseY = event.clientY - rect.top;
     }
 }" @mousemove="updateMouse($event); isHovered = true" @mouseleave="isHovered = false"
     class="relative bg-[#0F172A] pt-20 pb-24 lg:pt-32 lg:pb-32 overflow-hidden border-b border-gray-800">
+
+    <div x-data="auroraBackground()" x-ref="canvasContainer"
+        class="absolute inset-0 z-0 opacity-50 mix-blend-screen pointer-events-none"></div>
 
     <div class="absolute inset-0 z-0 flex justify-center items-center pointer-events-none">
         <div class="w-full max-w-2xl h-[300px] bg-amber-500/10 blur-[120px] rounded-full"></div>
@@ -26,7 +28,6 @@
         :class="isHovered ? 'opacity-100' : 'opacity-0'"
         :style="`-webkit-mask-image: radial-gradient(400px circle at ${mouseX}px ${mouseY}px, black, transparent 60%); mask-image: radial-gradient(400px circle at ${mouseX}px ${mouseY}px, black, transparent 60%);`">
     </div>
-
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
 

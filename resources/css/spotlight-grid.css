@@ -17,3 +17,18 @@
         animation: floating 6s ease-in-out infinite;
     }
 }
+
+/* PISAHKAN LAYER COMPONENT DI LUAR UTILITIES */
+@layer components {
+    .glass-card {
+        @apply bg-[#1E293B]/60 backdrop-blur-xl border border-slate-700/50 hover:border-amber-500/50 transition-all duration-300 shadow-xl;
+    }
+    
+    .glass-button {
+        @apply bg-[#1E293B]/50 backdrop-blur-md border border-slate-600 text-slate-300 hover:text-white hover:border-amber-500 hover:bg-[#1E293B] transition-all duration-300;
+    }
+    
+    .divider {
+        @apply w-full h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent;
+    }
+}
