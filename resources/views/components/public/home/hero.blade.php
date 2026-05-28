@@ -25,10 +25,10 @@
         <div
             class="inline-flex items-center gap-3 px-2 py-1.5 pr-4 rounded-xl backdrop-blur-xl border border-amber-500/30 bg-[#1E293B]/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] mb-8 transform transition hover:scale-105 cursor-default">
             <span
-                class="bg-gradient-to-r from-amber-400 to-amber-600 text-[#1E293B] font-bold text-xs px-3 py-1.5 rounded-lg shadow-[0_0_10px_rgba(245,158,11,0.3)]">
-                Karyantara
+                class="bg-gradient-to-r font-archive from-amber-400 to-amber-600 text-[#1E293B] font-bold text-xs px-3 py-1.5 rounded-lg shadow-[0_0_10px_rgba(245,158,11,0.3)]">
+                Karyantara Solution
             </span>
-            <span class="font-medium text-sm text-slate-200 tracking-wide font-archive uppercase">
+            <span class="font-medium text-sm text-slate-200 tracking-wide uppercase">
                 Solusi Digital Anda
             </span>
         </div>
@@ -61,9 +61,9 @@
             </a>
         </div>
 
-        {{-- FITUR / MITRA DIGITAL CARD --}}
+        {{-- FITUR / MITRA DIGITAL CARD (Background Transparent) --}}
         <div
-            class="mt-24 md:mt-28 w-full animate-floating backdrop-blur-xl bg-[#1E293B]/70 border border-white/10 border-t-amber-500/40 rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden group hover:border-t-amber-500/80 transition-colors duration-500 text-left">
+            class="mt-24 md:mt-28 w-full animate-floating backdrop-blur-xl bg-transparent border border-white/10 border-t-amber-500/40 rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden group hover:border-t-amber-500/80 transition-colors duration-500 text-left">
 
             {{-- Kilauan cahaya transparan di dalam card --}}
             <div
